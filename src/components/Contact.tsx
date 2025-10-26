@@ -81,14 +81,12 @@ const Contact = () => {
 
     try {
       const leadData: LeadData = {
-        Site_URL: "nicoleguedesodonto.com.br",
-        Form_Name: "Contato Site",
-        Lead_Nome: formData.nome,
-        Lead_Telefone: "55" + phoneNumbers,
-        Lead_Email: formData.email,
-        Lead_Interest: formData.interesse,
-        Lead_Obs: formData.observacoes || undefined,
-        Form_Webhook: null,
+        site_url: "nicoleguedesodonto.com.br",
+        lead_nome: formData.nome,
+        lead_telefone: "55" + phoneNumbers,
+        lead_email: formData.email,
+        lead_interest: formData.interesse,
+        lead_obs: formData.observacoes || undefined,
       };
 
       await submitLead(leadData);

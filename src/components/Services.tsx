@@ -1,35 +1,35 @@
-import { Smile, Sparkles, Heart, Droplet, Zap, Shield } from "lucide-react";
+import { Sparkle, Gem, Palette, Syringe, Star, Waves } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Services = () => {
   const services = [
     {
-      icon: Smile,
+      icon: Gem,
       title: "Lentes Naturais Hiper-Realistas",
       description: "Transformação natural e duradoura do seu sorriso com tecnologia de última geração",
     },
     {
-      icon: Sparkles,
+      icon: Sparkle,
       title: "Clareamento Dental",
       description: "Dentes brancos e saudáveis com segurança e resultados impressionantes",
     },
     {
-      icon: Heart,
+      icon: Palette,
       title: "Harmonização Facial",
       description: "Equilíbrio e rejuvenescimento do rosto com técnicas modernas",
     },
     {
-      icon: Droplet,
+      icon: Waves,
       title: "Preenchimento Labial",
       description: "Volume e definição natural dos lábios respeitando sua harmonia facial",
     },
     {
-      icon: Zap,
+      icon: Star,
       title: "Bioestimuladores de Colágeno",
       description: "Estímulo natural do colágeno da pele para rejuvenescimento duradouro",
     },
     {
-      icon: Shield,
+      icon: Syringe,
       title: "Toxina Botulínica",
       description: "Suavização de linhas de expressão com resultados naturais e elegantes",
     },

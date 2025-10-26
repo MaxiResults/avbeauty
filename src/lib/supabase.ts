@@ -6,14 +6,12 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface LeadData {
-  Site_URL: string;
-  Form_Name: string;
-  Lead_Nome: string;
-  Lead_Telefone: string;
-  Lead_Email: string;
-  Lead_Interest: string;
-  Lead_Obs?: string;
-  Form_Webhook: null;
+  site_url: string;
+  lead_nome: string;
+  lead_telefone: string;
+  lead_email: string;
+  lead_interest: string;
+  lead_obs?: string;
 }
 
 export async function submitLead(data: LeadData) {

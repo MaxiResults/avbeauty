@@ -1,15 +1,17 @@
+import draNicole from "@/assets/dra-nicole.jpg";
+
 const About = () => {
   return (
-    <section id="sobre" className="py-20 bg-background">
+    <section id="sobre" className="py-16 md:py-20 bg-background">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl mx-auto">
           {/* Text content */}
-          <div className="space-y-6 animate-fade-in">
-            <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-6">
+          <div className="space-y-4 md:space-y-6 animate-fade-in order-2 lg:order-1">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mb-4 md:mb-6">
               Sobre a Nicole Guedes Odonto
             </h2>
             
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
+            <div className="space-y-3 md:space-y-4 text-sm md:text-base text-muted-foreground leading-relaxed">
               <p>
                 Na Nicole Guedes Odonto, acreditamos que um sorriso bonito vai muito além da 
                 estética — ele reflete confiança, leveza e bem-estar. Por isso, cada tratamento 
@@ -38,24 +40,19 @@ const About = () => {
             </div>
           </div>
 
-          {/* Image placeholder */}
-          <div className="relative animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-rose-light/50 via-primary/10 to-accent/20 shadow-soft overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-4xl">✨</span>
-                  </div>
-                  <p className="text-muted-foreground font-medium">
-                    Espaço reservado para imagem da clínica
-                  </p>
-                </div>
-              </div>
+          {/* Image - Dra Nicole */}
+          <div className="relative animate-fade-in order-1 lg:order-2" style={{ animationDelay: "0.2s" }}>
+            <div className="aspect-[4/5] rounded-2xl shadow-soft overflow-hidden">
+              <img 
+                src={draNicole} 
+                alt="Dra. Nicole Guedes" 
+                className="w-full h-full object-cover"
+              />
             </div>
             
-            {/* Decorative element */}
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-terracota/20 rounded-full blur-3xl -z-10" />
-            <div className="absolute -top-6 -left-6 w-32 h-32 bg-primary/20 rounded-full blur-3xl -z-10" />
+            {/* Decorative elements */}
+            <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 w-24 h-24 md:w-32 md:h-32 bg-terracota/20 rounded-full blur-3xl -z-10" />
+            <div className="absolute -top-4 -left-4 md:-top-6 md:-left-6 w-24 h-24 md:w-32 md:h-32 bg-primary/20 rounded-full blur-3xl -z-10" />
           </div>
         </div>
       </div>

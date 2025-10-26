@@ -160,13 +160,13 @@ const Contact = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start lg:items-stretch max-w-6xl mx-auto">
           {/* Form */}
-          <div className="animate-fade-in">
+          <div className="animate-fade-in h-full flex flex-col">
             <h3 className="text-2xl font-display font-semibold text-foreground mb-6">
               Agende sua avaliação
             </h3>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
               <div>
                 <Label htmlFor="nome">Nome *</Label>
                 <Input

@@ -81,14 +81,15 @@ const Contact = () => {
 
     try {
       const leadData: LeadData = {
-        site_url: "nicoleguedesodonto.com.br",
-        lead_nome: formData.nome,
+        site_url: window.location.hostname || "nicoleguedesodonto.com.br",
+        lead_nome: formData.nome.trim(),
         lead_telefone: "55" + phoneNumbers,
-        lead_email: formData.email,
+        lead_email: formData.email.trim().toLowerCase(),
         lead_interest: formData.interesse,
-        lead_obs: formData.observacoes || undefined,
+        lead_obs: formData.observacoes.trim() || undefined,
       };
 
+      console.log("Enviando dados:", leadData);
       await submitLead(leadData);
 
       toast({
@@ -120,7 +121,7 @@ const Contact = () => {
     {
       icon: MapPin,
       title: "Endereço",
-      content: "Av. Aniello Pratice, 50 - Jardim Santa Francisca, Guarulhos/SP",
+      content: "Av. Aniello Pratici, 50 - Centro - Guarulhos/SP",
     },
     {
       icon: Phone,
@@ -274,18 +275,19 @@ const Contact = () => {
               ))}
             </div>
 
-            {/* Map placeholder */}
+            {/* Google Map */}
             <div className="mt-8">
-              <div className="aspect-video rounded-xl bg-gradient-to-br from-primary/10 via-accent/5 to-rose-light/10 shadow-soft flex items-center justify-center">
-                <div className="text-center p-6">
-                  <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
-                  <p className="text-muted-foreground font-medium">
-                    Mapa do Google aqui
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Av. Aniello Pratice, 50 - Guarulhos/SP
-                  </p>
-                </div>
+              <div className="aspect-video rounded-xl overflow-hidden shadow-soft">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.8934567890123!2d-46.533333!3d-23.463333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cef4b9bbbbbbbb%3A0x1111111111111111!2sAv.%20Aniello%20Pratici%2C%2050%20-%20Centro%2C%20Guarulhos%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Localização Nicole Guedes Odonto"
+                ></iframe>
               </div>
             </div>
           </div>

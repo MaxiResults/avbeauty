@@ -34,6 +34,7 @@ serve(async (req) => {
         tipo_mensagem, 
         mensagem, 
         origem,
+        cliente_id: 2,
         data_envio: saoPauloTimestamp 
       })
       .select()

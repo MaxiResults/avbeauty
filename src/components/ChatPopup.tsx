@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { X, Send, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { ScrollArea } from "./ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -354,18 +355,26 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
           </ScrollArea>
 
           <div className="p-4 border-t border-border">
-            <div className="flex gap-2">
-              <Input
+            <div className="flex gap-2 items-end">
+              <Textarea
                 placeholder="Digite sua mensagem..."
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
                 disabled={isLoading}
+                rows={4}
+                className="resize-none"
               />
               <Button
                 onClick={sendMessage}
                 disabled={isLoading || !inputValue.trim()}
                 size="icon"
+                className="mb-1"
               >
                 <Send className="w-4 h-4" />
               </Button>

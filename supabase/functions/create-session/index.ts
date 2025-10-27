@@ -30,6 +30,7 @@ serve(async (req) => {
         lead_id: leadId, 
         canal, 
         origem,
+        cliente_id: 2,
         created_at: saoPauloTimestamp 
       })
       .select()

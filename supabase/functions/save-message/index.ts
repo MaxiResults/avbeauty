@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { formatInTimeZone } from "https://esm.sh/date-fns-tz@3.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,9 +23,19 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
+    // Create timestamp in São Paulo timezone
+    const saoPauloTimestamp = formatInTimeZone(new Date(), 'America/Sao_Paulo', "yyyy-MM-dd'T'HH:mm:ssXXX");
+
     const { data, error } = await supabase
       .from("Conversas_Historico")
-      .insert({ sessao_id: sessionId, remetente, tipo_mensagem, mensagem, origem })
+      .insert({ 
+        sessao_id: sessionId, 
+        remetente, 
+        tipo_mensagem, 
+        mensagem, 
+        origem,
+        data_envio: saoPauloTimestamp 
+      })
       .select()
       .maybeSingle();
 

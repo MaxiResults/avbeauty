@@ -3,7 +3,7 @@ import { X, Send, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -54,16 +54,18 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
   };
 
   const createSession = async (newLeadId: string | number) => {
-    const { data, error } = await supabase.functions.invoke('create-session', {
-      body: { leadId: newLeadId }
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke('create-session', {
+        body: { leadId: newLeadId }
+      });
 
-    if (error) {
-      console.error('Erro ao criar sessão:', error);
-      throw error as any;
+      if (error) throw error as any;
+
+      return (data as any)?.sessionId ?? (data as any)?.id ?? (data as any)?.ID ?? null;
+    } catch (err) {
+      console.error('Erro ao criar sessão (seguindo sem persistência de chat):', err);
+      return null;
     }
-
-    return (data as any)?.sessionId ?? (data as any)?.id ?? (data as any)?.ID;
   };
 
   const saveMessage = async (remetente: 'lead' | 'IA', mensagem: string) => {
@@ -150,21 +152,19 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `https://sunccjukvrximjiqzdkm.supabase.co/functions/v1/chat-assistant`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1bmNjanVrdnJ4aW1qaXF6ZGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyODUsImV4cCI6MjA3NDg0OTI4NX0.Xt68Jol4GQ-GeL7g4z_wmm6ui81BIpTNJmNO7WhR_7E`
-          },
-          body: JSON.stringify({
-            message: inputValue,
-            sessionId: sessionId,
-            leadName: leadData.nome
-          })
-        }
-      );
+      const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-assistant`;
+      const response = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          message: inputValue,
+          sessionId: sessionId,
+          leadName: leadData.nome,
+        }),
+      });
 
       const data = await response.json();
 

@@ -5,6 +5,17 @@ import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 interface Message {
   id: string;
@@ -204,17 +215,32 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
     <div className="fixed bottom-28 right-6 w-[28.8rem] h-[720px] bg-background border border-border rounded-lg shadow-2xl flex flex-col z-50 animate-fade-in">
       <div className="bg-primary text-primary-foreground p-4 rounded-t-lg flex items-center justify-between">
         <div>
-          <h3 className="font-semibold">Chat Online</h3>
-          <p className="text-xs opacity-90">Dra. Nicole - Harmonização Facial</p>
+          <h3 className="font-semibold text-lg">Chat Online</h3>
+          <p className="text-sm opacity-90">Dra. Nicole - Harmonização Facial</p>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          className="text-primary-foreground hover:bg-primary-foreground/20"
-        >
-          <X className="w-5 h-5" />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-primary-foreground hover:bg-primary-foreground/20"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Encerrar conversa?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tem certeza que deseja encerrar esta conversa? O histórico será perdido.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={onClose}>Sim, encerrar</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       {showLeadForm ? (

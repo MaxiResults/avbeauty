@@ -15,12 +15,41 @@ export interface LeadData {
 }
 
 export async function submitLead(data: LeadData) {
-  const { data: result, error } = await supabase
-    .from('Leads_Site')
-    .insert([data]);
+  const onlyDigits = (s: string) => s.replace(/\D/g, '');
+  const normalizePhoneToE164BR = (s: string) => {
+    let d = onlyDigits(s || '');
+    if (!d.startsWith('55')) d = '55' + d;
+    return d;
+  };
+
+  const telefone = normalizePhoneToE164BR(data.lead_telefone);
+
+  // Tenta inserir no Leads_Cadastro (estrutura mais comum)
+  let { data: result, error } = await supabase
+    .from('Leads_Cadastro')
+    .insert([
+      {
+        nome: data.lead_nome,
+        email: data.lead_email,
+        telefone,
+        canal_origem: 'site',
+        origem_url: data.site_url,
+        status: 'novo',
+        observacoes: data.lead_obs ?? null,
+        interesse: data.lead_interest,
+        cliente_id: 2,
+      }
+    ])
+    .select();
 
   if (error) {
-    throw error;
+    // Fallback: usa a tabela Leads_Site com o payload original
+    const fallback = await supabase
+      .from('Leads_Site')
+      .insert([{ ...data, lead_telefone: telefone }])
+      .select();
+    if (fallback.error) throw fallback.error;
+    return fallback.data;
   }
 
   return result;

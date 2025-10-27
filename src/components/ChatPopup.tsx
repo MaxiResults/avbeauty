@@ -38,7 +38,22 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
     }
   }, [messages]);
 
-  const createSession = async (newLeadId: string) => {
+  // Helpers for phone formatting and normalization (BR +55)
+  const onlyDigits = (str: string) => str.replace(/\D/g, '');
+  const maskPhoneBR = (value: string) => {
+    const d = onlyDigits(value).slice(0, 11);
+    if (d.length <= 2) return d;
+    if (d.length <= 6) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+    if (d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+    return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7,11)}`;
+  };
+  const normalizePhoneToE164BR = (value: string) => {
+    let d = onlyDigits(value);
+    if (!d.startsWith('55')) d = '55' + d;
+    return d;
+  };
+
+  const createSession = async (newLeadId: string | number) => {
     const { data, error } = await supabase
       .from('Conversas_sessao')
       .insert({
@@ -46,17 +61,17 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
         canal: 'site',
         origem: 'chat',
         status_sessao: 'ativa',
-        Cliente_ID: 2
+        cliente_id: 2
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Erro ao criar sessão:', error);
       throw error;
     }
 
-    return data.ID;
+    return (data as any)?.ID ?? (data as any)?.id;
   };
 
   const saveMessage = async (remetente: 'lead' | 'IA', mensagem: string) => {
@@ -88,27 +103,55 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
     }
 
     try {
-      const { data: lead, error } = await supabase
+      const normalizedPhone = normalizePhoneToE164BR(leadData.telefone);
+
+      // Primeira tentativa: colunas em minúsculas (mais comum)
+      let insertRes = await supabase
         .from('Leads_Cadastro')
         .insert({
-          Nome: leadData.nome,
-          Email: leadData.email,
-          Telefone: leadData.telefone,
+          nome: leadData.nome,
+          email: leadData.email,
+          telefone: normalizedPhone,
           canal_origem: 'site',
           origem_url: window.location.href,
           status: 'novo',
           observacoes: 'lead captado através do chat do site',
           interesse: 'Chat online',
-          Cliente_ID: 2
+          cliente_id: 2
         })
         .select()
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      let lead = insertRes.data as any;
+      let insertError = insertRes.error;
 
-      const newSessionId = await createSession(lead.ID);
-      setLeadId(lead.ID);
-      setSessionId(newSessionId);
+      if (insertError) {
+        // Fallback: colunas com capitalização
+        const fallback = await supabase
+          .from('Leads_Cadastro')
+          .insert({
+            Nome: leadData.nome,
+            Email: leadData.email,
+            Telefone: normalizedPhone,
+            canal_origem: 'site',
+            origem_url: window.location.href,
+            status: 'novo',
+            observacoes: 'lead captado através do chat do site',
+            interesse: 'Chat online',
+            Cliente_ID: 2
+          })
+          .select()
+          .maybeSingle();
+        lead = fallback.data as any;
+        insertError = fallback.error;
+      }
+
+      if (insertError || !lead) throw insertError ?? new Error('Falha ao criar lead');
+
+      const newLeadId = (lead as any).id ?? (lead as any).ID;
+      const newSessionId = await createSession(newLeadId);
+      setLeadId(String(newLeadId));
+      setSessionId(String(newSessionId));
       setShowLeadForm(false);
 
       const welcomeMsg: Message = {
@@ -230,9 +273,12 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
             <div>
               <Input
                 type="tel"
+                inputMode="tel"
+                autoComplete="tel"
                 placeholder="Seu telefone"
                 value={leadData.telefone}
-                onChange={(e) => setLeadData({ ...leadData, telefone: e.target.value })}
+                onChange={(e) => setLeadData({ ...leadData, telefone: maskPhoneBR(e.target.value) })}
+                maxLength={16}
                 required
               />
             </div>

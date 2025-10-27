@@ -24,52 +24,21 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
-    // Try mapping to user's external table schema first (PascalCase columns)
-    const payloadUpper = {
-      Site_URL: origem_url ?? "",
-      Form_Name: "Agende sua avaliação",
-      Lead_Nome: nome,
-      Lead_Telefone: telefone,
-      Lead_Email: email,
-      Lead_Interesse: interesse ?? null,
-      Lead_Obs: observacoes ?? null,
-      Form_Webhook: null,
-      Campanha_ID: null,
-      CP_1: null,
-      CP_2: null,
-      CP_3: null,
-      Lead_Status: status ?? "novo",
-      Cliente_ID: 2,
-    } as const;
-
-    // Attempt 1: Insert into Leads_Cadastro with PascalCase columns
-    let { data, error } = await supabase
+    // Insert into Leads_Cadastro for chat leads (lowercase columns assumed)
+    const { data, error } = await supabase
       .from("Leads_Cadastro")
-      .insert(payloadUpper as any)
+      .insert({ 
+        nome, 
+        email, 
+        telefone, 
+        canal_origem, 
+        origem_url, 
+        status, 
+        observacoes, 
+        interesse 
+      })
       .select()
       .maybeSingle();
-
-    if (error || !data) {
-      // Attempt 2: Some projects use table name Leads_Site
-      const res2 = await supabase
-        .from("Leads_Site")
-        .insert(payloadUpper as any)
-        .select()
-        .maybeSingle();
-      data = res2.data;
-      error = res2.error;
-    }
-
-    if (error || !data) {
-      // Attempt 3: Fallback to previous lowercase column schema
-      const res3 = await supabase
-        .from("Leads_Cadastro")
-        .insert({ nome, email, telefone, canal_origem, origem_url, status, observacoes, interesse })
-        .select()
-        .maybeSingle();
-      data = res3.data;
-      error = res3.error;
-    }
 
     if (error || !data) {
       console.error("create-lead insert error:", error);

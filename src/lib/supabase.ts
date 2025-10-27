@@ -23,25 +23,28 @@ export async function submitLead(data: LeadData) {
   let telefone = onlyDigits(data.lead_telefone || '');
   if (!telefone.startsWith('55')) telefone = '55' + telefone;
 
-  const resp = await fetch(`${LOVABLE_FUNCTIONS_BASE}/create-lead`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${LOVABLE_ANON}`,
-    },
-    body: JSON.stringify({
-      nome: data.lead_nome,
-      email: data.lead_email,
-      telefone,
-      canal_origem: 'site',
-      origem_url: data.site_url,
-      status: 'novo',
-      observacoes: data.lead_obs ?? null,
-      interesse: data.lead_interest,
-    }),
-  });
+  // Insert directly into Leads_Site table with PascalCase columns
+  const { data: insertData, error } = await supabase
+    .from('Leads_Site')
+    .insert({
+      Site_URL: data.site_url,
+      Form_Name: 'Agende sua avaliação',
+      Lead_Nome: data.lead_nome,
+      Lead_Telefone: telefone,
+      Lead_Email: data.lead_email,
+      Lead_Interesse: data.lead_interest,
+      Lead_Obs: data.lead_obs ?? null,
+      Form_Webhook: null,
+      Campanha_ID: null,
+      CP_1: null,
+      CP_2: null,
+      CP_3: null,
+      Lead_Status: 'novo',
+      Cliente_ID: 2,
+    })
+    .select()
+    .single();
 
-  const json = await resp.json();
-  if (!resp.ok) throw new Error(json?.error || 'Falha ao criar lead');
-  return json;
+  if (error) throw new Error(error.message || 'Falha ao criar lead');
+  return insertData;
 }

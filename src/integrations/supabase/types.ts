@@ -14,7 +14,115 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      Conversas_Historico: {
+        Row: {
+          data_envio: string
+          id: string
+          mensagem: string
+          origem: string | null
+          remetente: string
+          sessao_id: string
+          tipo_mensagem: string | null
+        }
+        Insert: {
+          data_envio?: string
+          id?: string
+          mensagem: string
+          origem?: string | null
+          remetente: string
+          sessao_id: string
+          tipo_mensagem?: string | null
+        }
+        Update: {
+          data_envio?: string
+          id?: string
+          mensagem?: string
+          origem?: string | null
+          remetente?: string
+          sessao_id?: string
+          tipo_mensagem?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Conversas_Historico_sessao_id_fkey"
+            columns: ["sessao_id"]
+            isOneToOne: false
+            referencedRelation: "Conversas_sessao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Conversas_sessao: {
+        Row: {
+          canal: string | null
+          created_at: string
+          id: string
+          lead_id: string
+          origem: string | null
+        }
+        Insert: {
+          canal?: string | null
+          created_at?: string
+          id?: string
+          lead_id: string
+          origem?: string | null
+        }
+        Update: {
+          canal?: string | null
+          created_at?: string
+          id?: string
+          lead_id?: string
+          origem?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Conversas_sessao_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "Leads_Cadastro"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Leads_Cadastro: {
+        Row: {
+          canal_origem: string | null
+          created_at: string
+          email: string
+          id: string
+          interesse: string | null
+          nome: string
+          observacoes: string | null
+          origem_url: string | null
+          status: string | null
+          telefone: string
+        }
+        Insert: {
+          canal_origem?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          interesse?: string | null
+          nome: string
+          observacoes?: string | null
+          origem_url?: string | null
+          status?: string | null
+          telefone: string
+        }
+        Update: {
+          canal_origem?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          interesse?: string | null
+          nome?: string
+          observacoes?: string | null
+          origem_url?: string | null
+          status?: string | null
+          telefone?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

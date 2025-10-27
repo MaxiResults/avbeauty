@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       Conversas_Historico: {
         Row: {
+          cliente_id: number
           data_envio: string
           id: string
           mensagem: string
@@ -25,6 +26,7 @@ export type Database = {
           tipo_mensagem: string | null
         }
         Insert: {
+          cliente_id?: number
           data_envio?: string
           id?: string
           mensagem: string
@@ -34,6 +36,7 @@ export type Database = {
           tipo_mensagem?: string | null
         }
         Update: {
+          cliente_id?: number
           data_envio?: string
           id?: string
           mensagem?: string
@@ -55,6 +58,7 @@ export type Database = {
       Conversas_sessao: {
         Row: {
           canal: string | null
+          cliente_id: number
           created_at: string
           id: string
           lead_id: string
@@ -63,6 +67,7 @@ export type Database = {
         }
         Insert: {
           canal?: string | null
+          cliente_id?: number
           created_at?: string
           id?: string
           lead_id: string
@@ -71,6 +76,7 @@ export type Database = {
         }
         Update: {
           canal?: string | null
+          cliente_id?: number
           created_at?: string
           id?: string
           lead_id?: string

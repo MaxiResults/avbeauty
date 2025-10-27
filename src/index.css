@@ -143,3 +143,21 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-hover);
   }
 }
+
+/* Darker scrollbar for chat */
+.chat-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--secondary)) transparent;
+}
+.chat-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.chat-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--secondary));
+  border-radius: 8px;
+  border: 2px solid transparent;
+}
+

@@ -113,6 +113,16 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
 
       const newLeadId = (data as any)?.leadId ?? (data as any)?.id ?? (data as any)?.ID;
       const newSessionId = await createSession(newLeadId);
+
+      if (!newSessionId) {
+        toast({
+          title: "Não foi possível iniciar a sessão",
+          description: "Tente novamente em instantes.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       setLeadId(String(newLeadId));
       setSessionId(String(newSessionId));
       setShowLeadForm(false);
@@ -191,7 +201,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
   };
 
   return (
-    <div className="fixed bottom-28 right-6 w-96 h-[600px] bg-background border border-border rounded-lg shadow-2xl flex flex-col z-50 animate-fade-in">
+    <div className="fixed bottom-28 right-6 w-[28.8rem] h-[720px] bg-background border border-border rounded-lg shadow-2xl flex flex-col z-50 animate-fade-in">
       <div className="bg-primary text-primary-foreground p-4 rounded-t-lg flex items-center justify-between">
         <div>
           <h3 className="font-semibold">Chat Online</h3>
@@ -250,7 +260,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
         </div>
       ) : (
         <>
-          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+          <ScrollArea className="flex-1 p-4 chat-scrollbar" ref={scrollRef}>
             <div className="space-y-4">
               {messages.map((msg) => (
                 <div

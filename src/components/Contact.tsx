@@ -237,7 +237,7 @@ const Contact = () => {
                   value={formData.observacoes}
                   onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
                   placeholder="Conte-nos mais sobre suas expectativas (opcional)"
-                  rows={4}
+                  rows={3}
                 />
               </div>
 

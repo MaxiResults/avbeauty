@@ -2,3 +2,12 @@ project_id = "prjylrbuvfgbirpgkeza"
 
 [functions.chat-assistant]
 verify_jwt = false
+
+[functions.create-lead]
+verify_jwt = false
+
+[functions.create-session]
+verify_jwt = false
+
+[functions.save-message]
+verify_jwt = false

@@ -5,6 +5,9 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+const LOVABLE_FUNCTIONS_BASE = 'https://prjylrbuvfgbirpgkeza.functions.supabase.co/functions/v1';
+const LOVABLE_ANON = 'VRoaXO9doXjPXoYYfcmPRXQJbP7K-TmZsB6IIVV4DS4';
+
 export interface LeadData {
   site_url: string;
   lead_nome: string;
@@ -15,55 +18,30 @@ export interface LeadData {
 }
 
 export async function submitLead(data: LeadData) {
+  // Normalize phone to only digits and ensure starts with 55
   const onlyDigits = (s: string) => s.replace(/\D/g, '');
-  const normalizePhoneToE164BR = (s: string) => {
-    let d = onlyDigits(s || '');
-    if (!d.startsWith('55')) d = '55' + d;
-    return d;
-  };
+  let telefone = onlyDigits(data.lead_telefone || '');
+  if (!telefone.startsWith('55')) telefone = '55' + telefone;
 
-  const telefone = normalizePhoneToE164BR(data.lead_telefone);
+  const resp = await fetch(`${LOVABLE_FUNCTIONS_BASE}/create-lead`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${LOVABLE_ANON}`,
+    },
+    body: JSON.stringify({
+      nome: data.lead_nome,
+      email: data.lead_email,
+      telefone,
+      canal_origem: 'site',
+      origem_url: data.site_url,
+      status: 'novo',
+      observacoes: data.lead_obs ?? null,
+      interesse: data.lead_interest,
+    }),
+  });
 
-  // Tentativa 1: inserção mínima em Leads_Cadastro
-  let resp = await supabase
-    .from('Leads_Cadastro')
-    .insert([
-      {
-        nome: data.lead_nome,
-        email: data.lead_email,
-        telefone,
-      }
-    ])
-    .select();
-
-  if (resp.error) {
-    // Tentativa 2: com campos adicionais comuns
-    resp = await supabase
-      .from('Leads_Cadastro')
-      .insert([
-        {
-          nome: data.lead_nome,
-          email: data.lead_email,
-          telefone,
-          canal_origem: 'site',
-          origem_url: data.site_url,
-          status: 'novo',
-          observacoes: data.lead_obs ?? null,
-          interesse: data.lead_interest,
-        }
-      ])
-      .select();
-  }
-
-  if (resp.error) {
-    // Fallback: usa a tabela Leads_Site com o payload original
-    const fallback = await supabase
-      .from('Leads_Site')
-      .insert([{ ...data, lead_telefone: telefone }])
-      .select();
-    if (fallback.error) throw fallback.error;
-    return fallback.data;
-  }
-
-  return resp.data;
+  const json = await resp.json();
+  if (!resp.ok) throw new Error(json?.error || 'Falha ao criar lead');
+  return json;
 }

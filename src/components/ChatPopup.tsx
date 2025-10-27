@@ -54,36 +54,29 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
   };
 
   const createSession = async (newLeadId: string | number) => {
-    const { data, error } = await supabase
-      .from('Conversas_sessao')
-      .insert({
-        lead_id: newLeadId,
-        canal: 'site',
-        origem: 'chat'
-      })
-      .select()
-      .maybeSingle();
+    const { data, error } = await supabase.functions.invoke('create-session', {
+      body: { leadId: newLeadId }
+    });
 
     if (error) {
       console.error('Erro ao criar sessão:', error);
-      throw error;
+      throw error as any;
     }
 
-    return (data as any)?.ID ?? (data as any)?.id;
+    return (data as any)?.sessionId ?? (data as any)?.id ?? (data as any)?.ID;
   };
 
   const saveMessage = async (remetente: 'lead' | 'IA', mensagem: string) => {
     if (!sessionId) return;
-
-    await supabase
-      .from('Conversas_Historico')
-      .insert({
-        sessao_id: sessionId,
+    await supabase.functions.invoke('save-message', {
+      body: {
+        sessionId,
         remetente,
-        tipo_mensagem: 'texto',
         mensagem,
+        tipo_mensagem: 'texto',
         origem: 'site'
-      });
+      }
+    });
   };
 
   const handleLeadSubmit = async (e: React.FormEvent) => {
@@ -101,58 +94,22 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
     try {
       const normalizedPhone = normalizePhoneToE164BR(leadData.telefone);
 
-      // Tentativa 1: inserção mínima (campos mais prováveis)
-      let resp1 = await supabase
-        .from('Leads_Cadastro')
-        .insert({
+      const { data, error } = await supabase.functions.invoke('create-lead', {
+        body: {
           nome: leadData.nome,
           email: leadData.email,
-          telefone: normalizedPhone
-        })
-        .select()
-        .maybeSingle();
+          telefone: normalizedPhone,
+          canal_origem: 'site',
+          origem_url: window.location.href,
+          status: 'novo',
+          observacoes: 'lead captado através do chat do site',
+          interesse: 'Chat online'
+        }
+      });
 
-      let lead = resp1.data as any;
-      let insertError = resp1.error;
+      if (error) throw error as any;
 
-      if (insertError || !lead) {
-        // Tentativa 2: com campos extras comuns
-        const resp2 = await supabase
-          .from('Leads_Cadastro')
-          .insert({
-            nome: leadData.nome,
-            email: leadData.email,
-            telefone: normalizedPhone,
-            canal_origem: 'site',
-            origem_url: window.location.href,
-            status: 'novo',
-            observacoes: 'lead captado através do chat do site',
-            interesse: 'Chat online'
-          })
-          .select()
-          .maybeSingle();
-        lead = resp2.data as any;
-        insertError = resp2.error;
-      }
-
-      if (insertError || !lead) {
-        // Tentativa 3: capitalização de colunas (mínimo)
-        const resp3 = await supabase
-          .from('Leads_Cadastro')
-          .insert({
-            Nome: leadData.nome,
-            Email: leadData.email,
-            Telefone: normalizedPhone
-          })
-          .select()
-          .maybeSingle();
-        lead = resp3.data as any;
-        insertError = resp3.error;
-      }
-
-      if (insertError || !lead) throw insertError ?? new Error('Falha ao criar lead');
-
-      const newLeadId = (lead as any).id ?? (lead as any).ID;
+      const newLeadId = (data as any)?.leadId ?? (data as any)?.id ?? (data as any)?.ID;
       const newSessionId = await createSession(newLeadId);
       setLeadId(String(newLeadId));
       setSessionId(String(newSessionId));

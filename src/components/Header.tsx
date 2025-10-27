@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Instagram, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 
@@ -68,8 +68,26 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden lg:block">
+          {/* Social + CTA */}
+          <div className="hidden lg:flex items-center gap-4">
+            <a
+              href="https://instagram.com/dra.nicoleguedess"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram da Dra. Nicole"
+              className="p-2 rounded-full hover:bg-primary/10 transition-smooth"
+            >
+              <Instagram className="w-5 h-5 text-foreground" />
+            </a>
+            <a
+              href="https://www.facebook.com/dranicoleguedes"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook da Dra. Nicole"
+              className="p-2 rounded-full hover:bg-primary/10 transition-smooth"
+            >
+              <Facebook className="w-5 h-5 text-foreground" />
+            </a>
             <Button
               onClick={() =>
                 window.open(

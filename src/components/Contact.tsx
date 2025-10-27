@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapPin, Phone, Mail, Instagram, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Instagram, Facebook, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -138,6 +138,12 @@ const Contact = () => {
       title: "Instagram",
       content: "@dra.nicoleguedess",
       link: "https://instagram.com/dra.nicoleguedess",
+    },
+    {
+      icon: Facebook,
+      title: "Facebook",
+      content: "facebook.com/dranicoleguedes",
+      link: "https://www.facebook.com/dranicoleguedes",
     },
     {
       icon: Clock,

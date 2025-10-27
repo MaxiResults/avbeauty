@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { supabase } from "@/lib/supabase";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -59,9 +59,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
       .insert({
         lead_id: newLeadId,
         canal: 'site',
-        origem: 'chat',
-        status_sessao: 'ativa',
-        cliente_id: 2
+        origem: 'chat'
       })
       .select()
       .maybeSingle();
@@ -84,9 +82,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
         remetente,
         tipo_mensagem: 'texto',
         mensagem,
-        message: mensagem,
-        origem: 'site',
-        cliente_id: 2
+        origem: 'site'
       });
   };
 
@@ -105,45 +101,53 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
     try {
       const normalizedPhone = normalizePhoneToE164BR(leadData.telefone);
 
-      // Primeira tentativa: colunas em minúsculas (mais comum)
-      let insertRes = await supabase
+      // Tentativa 1: inserção mínima (campos mais prováveis)
+      let resp1 = await supabase
         .from('Leads_Cadastro')
         .insert({
           nome: leadData.nome,
           email: leadData.email,
-          telefone: normalizedPhone,
-          canal_origem: 'site',
-          origem_url: window.location.href,
-          status: 'novo',
-          observacoes: 'lead captado através do chat do site',
-          interesse: 'Chat online',
-          cliente_id: 2
+          telefone: normalizedPhone
         })
         .select()
         .maybeSingle();
 
-      let lead = insertRes.data as any;
-      let insertError = insertRes.error;
+      let lead = resp1.data as any;
+      let insertError = resp1.error;
 
-      if (insertError) {
-        // Fallback: colunas com capitalização
-        const fallback = await supabase
+      if (insertError || !lead) {
+        // Tentativa 2: com campos extras comuns
+        const resp2 = await supabase
           .from('Leads_Cadastro')
           .insert({
-            Nome: leadData.nome,
-            Email: leadData.email,
-            Telefone: normalizedPhone,
+            nome: leadData.nome,
+            email: leadData.email,
+            telefone: normalizedPhone,
             canal_origem: 'site',
             origem_url: window.location.href,
             status: 'novo',
             observacoes: 'lead captado através do chat do site',
-            interesse: 'Chat online',
-            Cliente_ID: 2
+            interesse: 'Chat online'
           })
           .select()
           .maybeSingle();
-        lead = fallback.data as any;
-        insertError = fallback.error;
+        lead = resp2.data as any;
+        insertError = resp2.error;
+      }
+
+      if (insertError || !lead) {
+        // Tentativa 3: capitalização de colunas (mínimo)
+        const resp3 = await supabase
+          .from('Leads_Cadastro')
+          .insert({
+            Nome: leadData.nome,
+            Email: leadData.email,
+            Telefone: normalizedPhone
+          })
+          .select()
+          .maybeSingle();
+        lead = resp3.data as any;
+        insertError = resp3.error;
       }
 
       if (insertError || !lead) throw insertError ?? new Error('Falha ao criar lead');

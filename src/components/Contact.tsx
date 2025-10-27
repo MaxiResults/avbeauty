@@ -26,13 +26,11 @@ const Contact = () => {
   });
 
   const formatPhone = (value: string) => {
-    const numbers = value.replace(/\D/g, "");
-    if (numbers.length <= 11) {
-      return numbers
-        .replace(/^(\d{2})(\d)/g, "($1) $2")
-        .replace(/(\d{5})(\d)/, "$1-$2");
-    }
-    return value;
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 6) return `(${digits.slice(0,2)}) ${digits.slice(2)}`;
+    if (digits.length <= 10) return `(${digits.slice(0,2)}) ${digits.slice(2,6)}-${digits.slice(6)}`;
+    return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7,11)}`;
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +81,7 @@ const Contact = () => {
       const leadData: LeadData = {
         site_url: window.location.hostname || "nicoleguedesodonto.com.br",
         lead_nome: formData.nome.trim(),
-        lead_telefone: "55" + phoneNumbers,
+        lead_telefone: phoneNumbers, // normalizado para +55 no submitLead
         lead_email: formData.email.trim().toLowerCase(),
         lead_interest: formData.interesse,
         lead_obs: formData.observacoes.trim() || undefined,
@@ -182,9 +180,12 @@ const Contact = () => {
                 <Label htmlFor="telefone">Telefone *</Label>
                 <Input
                   id="telefone"
+                  inputMode="tel"
+                  autoComplete="tel"
                   value={formData.telefone}
                   onChange={handlePhoneChange}
                   placeholder="(11) 95190-3402"
+                  maxLength={16}
                   required
                 />
               </div>

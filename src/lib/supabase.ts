@@ -24,25 +24,38 @@ export async function submitLead(data: LeadData) {
 
   const telefone = normalizePhoneToE164BR(data.lead_telefone);
 
-  // Tenta inserir no Leads_Cadastro (estrutura mais comum)
-  let { data: result, error } = await supabase
+  // Tentativa 1: inserção mínima em Leads_Cadastro
+  let resp = await supabase
     .from('Leads_Cadastro')
     .insert([
       {
         nome: data.lead_nome,
         email: data.lead_email,
         telefone,
-        canal_origem: 'site',
-        origem_url: data.site_url,
-        status: 'novo',
-        observacoes: data.lead_obs ?? null,
-        interesse: data.lead_interest,
-        cliente_id: 2,
       }
     ])
     .select();
 
-  if (error) {
+  if (resp.error) {
+    // Tentativa 2: com campos adicionais comuns
+    resp = await supabase
+      .from('Leads_Cadastro')
+      .insert([
+        {
+          nome: data.lead_nome,
+          email: data.lead_email,
+          telefone,
+          canal_origem: 'site',
+          origem_url: data.site_url,
+          status: 'novo',
+          observacoes: data.lead_obs ?? null,
+          interesse: data.lead_interest,
+        }
+      ])
+      .select();
+  }
+
+  if (resp.error) {
     // Fallback: usa a tabela Leads_Site com o payload original
     const fallback = await supabase
       .from('Leads_Site')
@@ -52,5 +65,5 @@ export async function submitLead(data: LeadData) {
     return fallback.data;
   }
 
-  return result;
+  return resp.data;
 }

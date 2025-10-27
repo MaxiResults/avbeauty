@@ -87,6 +87,7 @@ export type Database = {
       Leads_Cadastro: {
         Row: {
           canal_origem: string | null
+          cliente_id: number
           created_at: string
           email: string
           id: string
@@ -99,6 +100,7 @@ export type Database = {
         }
         Insert: {
           canal_origem?: string | null
+          cliente_id?: number
           created_at?: string
           email: string
           id?: string
@@ -111,6 +113,7 @@ export type Database = {
         }
         Update: {
           canal_origem?: string | null
+          cliente_id?: number
           created_at?: string
           email?: string
           id?: string

@@ -59,6 +59,7 @@ export type Database = {
           id: string
           lead_id: string
           origem: string | null
+          thread_id: string | null
         }
         Insert: {
           canal?: string | null
@@ -66,6 +67,7 @@ export type Database = {
           id?: string
           lead_id: string
           origem?: string | null
+          thread_id?: string | null
         }
         Update: {
           canal?: string | null
@@ -73,6 +75,7 @@ export type Database = {
           id?: string
           lead_id?: string
           origem?: string | null
+          thread_id?: string | null
         }
         Relationships: [
           {

@@ -34,6 +34,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [leadId, setLeadId] = useState<string | null>(null);
+  const [threadId, setThreadId] = useState<string | null>(null);
   const [showLeadForm, setShowLeadForm] = useState(true);
   const [leadData, setLeadData] = useState({
     nome: "",
@@ -169,6 +170,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
 
     setMessages(prev => [...prev, userMessage]);
     await saveMessage('lead', inputValue);
+    const messageText = inputValue;
     setInputValue("");
     setIsLoading(true);
 
@@ -181,15 +183,24 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
-          message: inputValue,
+          message: messageText,
           sessionId: sessionId,
           leadName: leadData.nome,
+          leadEmail: leadData.email,
+          leadPhone: leadData.telefone,
+          threadId: threadId,
         }),
       });
 
       const data = await response.json();
 
       if (data.reply) {
+        // Armazenar threadId se for a primeira resposta
+        if (data.threadId && !threadId) {
+          setThreadId(data.threadId);
+          console.log("Thread ID armazenado:", data.threadId);
+        }
+
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
           remetente: 'IA',

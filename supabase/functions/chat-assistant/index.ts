@@ -10,11 +10,13 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { message, sessionId, leadName } = await req.json();
-    console.log("Recebida mensagem:", message, "Sessão:", sessionId);
+    const { message, sessionId, leadName, leadEmail, leadPhone, threadId: existingThreadId } = await req.json();
+    console.log("Recebida mensagem:", message, "Sessão:", sessionId, "Thread existente:", existingThreadId);
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     const OPENAI_ASSISTANT_ID = Deno.env.get("OPENAI_ASSISTANT_ID");
+    const SUPABASE_URL = Deno.env.get("EXT_SUPABASE_URL") ?? Deno.env.get("SUPABASE_URL");
+    const SERVICE_KEY = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
     if (!OPENAI_API_KEY) {
       throw new Error("OPENAI_API_KEY não configurado");
@@ -26,25 +28,49 @@ serve(async (req) => {
 
     console.log("Usando Assistant ID:", OPENAI_ASSISTANT_ID);
 
-    // Criar thread para a conversa
-    const threadResponse = await fetch("https://api.openai.com/v1/threads", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-        "OpenAI-Beta": "assistants=v2",
-      },
-    });
+    let threadId = existingThreadId;
 
-    if (!threadResponse.ok) {
-      const errorText = await threadResponse.text();
-      console.error("Erro ao criar thread:", threadResponse.status, errorText);
-      throw new Error(`Falha ao criar thread: ${threadResponse.status}`);
+    // Criar thread apenas se não existir
+    if (!threadId) {
+      const threadResponse = await fetch("https://api.openai.com/v1/threads", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+          "OpenAI-Beta": "assistants=v2",
+        },
+        body: JSON.stringify({
+          metadata: {
+            leadName: leadName || "",
+            leadEmail: leadEmail || "",
+            leadPhone: leadPhone || ""
+          }
+        })
+      });
+
+      if (!threadResponse.ok) {
+        const errorText = await threadResponse.text();
+        console.error("Erro ao criar thread:", threadResponse.status, errorText);
+        throw new Error(`Falha ao criar thread: ${threadResponse.status}`);
+      }
+
+      const thread = await threadResponse.json();
+      threadId = thread.id;
+      console.log("Thread criada:", threadId);
+
+      // Salvar thread_id na sessão
+      if (SUPABASE_URL && SERVICE_KEY) {
+        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+        const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
+        await supabase
+          .from("Conversas_sessao")
+          .update({ thread_id: threadId })
+          .eq("id", sessionId);
+        console.log("Thread ID salvo na sessão");
+      }
+    } else {
+      console.log("Reutilizando thread existente:", threadId);
     }
-
-    const thread = await threadResponse.json();
-    const threadId = thread.id;
-    console.log("Thread criada:", threadId);
 
     // Adicionar mensagem do usuário ao thread
     const messageResponse = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
@@ -147,7 +173,7 @@ serve(async (req) => {
     console.log("Resposta do assistant:", reply);
 
     return new Response(
-      JSON.stringify({ reply }),
+      JSON.stringify({ reply, threadId }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 

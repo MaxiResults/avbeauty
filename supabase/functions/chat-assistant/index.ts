@@ -2,186 +2,165 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { message, sessionId, leadName } = await req.json();
-    console.log('Recebida mensagem:', message, 'Sessão:', sessionId);
+    console.log("Recebida mensagem:", message, "Sessão:", sessionId);
 
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const OPENAI_ASSISTANT_ID = Deno.env.get("OPENAI_ASSISTANT_ID");
+
     if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY não configurada');
+      throw new Error("OPENAI_API_KEY não configurado");
     }
 
-    // Criar ou recuperar o assistant
-    let assistantId = Deno.env.get('OPENAI_ASSISTANT_ID');
-    
-    if (!assistantId) {
-      console.log('Criando novo assistant...');
-      const createAssistantResponse = await fetch('https://api.openai.com/v1/assistants', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-          'OpenAI-Beta': 'assistants=v2'
-        },
-        body: JSON.stringify({
-          name: "Assistente Dra. Nicole",
-          instructions: `Você é a assistente virtual da Dra. Nicole, especialista em harmonização facial. 
-          
-Seu papel é:
-- Ser cordial, profissional e empática
-- Responder perguntas sobre procedimentos estéticos (preenchimento, botox, skinbooster, fios de PDO, etc)
-- Explicar benefícios e cuidados dos tratamentos
-- Incentivar o agendamento de consultas presenciais para avaliação personalizada
-- Coletar informações sobre o interesse do cliente
-- Nunca dar diagnósticos médicos ou prescrever tratamentos sem avaliação presencial
-
-Informações importantes:
-- Localização: São Paulo
-- Procedimentos principais: Harmonização facial, preenchimento labial, aplicação de botox, skinbooster, bioestimuladores
-- Consulta de avaliação é essencial para plano personalizado
-- WhatsApp para agendamento: (11) 95190-3402
-
-Sempre mantenha o tom amigável e profissional, e lembre que cada caso é único e requer avaliação presencial.`,
-          model: "gpt-4o-mini",
-          tools: []
-        })
-      });
-
-      const assistant = await createAssistantResponse.json();
-      assistantId = assistant.id;
-      console.log('Assistant criado:', assistantId);
+    if (!OPENAI_ASSISTANT_ID) {
+      throw new Error("OPENAI_ASSISTANT_ID não configurado. Por favor configure o ID do seu Assistant da OpenAI");
     }
 
-    // Criar uma thread para esta conversa
-    const threadResponse = await fetch('https://api.openai.com/v1/threads', {
-      method: 'POST',
+    console.log("Usando Assistant ID:", OPENAI_ASSISTANT_ID);
+
+    // Criar thread para a conversa
+    const threadResponse = await fetch("https://api.openai.com/v1/threads", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v2'
-      }
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+      },
     });
 
-    const thread = await threadResponse.json();
-    console.log('Thread criada:', thread.id);
+    if (!threadResponse.ok) {
+      const errorText = await threadResponse.text();
+      console.error("Erro ao criar thread:", threadResponse.status, errorText);
+      throw new Error(`Falha ao criar thread: ${threadResponse.status}`);
+    }
 
-    // Adicionar a mensagem do usuário à thread
-    await fetch(`https://api.openai.com/v1/threads/${thread.id}/messages`, {
-      method: 'POST',
+    const thread = await threadResponse.json();
+    const threadId = thread.id;
+    console.log("Thread criada:", threadId);
+
+    // Adicionar mensagem do usuário ao thread
+    const messageResponse = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v2'
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
       },
       body: JSON.stringify({
         role: "user",
-        content: message
-      })
+        content: message,
+      }),
     });
+
+    if (!messageResponse.ok) {
+      const errorText = await messageResponse.text();
+      console.error("Erro ao adicionar mensagem:", messageResponse.status, errorText);
+      throw new Error(`Falha ao adicionar mensagem: ${messageResponse.status}`);
+    }
+
+    console.log("Mensagem adicionada ao thread");
 
     // Executar o assistant
-    const runResponse = await fetch(`https://api.openai.com/v1/threads/${thread.id}/runs`, {
-      method: 'POST',
+    const runResponse = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs`, {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v2'
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
       },
       body: JSON.stringify({
-        assistant_id: assistantId
-      })
+        assistant_id: OPENAI_ASSISTANT_ID,
+      }),
     });
 
-    const run = await runResponse.json();
-    console.log('Run iniciada:', run.id);
+    if (!runResponse.ok) {
+      const errorText = await runResponse.text();
+      console.error("Erro ao iniciar run:", runResponse.status, errorText);
+      throw new Error(`Falha ao iniciar run: ${runResponse.status}`);
+    }
 
-    // Aguardar conclusão da run
-    let runStatus = run.status;
+    const run = await runResponse.json();
+    const runId = run.id;
+    console.log("Run iniciada:", runId);
+
+    // Aguardar conclusão do run (com timeout)
+    let runStatus = "in_progress";
     let attempts = 0;
     const maxAttempts = 30;
 
-    while (runStatus !== 'completed' && attempts < maxAttempts) {
+    while (runStatus === "in_progress" || runStatus === "queued") {
+      if (attempts >= maxAttempts) {
+        throw new Error("Timeout ao aguardar resposta do assistant");
+      }
+
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const statusResponse = await fetch(
-        `https://api.openai.com/v1/threads/${thread.id}/runs/${run.id}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
-            'OpenAI-Beta': 'assistants=v2'
-          }
-        }
-      );
+      attempts++;
+
+      const statusResponse = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "OpenAI-Beta": "assistants=v2",
+        },
+      });
+
+      if (!statusResponse.ok) {
+        throw new Error("Falha ao verificar status do run");
+      }
 
       const statusData = await statusResponse.json();
       runStatus = statusData.status;
-      attempts++;
-      
-      console.log('Status da run:', runStatus, 'Tentativa:', attempts);
+      console.log("Status da run:", runStatus, "Tentativa:", attempts);
 
-      if (runStatus === 'failed' || runStatus === 'cancelled' || runStatus === 'expired') {
+      if (runStatus === "failed" || runStatus === "cancelled" || runStatus === "expired") {
         throw new Error(`Run falhou com status: ${runStatus}`);
       }
     }
 
-    if (runStatus !== 'completed') {
-      throw new Error('Timeout aguardando resposta do assistant');
-    }
+    // Obter mensagens do thread
+    const messagesResponse = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "OpenAI-Beta": "assistants=v2",
+      },
+    });
 
-    // Recuperar as mensagens
-    const messagesResponse = await fetch(
-      `https://api.openai.com/v1/threads/${thread.id}/messages`,
-      {
-        headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          'OpenAI-Beta': 'assistants=v2'
-        }
-      }
-    );
+    if (!messagesResponse.ok) {
+      throw new Error("Falha ao obter mensagens");
+    }
 
     const messagesData = await messagesResponse.json();
-    const assistantMessage = messagesData.data.find((msg: any) => msg.role === 'assistant');
+    const assistantMessages = messagesData.data.filter((msg: any) => msg.role === "assistant");
     
-    if (!assistantMessage) {
-      throw new Error('Nenhuma resposta do assistant encontrada');
+    if (assistantMessages.length === 0) {
+      throw new Error("Nenhuma resposta do assistant");
     }
 
-    const reply = assistantMessage.content[0].text.value;
-    console.log('Resposta do assistant:', reply);
+    const reply = assistantMessages[0].content[0].text.value;
+    console.log("Resposta do assistant:", reply);
 
     return new Response(
       JSON.stringify({ reply }),
-      { 
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        } 
-      }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
-  } catch (error) {
-    console.error('Erro no chat-assistant:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+  } catch (error: any) {
+    console.error("Erro no chat-assistant:", error);
     return new Response(
       JSON.stringify({ 
-        error: errorMessage,
-        reply: 'Desculpe, ocorreu um erro. Por favor, tente novamente ou entre em contato pelo WhatsApp.' 
+        error: error.message || "Erro ao processar mensagem",
+        details: error.toString() 
       }),
       { 
-        status: 500,
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        } 
+        status: 500, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
       }
     );
   }

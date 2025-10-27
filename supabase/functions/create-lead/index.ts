@@ -24,7 +24,7 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
-    // Insert into Leads_Cadastro for chat leads (lowercase columns assumed)
+    // Insert into Leads_Cadastro for chat leads with Cliente_ID and Created_AT
     const { data, error } = await supabase
       .from("Leads_Cadastro")
       .insert({ 
@@ -35,7 +35,9 @@ serve(async (req) => {
         origem_url, 
         status, 
         observacoes, 
-        interesse 
+        interesse,
+        cliente_id: 2,
+        created_at: new Date().toISOString()
       })
       .select()
       .maybeSingle();

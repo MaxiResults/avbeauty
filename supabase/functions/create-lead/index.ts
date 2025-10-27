@@ -40,6 +40,7 @@ serve(async (req) => {
         status, 
         observacoes, 
         interesse,
+        Cliente_ID: 2,
         created_at: saoPauloTimestamp
       })
       .select()

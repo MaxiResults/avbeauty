@@ -25,12 +25,12 @@ serve(async (req) => {
     const saoPauloTimestamp = formatInTimeZone(new Date(), 'America/Sao_Paulo', "yyyy-MM-dd'T'HH:mm:ssXXX");
 
     const { data, error } = await supabase
-      .from("Conversas_sessao")
+      .from("Conversas_Sessoes")
       .insert({ 
         lead_id: leadId, 
         canal, 
         origem,
-        cliente_id: 2,
+        Cliente_ID: 2,
         created_at: saoPauloTimestamp 
       })
       .select()

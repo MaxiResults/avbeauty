@@ -42,13 +42,29 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
     telefone: ""
   });
   const scrollRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  // Hidrata contexto do chat do armazenamento local
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
+    try {
+      const persistedThread = localStorage.getItem('chat_thread_id');
+      const persistedSession = localStorage.getItem('chat_session_id');
+      const persistedLead = localStorage.getItem('chat_lead_data');
+      if (persistedThread) setThreadId(persistedThread);
+      if (persistedSession) setSessionId(persistedSession);
+      if (persistedLead) {
+        const parsed = JSON.parse(persistedLead);
+        if (parsed?.nome) setShowLeadForm(false);
+        setLeadData((prev) => ({ ...prev, ...parsed }));
+      }
+    } catch {}
+  }, []);
+
+  // Rolagem automática até o fim
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages, isLoading, showLeadForm]);
 
   // Helpers for phone formatting and normalization (BR +55)
   const onlyDigits = (str: string) => str.replace(/\D/g, '');
@@ -138,6 +154,10 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
       setLeadId(String(newLeadId));
       setSessionId(String(newSessionId));
       setShowLeadForm(false);
+      try {
+        localStorage.setItem('chat_session_id', String(newSessionId));
+        localStorage.setItem('chat_lead_data', JSON.stringify(leadData));
+      } catch {}
 
       const welcomeMsg: Message = {
         id: Date.now().toString(),
@@ -198,6 +218,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
         // Armazenar threadId se for a primeira resposta
         if (data.threadId && !threadId) {
           setThreadId(data.threadId);
+          try { localStorage.setItem('chat_thread_id', data.threadId); } catch {}
           console.log("Thread ID armazenado:", data.threadId);
         }
 
@@ -328,6 +349,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
                   </div>
                 </div>
               )}
+              <div ref={bottomRef} />
             </div>
           </ScrollArea>
 

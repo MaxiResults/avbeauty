@@ -68,6 +68,37 @@ serve(async (req) => {
           .eq("id", sessionId);
         console.log("Thread ID salvo na sessão");
       }
+
+      // Adicionar contexto do lead ao thread (para que o assistant saiba nome/email/telefone)
+      try {
+        const contextParts: string[] = [];
+        if (leadName) contextParts.push(`Nome: ${leadName}`);
+        if (leadEmail) contextParts.push(`Email: ${leadEmail}`);
+        if (leadPhone) contextParts.push(`Telefone: ${leadPhone}`);
+        if (contextParts.length > 0) {
+          const contextMessage = `Contexto do lead: ${contextParts.join(" | ")}. Use esses dados durante a conversa (não peça novamente, a menos que necessário).`;
+          const ctxResp = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${OPENAI_API_KEY}`,
+              "Content-Type": "application/json",
+              "OpenAI-Beta": "assistants=v2",
+            },
+            body: JSON.stringify({
+              role: "user",
+              content: contextMessage,
+            }),
+          });
+          if (!ctxResp.ok) {
+            const t = await ctxResp.text();
+            console.error("Falha ao adicionar mensagem de contexto:", ctxResp.status, t);
+          } else {
+            console.log("Mensagem de contexto adicionada ao thread");
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao adicionar contexto do lead:", e);
+      }
     } else {
       console.log("Reutilizando thread existente:", threadId);
     }

@@ -7,17 +7,27 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import foto1Antes from "@/assets/foto-1-antes.png";
+import foto1Depois from "@/assets/foto-1-depois.png";
+import foto2Antes from "@/assets/foto-2-antes.png";
+import foto2Depois from "@/assets/foto-2-depois.png";
 
 const Gallery = () => {
   const [selectedCase, setSelectedCase] = useState<number | null>(null);
 
   const transformations = [
-    { title: "Lentes Naturais", id: 1 },
-    { title: "Harmonização Facial", id: 2 },
-    { title: "Clareamento Dental", id: 3 },
-    { title: "Preenchimento Labial", id: 4 },
-    { title: "Lentes + Harmonização", id: 5 },
-    { title: "Bioestimuladores", id: 6 },
+    { 
+      title: "Transformação Dental", 
+      id: 1,
+      beforeImage: foto1Antes,
+      afterImage: foto1Depois
+    },
+    { 
+      title: "Harmonização Completa", 
+      id: 2,
+      beforeImage: foto2Antes,
+      afterImage: foto2Depois
+    },
   ];
 
   return (
@@ -51,14 +61,16 @@ const Gallery = () => {
                     <div className="grid grid-cols-2 gap-2 md:gap-4">
                       {/* Antes */}
                       <div className="group relative overflow-hidden rounded-lg md:rounded-xl shadow-soft hover:shadow-hover transition-smooth">
-                        <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 via-rose-light/20 to-accent/10 flex flex-col items-center justify-center p-4 md:p-6">
-                          <div className="w-12 h-12 md:w-16 md:h-16 bg-card/80 rounded-full flex items-center justify-center mb-2 md:mb-3">
-                            <span className="text-2xl md:text-3xl">📸</span>
-                          </div>
-                          <p className="font-display font-semibold text-foreground text-sm md:text-base text-center mb-1">
+                        <img 
+                          src={item.beforeImage} 
+                          alt={`${item.title} - Antes`}
+                          className="w-full h-full object-cover aspect-[3/4]"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 md:p-4">
+                          <p className="font-display font-semibold text-white text-sm md:text-base text-center mb-1">
                             {item.title}
                           </p>
-                          <p className="text-xs md:text-sm text-muted-foreground">Antes</p>
+                          <p className="text-xs md:text-sm text-white/90 text-center">Antes</p>
                         </div>
                         <div className="absolute inset-0 bg-primary/90 opacity-0 group-hover:opacity-100 transition-smooth flex items-center justify-center">
                           <p className="text-primary-foreground font-semibold text-xs md:text-sm px-4 text-center">
@@ -69,14 +81,16 @@ const Gallery = () => {
 
                       {/* Depois */}
                       <div className="group relative overflow-hidden rounded-lg md:rounded-xl shadow-soft hover:shadow-hover transition-smooth">
-                        <div className="aspect-[3/4] bg-gradient-to-br from-accent/10 via-terracota/20 to-rose-light/30 flex flex-col items-center justify-center p-4 md:p-6">
-                          <div className="w-12 h-12 md:w-16 md:h-16 bg-card/80 rounded-full flex items-center justify-center mb-2 md:mb-3">
-                            <span className="text-2xl md:text-3xl">✨</span>
-                          </div>
-                          <p className="font-display font-semibold text-foreground text-sm md:text-base text-center mb-1">
+                        <img 
+                          src={item.afterImage} 
+                          alt={`${item.title} - Depois`}
+                          className="w-full h-full object-cover aspect-[3/4]"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 md:p-4">
+                          <p className="font-display font-semibold text-white text-sm md:text-base text-center mb-1">
                             {item.title}
                           </p>
-                          <p className="text-xs md:text-sm text-muted-foreground">Depois</p>
+                          <p className="text-xs md:text-sm text-white/90 text-center">Depois</p>
                         </div>
                         <div className="absolute inset-0 bg-primary/90 opacity-0 group-hover:opacity-100 transition-smooth flex items-center justify-center">
                           <p className="text-primary-foreground font-semibold text-xs md:text-sm px-4 text-center">
@@ -128,28 +142,32 @@ const Gallery = () => {
             
             <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {/* Antes - Lightbox */}
-              <div className="rounded-lg md:rounded-xl overflow-hidden">
-                <div className="aspect-[3/4] bg-gradient-to-br from-primary/20 via-rose-light/30 to-accent/20 flex flex-col items-center justify-center p-6 md:p-8">
-                  <div className="w-20 h-20 md:w-24 md:h-24 bg-card/80 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-4xl md:text-5xl">📸</span>
-                  </div>
+              <div className="rounded-lg md:rounded-xl overflow-hidden relative">
+                <img 
+                  src={transformations[selectedCase].beforeImage} 
+                  alt={`${transformations[selectedCase].title} - Antes`}
+                  className="w-full h-full object-cover aspect-[3/4]"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8">
                   <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-2 text-center">
                     {transformations[selectedCase].title}
                   </h3>
-                  <p className="text-white/80 text-sm md:text-base">Antes</p>
+                  <p className="text-white/90 text-sm md:text-base text-center">Antes</p>
                 </div>
               </div>
 
               {/* Depois - Lightbox */}
-              <div className="rounded-lg md:rounded-xl overflow-hidden">
-                <div className="aspect-[3/4] bg-gradient-to-br from-accent/20 via-terracota/30 to-rose-light/40 flex flex-col items-center justify-center p-6 md:p-8">
-                  <div className="w-20 h-20 md:w-24 md:h-24 bg-card/80 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-4xl md:text-5xl">✨</span>
-                  </div>
+              <div className="rounded-lg md:rounded-xl overflow-hidden relative">
+                <img 
+                  src={transformations[selectedCase].afterImage} 
+                  alt={`${transformations[selectedCase].title} - Depois`}
+                  className="w-full h-full object-cover aspect-[3/4]"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8">
                   <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-2 text-center">
                     {transformations[selectedCase].title}
                   </h3>
-                  <p className="text-white/80 text-sm md:text-base">Depois</p>
+                  <p className="text-white/90 text-sm md:text-base text-center">Depois</p>
                 </div>
               </div>
             </div>

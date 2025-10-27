@@ -56,11 +56,24 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
       if (persistedSession) setSessionId(persistedSession);
       if (persistedLead) {
         const parsed = JSON.parse(persistedLead);
-        if (parsed?.nome) setShowLeadForm(false);
-        setLeadData((prev) => ({ ...prev, ...parsed }));
+        // Sempre mostra o formulário se não tiver nome
+        if (parsed?.nome && persistedSession) {
+          setShowLeadForm(false);
+          setLeadData((prev) => ({ ...prev, ...parsed }));
+        }
       }
     } catch {}
   }, []);
+
+  // Limpa o localStorage quando o chat for encerrado
+  const handleClose = () => {
+    try {
+      localStorage.removeItem('chat_thread_id');
+      localStorage.removeItem('chat_session_id');
+      localStorage.removeItem('chat_lead_data');
+    } catch {}
+    onClose();
+  };
 
   // Rolagem automática até o fim
   useEffect(() => {
@@ -270,7 +283,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction onClick={onClose}>Sim, encerrar</AlertDialogAction>
+              <AlertDialogAction onClick={handleClose}>Sim, encerrar</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

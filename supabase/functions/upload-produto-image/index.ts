@@ -17,12 +17,12 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
-    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const supabaseUrl = Deno.env.get("EXT_SUPABASE_URL");
+    const serviceKey = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY");
 
-    if (!serviceKey) {
+    if (!supabaseUrl || !serviceKey) {
       return new Response(
-        JSON.stringify({ error: "Backend misconfigured: missing SUPABASE_SERVICE_ROLE_KEY" }),
+        JSON.stringify({ error: "Backend misconfigured: missing EXT_SUPABASE_URL or EXT_SUPABASE_SERVICE_ROLE_KEY" }),
         { status: 500, headers: corsHeaders }
       );
     }

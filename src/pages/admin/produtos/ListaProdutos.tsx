@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ProdutoCard } from '@/components/produtos/ProdutoCard';
 import { PreviewDialog } from '@/components/produtos/PreviewDialog';
 import { DeleteDialog } from '@/components/produtos/DeleteDialog';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Produto, ProdutoDB, dbToProduto } from '@/types/produto';
 import { toast } from 'sonner';
 import { Plus, Search, Package } from 'lucide-react';

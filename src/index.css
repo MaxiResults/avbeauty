@@ -48,6 +48,11 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 42 30% 94%;
 
+    /* Admin specific colors */
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --danger: 0 84% 60%;
+
     --border: 42 15% 85%;
     --input: 42 15% 85%;
     --ring: 100 15% 25%;

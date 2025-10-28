@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      campanhas: {
+        Row: {
+          ativo: boolean
+          campanha_status: string
+          campanha_tipo: string | null
+          canal_principal: string | null
+          cliente_id: number
+          created_at: string
+          criado_por: string | null
+          data_fim: string
+          data_inicio: string
+          descricao: string | null
+          empresa_id: number
+          id: number
+          investimento_total: number | null
+          nome_campanha: string
+          plataforma_ads: string | null
+          publico_alvo: string | null
+          slug: string
+          updated_at: string
+          url_principal: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          campanha_status?: string
+          campanha_tipo?: string | null
+          canal_principal?: string | null
+          cliente_id?: number
+          created_at?: string
+          criado_por?: string | null
+          data_fim: string
+          data_inicio: string
+          descricao?: string | null
+          empresa_id?: number
+          id?: number
+          investimento_total?: number | null
+          nome_campanha: string
+          plataforma_ads?: string | null
+          publico_alvo?: string | null
+          slug: string
+          updated_at?: string
+          url_principal: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          campanha_status?: string
+          campanha_tipo?: string | null
+          canal_principal?: string | null
+          cliente_id?: number
+          created_at?: string
+          criado_por?: string | null
+          data_fim?: string
+          data_inicio?: string
+          descricao?: string | null
+          empresa_id?: number
+          id?: number
+          investimento_total?: number | null
+          nome_campanha?: string
+          plataforma_ads?: string | null
+          publico_alvo?: string | null
+          slug?: string
+          updated_at?: string
+          url_principal?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: []
+      }
       Conversas_Historico: {
         Row: {
           cliente_id: number

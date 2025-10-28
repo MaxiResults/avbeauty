@@ -18,9 +18,6 @@ import { uploadProdutoImage, deleteProdutoImage } from '@/lib/uploadHelpers';
 import { Produto, ProdutoDB, dbToProduto, ProdutoFormData } from '@/types/produto';
 import { toast } from 'sonner';
 import { ArrowLeft, FileText, DollarSign, Image as ImageIcon, Search } from 'lucide-react';
-import { toZonedTime } from 'date-fns-tz';
-
-const TIMEZONE = 'America/Sao_Paulo';
 
 export default function EditarProduto() {
   const navigate = useNavigate();
@@ -51,7 +48,6 @@ export default function EditarProduto() {
     Imagem_Principal: null,
     Imagem_Galeria: [],
   });
-  const [ativo, setAtivo] = useState(true);
   const [imagemPrincipalOriginal, setImagemPrincipalOriginal] = useState<string | null>(null);
   const [galeriaOriginal, setGaleriaOriginal] = useState<string[]>([]);
 
@@ -181,26 +177,23 @@ export default function EditarProduto() {
         .from('produtos')
         .update({
           nome: formData.Nome,
+          slug: formData.Slug,
           descricao_curta: formData.Descricao_Curta,
           descricao_completa: formData.Descricao_Completa || null,
           categoria: formData.Categoria || null,
-          grupo: formData.Grupo || null,
-          codigo_externo: formData.Codigo_Externo || null,
           preco_padrao: formData.Preco_Padrao,
           preco_promocional: formData.Preco_Promocional || null,
-          preco_custo: formData.Preco_Custo || null,
-          tipo_estoque: formData.Tipo_Estoque,
-          controla_estoque: formData.Controla_Estoque,
+          desconto_percentual: formData.Preco_Promocional 
+            ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
+            : null,
+          controlar_estoque: formData.Controla_Estoque === 'S',
+          vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
           ordem_exibicao: formData.Ordem_exibicao,
-          principal_destaque: formData.Principal_Destaque,
           imagem_principal: imagemPrincipalUrl,
-          imagem_galeria: galeriaUrls.length > 0 ? galeriaUrls : null,
-          status: formData.Status,
-          ativo: ativo,
+          galeria_imagens: galeriaUrls.length > 0 ? galeriaUrls : null,
+          status: formData.Status === 'Disponível' ? 'ativo' : 'indisponivel',
           meta_title: formData.Meta_Title || formData.Nome,
           meta_description: formData.Meta_Description || formData.Descricao_Curta,
-          observacoes: formData.Observacoes || null,
-          updated_at: toZonedTime(new Date(), TIMEZONE).toISOString(),
         })
         .eq('id', parseInt(id))
         .eq('cliente_id', 2)
@@ -262,10 +255,6 @@ export default function EditarProduto() {
 
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold">Editar Produto</h2>
-              <div className="flex items-center gap-2">
-                <Label>Produto Ativo</Label>
-                <Switch checked={ativo} onCheckedChange={setAtivo} />
-              </div>
             </div>
 
             <Tabs defaultValue="basico" className="w-full">

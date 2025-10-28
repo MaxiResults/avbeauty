@@ -156,8 +156,12 @@ export default function NovoProduto() {
         categoria: formData.Categoria || null,
         preco_padrao: formData.Preco_Padrao,
         preco_promocional: formData.Preco_Promocional || null,
+        desconto_percentual: formData.Preco_Promocional 
+          ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
+          : null,
         controlar_estoque: formData.Controla_Estoque === 'S',
-        vagas_disponiveis: formData.Vagas_Disponiveis || null,
+        vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
+        vagas_vendidas: 0,
         ordem_exibicao: formData.Ordem_exibicao,
         imagem_principal: imagemPrincipalUrl,
         galeria_imagens: galeriaUrls.length > 0 ? galeriaUrls : null,

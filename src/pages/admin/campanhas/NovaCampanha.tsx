@@ -125,7 +125,6 @@ export default function NovaCampanha() {
         investimento_total: formData.Investimento_total,
         url_principal: formData.url_principal,
         publico_alvo: formData.publico_alvo || null,
-        criado_por: user?.Email || 'Sistema',
         ativo: true,
       }]).select();
 

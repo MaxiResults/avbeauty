@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ImageUpload } from '@/components/produtos/ImageUpload';
 import { GalleryUpload } from '@/components/produtos/GalleryUpload';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { uploadProdutoImage, deleteProdutoImage } from '@/lib/uploadHelpers';
 import { Produto, ProdutoDB, dbToProduto, ProdutoFormData } from '@/types/produto';
 import { toast } from 'sonner';
@@ -74,32 +74,31 @@ export default function EditarProduto() {
 
       const produtoData = dbToProduto(data as ProdutoDB);
       setProduto(produtoData);
-      setAtivo(produtoData.Ativo);
-      setImagemPrincipalOriginal(produtoData.Imagem_Principal || null);
-      setGaleriaOriginal(produtoData.Imagem_Galeria || []);
+      setImagemPrincipalOriginal(produtoData.imagem_principal || null);
+      setGaleriaOriginal(produtoData.galeria_imagens || []);
 
       setFormData({
-        Nome: produtoData.Nome,
-        Slug: produtoData.Slug,
-        Descricao_Curta: produtoData.Descricao_Curta,
-        Descricao_Completa: produtoData.Descricao_Completa || '',
-        Categoria: produtoData.Categoria || '',
-        Grupo: produtoData.Grupo || '',
-        Codigo_Externo: produtoData.Codigo_Externo || '',
-        Preco_Padrao: produtoData.Preco_Padrao,
-        Preco_Promocional: produtoData.Preco_Promocional || 0,
-        Preco_Custo: produtoData.Preco_Custo || 0,
-        Tipo_Estoque: produtoData.Tipo_Estoque,
-        Controla_Estoque: produtoData.Controla_Estoque,
-        Vagas_Disponiveis: 0,
-        Status: produtoData.Status,
-        Principal_Destaque: produtoData.Principal_Destaque,
-        Ordem_exibicao: produtoData.Ordem_exibicao,
-        Meta_Title: produtoData.Meta_Title || '',
-        Meta_Description: produtoData.Meta_Description || '',
-        Observacoes: produtoData.Observacoes || '',
-        Imagem_Principal: produtoData.Imagem_Principal || null,
-        Imagem_Galeria: produtoData.Imagem_Galeria || [],
+        Nome: produtoData.nome,
+        Slug: produtoData.slug,
+        Descricao_Curta: produtoData.descricao_curta || '',
+        Descricao_Completa: produtoData.descricao_completa || '',
+        Categoria: produtoData.categoria || '',
+        Grupo: '',
+        Codigo_Externo: '',
+        Preco_Padrao: produtoData.preco_padrao,
+        Preco_Promocional: produtoData.preco_promocional || 0,
+        Preco_Custo: 0,
+        Tipo_Estoque: 'Ilimitado',
+        Controla_Estoque: produtoData.controlar_estoque ? 'S' : 'N',
+        Vagas_Disponiveis: produtoData.vagas_disponiveis || 0,
+        Status: produtoData.status === 'ativo' ? 'Disponível' : 'Indisponível',
+        Principal_Destaque: false,
+        Ordem_exibicao: produtoData.ordem_exibicao || 0,
+        Meta_Title: produtoData.meta_title || '',
+        Meta_Description: produtoData.meta_description || '',
+        Observacoes: '',
+        Imagem_Principal: produtoData.imagem_principal || null,
+        Imagem_Galeria: produtoData.galeria_imagens || [],
       });
     } catch (error: any) {
       toast.error('Erro ao carregar produto: ' + error.message);
@@ -249,7 +248,7 @@ export default function EditarProduto() {
       <Sidebar />
 
       <div className="flex-1 ml-64 flex flex-col overflow-hidden">
-        <Header title={`Editar: ${produto?.Nome}`} />
+        <Header title={`Editar: ${produto?.nome}`} />
 
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-5xl mx-auto">

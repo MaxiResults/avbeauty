@@ -17,10 +17,10 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
   const [imageError, setImageError] = useState(false);
 
   const calcularDesconto = () => {
-    if (!produto.Preco_Promocional || produto.Preco_Promocional >= produto.Preco_Padrao) {
+    if (!produto.preco_promocional || produto.preco_promocional >= produto.preco_padrao) {
       return null;
     }
-    const desconto = ((produto.Preco_Padrao - produto.Preco_Promocional) / produto.Preco_Padrao) * 100;
+    const desconto = ((produto.preco_padrao - produto.preco_promocional) / produto.preco_padrao) * 100;
     return Math.round(desconto);
   };
 
@@ -29,10 +29,10 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200 border border-border">
       <div className="relative h-48 bg-gradient-to-br from-muted/50 to-muted overflow-hidden">
-        {produto.Imagem_Principal && !imageError ? (
+        {produto.imagem_principal && !imageError ? (
           <img
-            src={produto.Imagem_Principal}
-            alt={produto.Nome}
+            src={produto.imagem_principal}
+            alt={produto.nome}
             className="w-full h-full object-cover"
             loading="lazy"
             onError={() => setImageError(true)}
@@ -44,19 +44,14 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
         )}
         
         <div className="absolute top-2 left-2 right-2 flex justify-between items-start gap-2">
-          {produto.Principal_Destaque && (
-            <Badge className="bg-yellow-500/90 hover:bg-yellow-600 text-white shadow-sm">
-              ⭐ Destaque
-            </Badge>
-          )}
           <Badge
             className={
-              produto.Status === 'Disponível'
+              produto.status === 'ativo'
                 ? 'bg-green-500/90 hover:bg-green-600 text-white shadow-sm ml-auto'
                 : 'bg-red-500/90 hover:bg-red-600 text-white shadow-sm ml-auto'
             }
           >
-            {produto.Status}
+            {produto.status === 'ativo' ? 'Disponível' : 'Indisponível'}
           </Badge>
         </div>
       </div>
@@ -64,13 +59,11 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
       <div className="p-4 space-y-3">
         <div>
           <h3 className="font-semibold text-lg line-clamp-2 min-h-[3.5rem]">
-            {produto.Nome}
+            {produto.nome}
           </h3>
-          {(produto.Categoria || produto.Grupo) && (
+          {produto.categoria && (
             <p className="text-sm text-muted-foreground mt-1">
-              {produto.Categoria}
-              {produto.Categoria && produto.Grupo && ' • '}
-              {produto.Grupo}
+              {produto.categoria}
             </p>
           )}
         </div>
@@ -79,7 +72,7 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
           {desconto && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground line-through">
-                R$ {produto.Preco_Padrao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {produto.preco_padrao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
               <Badge variant="outline" className="text-primary border-primary">
                 {desconto}% OFF
@@ -87,20 +80,22 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
             </div>
           )}
           <div className="text-2xl font-bold text-[#97624b]">
-            R$ {(produto.Preco_Promocional || produto.Preco_Padrao).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            R$ {(produto.preco_promocional || produto.preco_padrao).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
         </div>
 
         <div className="flex items-center gap-3 text-sm text-muted-foreground pt-2 border-t">
-          {produto.Tipo_Estoque === 'Limitado' && produto.Controla_Estoque === 'S' && (
+          {produto.controlar_estoque && produto.vagas_disponiveis && (
             <span className="flex items-center gap-1">
               <Package className="w-4 h-4" />
               Estoque Limitado
             </span>
           )}
-          <span>
-            📊 Ordem: #{produto.Ordem_exibicao}
-          </span>
+          {produto.ordem_exibicao && (
+            <span>
+              📊 Ordem: #{produto.ordem_exibicao}
+            </span>
+          )}
         </div>
 
         <div className="flex gap-2 pt-2">
@@ -108,7 +103,7 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
             size="sm"
             variant="outline"
             className="flex-1"
-            onClick={() => navigate(`/admin/produtos/${produto.ID}`)}
+            onClick={() => navigate(`/admin/produtos/${produto.id}`)}
           >
             <Edit className="w-4 h-4 mr-1" />
             Editar
@@ -124,7 +119,7 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
             size="sm"
             variant="outline"
             className="text-destructive hover:text-destructive"
-            onClick={() => onDelete(produto.ID)}
+            onClick={() => onDelete(produto.id)}
           >
             <Trash2 className="w-4 h-4" />
           </Button>

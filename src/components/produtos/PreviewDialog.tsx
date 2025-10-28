@@ -19,10 +19,10 @@ export function PreviewDialog({ produto, open, onOpenChange }: PreviewDialogProp
   if (!produto) return null;
 
   const calcularDesconto = () => {
-    if (!produto.Preco_Promocional || produto.Preco_Promocional >= produto.Preco_Padrao) {
+    if (!produto.preco_promocional || produto.preco_promocional >= produto.preco_padrao) {
       return null;
     }
-    return Math.round(((produto.Preco_Padrao - produto.Preco_Promocional) / produto.Preco_Padrao) * 100);
+    return Math.round(((produto.preco_padrao - produto.preco_promocional) / produto.preco_padrao) * 100);
   };
 
   const desconto = calcularDesconto();
@@ -37,10 +37,10 @@ export function PreviewDialog({ produto, open, onOpenChange }: PreviewDialogProp
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div className="aspect-video bg-gradient-to-br from-muted/30 to-muted/50 rounded-lg overflow-hidden">
-              {produto.Imagem_Principal ? (
+              {produto.imagem_principal ? (
                 <img
-                  src={produto.Imagem_Principal}
-                  alt={produto.Nome}
+                  src={produto.imagem_principal}
+                  alt={produto.nome}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -50,11 +50,11 @@ export function PreviewDialog({ produto, open, onOpenChange }: PreviewDialogProp
               )}
             </div>
 
-            {produto.Imagem_Galeria && produto.Imagem_Galeria.length > 0 && (
+            {produto.galeria_imagens && produto.galeria_imagens.length > 0 && (
               <div className="space-y-2">
                 <h4 className="font-medium text-sm">Galeria</h4>
                 <div className="grid grid-cols-3 gap-2">
-                  {produto.Imagem_Galeria.map((img, idx) => (
+                  {produto.galeria_imagens.map((img, idx) => (
                     <div key={idx} className="aspect-square bg-muted rounded-lg overflow-hidden">
                       <img
                         src={img}
@@ -70,12 +70,10 @@ export function PreviewDialog({ produto, open, onOpenChange }: PreviewDialogProp
 
           <div className="space-y-4">
             <div>
-              <h2 className="text-2xl font-bold">{produto.Nome}</h2>
-              {(produto.Categoria || produto.Grupo) && (
+              <h2 className="text-2xl font-bold">{produto.nome}</h2>
+              {produto.categoria && (
                 <p className="text-muted-foreground mt-1">
-                  {produto.Categoria}
-                  {produto.Categoria && produto.Grupo && ' • '}
-                  {produto.Grupo}
+                  {produto.categoria}
                 </p>
               )}
             </div>
@@ -84,7 +82,7 @@ export function PreviewDialog({ produto, open, onOpenChange }: PreviewDialogProp
               {desconto && (
                 <div className="flex items-center gap-2">
                   <span className="text-lg text-muted-foreground line-through">
-                    R$ {produto.Preco_Padrao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    R$ {produto.preco_padrao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </span>
                   <Badge variant="outline" className="text-primary border-primary">
                     {desconto}% OFF
@@ -92,22 +90,22 @@ export function PreviewDialog({ produto, open, onOpenChange }: PreviewDialogProp
                 </div>
               )}
               <div className="text-3xl font-bold text-[#97624b]">
-                R$ {(produto.Preco_Promocional || produto.Preco_Padrao).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {(produto.preco_promocional || produto.preco_padrao).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </div>
             </div>
 
-            {produto.Tipo_Estoque === 'Limitado' && produto.Controla_Estoque === 'S' && (
+            {produto.controlar_estoque && produto.vagas_disponiveis && (
               <div className="flex items-center gap-2 text-sm p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                 <Package className="w-4 h-4" />
                 <span>Vagas limitadas disponíveis</span>
               </div>
             )}
 
-            {produto.Descricao_Completa && (
+            {produto.descricao_completa && (
               <div className="space-y-2 pt-4 border-t">
                 <h3 className="font-semibold">Descrição</h3>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                  {produto.Descricao_Completa}
+                  {produto.descricao_completa}
                 </p>
               </div>
             )}

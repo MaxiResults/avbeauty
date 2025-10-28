@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ProdutoCard } from '@/components/produtos/ProdutoCard';
 import { PreviewDialog } from '@/components/produtos/PreviewDialog';
 import { DeleteDialog } from '@/components/produtos/DeleteDialog';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Produto, ProdutoDB, dbToProduto } from '@/types/produto';
 import { toast } from 'sonner';
 import { Plus, Search, Package } from 'lucide-react';
@@ -63,8 +63,7 @@ export default function ListaProdutos() {
         .from('produtos')
         .select('*')
         .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
-        .eq('ativo', true);
+        .eq('empresa_id', 2);
 
       if (statusFilter && statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -72,10 +71,6 @@ export default function ListaProdutos() {
 
       if (categoriaFilter && categoriaFilter !== 'all') {
         query = query.eq('categoria', categoriaFilter);
-      }
-
-      if (tipoFilter && tipoFilter !== 'all') {
-        query = query.eq('tipo_estoque', tipoFilter);
       }
 
       if (searchTerm) {
@@ -123,8 +118,8 @@ export default function ListaProdutos() {
     try {
       const { error } = await supabase
         .from('produtos')
-        .update({ ativo: false, status: 'Indisponível' })
-        .eq('id', selectedProduto.ID)
+        .update({ status: 'indisponivel' })
+        .eq('id', selectedProduto.id)
         .eq('cliente_id', 2)
         .eq('empresa_id', 2);
 
@@ -266,10 +261,10 @@ export default function ListaProdutos() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {currentProdutos.map((produto) => (
                     <ProdutoCard
-                      key={produto.ID}
+                      key={produto.id}
                       produto={produto}
                       onDelete={(id) => {
-                        const prod = produtos.find(p => p.ID === id);
+                        const prod = produtos.find(p => p.id === id);
                         if (prod) {
                           setSelectedProduto(prod);
                           setDeleteDialogOpen(true);
@@ -345,7 +340,7 @@ export default function ListaProdutos() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleDelete}
-        produtoNome={selectedProduto?.Nome || ''}
+        produtoNome={selectedProduto?.nome || ''}
       />
     </div>
   );

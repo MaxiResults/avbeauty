@@ -16,11 +16,18 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { ArrowLeft, FileText, BarChart3, Globe, Copy } from 'lucide-react';
 import { CampanhaFormData } from '@/types/campanha';
+import { toZonedTime } from 'date-fns-tz';
 
 export default function NovaCampanha() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const TIMEZONE = 'America/Sao_Paulo';
+
+  // Função helper para converter data para timezone de São Paulo
+  const toSaoPauloTime = (date: Date) => {
+    return toZonedTime(date, TIMEZONE).toISOString();
+  };
   const [formData, setFormData] = useState<CampanhaFormData>({
     Nome_campanha: '',
     Slug: '',
@@ -114,8 +121,8 @@ export default function NovaCampanha() {
         campanha_status: isDraft ? 'Suspensa' : formData.Campanha_Status,
         campanha_tipo: formData.Campanha_Tipo || null,
         descricao: formData.Descricao || null,
-        data_inicio: formData.Data_Inicio.toISOString(),
-        data_fim: formData.Data_Fim.toISOString(),
+        data_inicio: toSaoPauloTime(formData.Data_Inicio),
+        data_fim: toSaoPauloTime(formData.Data_Fim),
         utm_source: formData.utm_source || null,
         utm_medium: formData.utm_medium || null,
         utm_campaign: formData.utm_campaign || null,

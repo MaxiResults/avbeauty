@@ -6,6 +6,7 @@ import { Textarea } from "./ui/textarea";
 import { ScrollArea } from "./ui/scroll-area";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import { toZonedTime } from 'date-fns-tz';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +31,13 @@ interface ChatPopupProps {
 }
 
 const ChatPopup = ({ onClose }: ChatPopupProps) => {
+  const TIMEZONE = 'America/Sao_Paulo';
+  
+  // Função helper para converter data para timezone de São Paulo
+  const toSaoPauloTime = (date: Date) => {
+    return toZonedTime(date, TIMEZONE).toISOString();
+  };
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -177,7 +185,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
         id: Date.now().toString(),
         remetente: 'IA',
         mensagem: `Olá ${leadData.nome}! Sou a assistente virtual da Dra. Nicole. Como posso ajudá-lo hoje?`,
-        data_envio: new Date().toISOString()
+        data_envio: toSaoPauloTime(new Date())
       };
       setMessages([welcomeMsg]);
       await saveMessage('IA', welcomeMsg.mensagem);
@@ -199,7 +207,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
       id: Date.now().toString(),
       remetente: 'lead',
       mensagem: inputValue,
-      data_envio: new Date().toISOString()
+      data_envio: toSaoPauloTime(new Date())
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -240,7 +248,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
           id: (Date.now() + 1).toString(),
           remetente: 'IA',
           mensagem: data.reply,
-          data_envio: new Date().toISOString()
+          data_envio: toSaoPauloTime(new Date())
         };
         setMessages(prev => [...prev, aiMessage]);
         await saveMessage('IA', data.reply);

@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { ArrowLeft, FileText, BarChart3, Globe, Copy } from 'lucide-react';
 import { Campanha, CampanhaDB, dbToCampanha, CampanhaFormData } from '@/types/campanha';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toZonedTime } from 'date-fns-tz';
 
 export default function EditarCampanha() {
   const navigate = useNavigate();
@@ -24,6 +25,12 @@ export default function EditarCampanha() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [campanha, setCampanha] = useState<Campanha | null>(null);
+  const TIMEZONE = 'America/Sao_Paulo';
+
+  // Função helper para converter data para timezone de São Paulo
+  const toSaoPauloTime = (date: Date) => {
+    return toZonedTime(date, TIMEZONE).toISOString();
+  };
   const [formData, setFormData] = useState<CampanhaFormData>({
     Nome_campanha: '',
     Slug: '',
@@ -148,8 +155,8 @@ export default function EditarCampanha() {
           campanha_status: formData.Campanha_Status,
           campanha_tipo: formData.Campanha_Tipo || null,
           descricao: formData.Descricao || null,
-          data_inicio: formData.Data_Inicio.toISOString(),
-          data_fim: formData.Data_Fim.toISOString(),
+          data_inicio: toSaoPauloTime(formData.Data_Inicio),
+          data_fim: toSaoPauloTime(formData.Data_Fim),
           utm_source: formData.utm_source || null,
           utm_medium: formData.utm_medium || null,
           utm_campaign: formData.utm_campaign || null,

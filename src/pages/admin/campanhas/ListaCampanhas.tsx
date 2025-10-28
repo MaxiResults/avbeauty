@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { StatusBadge } from '@/components/campanhas/StatusBadge';
 import { PeriodoBadge } from '@/components/campanhas/PeriodoBadge';
 import { DeleteDialog } from '@/components/campanhas/DeleteDialog';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { Campanha, CampanhaDB, dbToCampanha } from '@/types/campanha';
 import { toast } from 'sonner';
 import { Edit, Trash2, Plus, Search } from 'lucide-react';

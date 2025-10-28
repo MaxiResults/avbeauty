@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ImageUpload } from '@/components/produtos/ImageUpload';
 import { GalleryUpload } from '@/components/produtos/GalleryUpload';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { uploadProdutoImage } from '@/lib/uploadHelpers';
 import { toast } from 'sonner';

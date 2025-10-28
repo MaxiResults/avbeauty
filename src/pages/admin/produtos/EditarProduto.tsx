@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ImageUpload } from '@/components/produtos/ImageUpload';
 import { GalleryUpload } from '@/components/produtos/GalleryUpload';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { uploadProdutoImage, deleteProdutoImage } from '@/lib/uploadHelpers';
 import { Produto, ProdutoDB, dbToProduto, ProdutoFormData } from '@/types/produto';
 import { toast } from 'sonner';

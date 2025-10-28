@@ -39,27 +39,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('Cliente_ID', 2)
         .eq('Empresa_ID', 2)
         .eq('Ativo', true)
-        .maybeSingle();
+        .limit(1);
 
-      if (error || !data) {
+      if (error || !data || data.length === 0) {
+        console.error('Login query error:', error);
         return { success: false, error: 'Email ou senha incorretos' };
       }
 
-      // In production, use bcrypt.compare(password, data.Senha)
+      const row = data[0];
+
+      // In production, use bcrypt.compare(password, row.Senha)
       // For now, simple comparison (assuming password is stored as hash)
       // Note: The migration creates the password with bcrypt hash
       const bcrypt = await import('bcryptjs');
-      const isValid = await bcrypt.compare(password, data.Senha);
+      const isValid = await bcrypt.compare(password, row.Senha);
 
       if (!isValid) {
         return { success: false, error: 'Email ou senha incorretos' };
       }
 
       const userData: User = {
-        ID: data.ID,
-        Email: data.Email,
-        Nome: data.Nome,
-        Role: data.Role,
+        ID: row.ID,
+        Email: row.Email,
+        Nome: row.Nome,
+        Role: row.Role,
       };
 
       setUser(userData);

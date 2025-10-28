@@ -4,7 +4,7 @@ import { toZonedTime } from 'date-fns-tz';
 const TIMEZONE = 'America/Sao_Paulo';
 
 export const uploadProdutoImage = async (file: File): Promise<string> => {
-  // Verificar autenticação
+  // Verificar autenticação (mantemos a checagem atual)
   const { data: { session } } = await supabase.auth.getSession();
   console.log('🔐 Upload - Sessão ativa?', !!session);
   console.log('🔐 Upload - User ID:', session?.user?.id);
@@ -13,29 +13,35 @@ export const uploadProdutoImage = async (file: File): Promise<string> => {
     throw new Error('Usuário não autenticado. Faça login para fazer upload.');
   }
 
-  const timestamp = toZonedTime(new Date(), TIMEZONE).getTime();
-  const fileName = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-  const filePath = `2/2/${fileName}`;
+  // Envia o arquivo para a função de backend que faz o upload com service role
+  try {
+    const { LOVABLE_FUNCTIONS_BASE, LOVABLE_ANON } = await import('@/lib/supabase');
 
-  console.log('📁 Upload path:', filePath);
+    const form = new FormData();
+    form.append('file', file);
+    form.append('pathPrefix', '2/2'); // padrão atual do projeto
 
-  const { error: uploadError } = await supabase.storage
-    .from('produtos')
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false
+    const resp = await fetch(`${LOVABLE_FUNCTIONS_BASE}/upload-produto-image`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${LOVABLE_ANON}`,
+        apikey: LOVABLE_ANON,
+      },
+      body: form,
     });
 
-  if (uploadError) {
-    console.error('❌ Erro no upload:', uploadError);
-    throw new Error(`Erro ao fazer upload: ${uploadError.message}`);
+    if (!resp.ok) {
+      const text = await resp.text();
+      console.error('❌ Erro na função upload-produto-image:', text);
+      throw new Error(`Erro ao fazer upload: ${text}`);
+    }
+
+    const json = await resp.json();
+    return json.publicUrl as string;
+  } catch (err) {
+    console.error('❌ Erro no upload via função:', err);
+    throw err instanceof Error ? err : new Error(String(err));
   }
-
-  const { data: urlData } = supabase.storage
-    .from('produtos')
-    .getPublicUrl(filePath);
-
-  return urlData.publicUrl;
 };
 
 export const deleteProdutoImage = async (imageUrl: string): Promise<void> => {

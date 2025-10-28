@@ -5,8 +5,8 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const LOVABLE_FUNCTIONS_BASE = 'https://prjylrbuvfgbirpgkeza.functions.supabase.co/functions/v1';
-const LOVABLE_ANON = 'VRoaXO9doXjPXoYYfcmPRXQJbP7K-TmZsB6IIVV4DS4';
+export const LOVABLE_FUNCTIONS_BASE = 'https://prjylrbuvfgbirpgkeza.functions.supabase.co/functions/v1';
+export const LOVABLE_ANON = 'VRoaXO9doXjPXoYYfcmPRXQJbP7K-TmZsB6IIVV4DS4';
 
 export interface LeadData {
   site_url: string;

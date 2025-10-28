@@ -213,6 +213,81 @@ export type Database = {
         }
         Relationships: []
       }
+      produtos: {
+        Row: {
+          categoria: string | null
+          cliente_id: number
+          controlar_estoque: boolean | null
+          created_at: string
+          desconto_percentual: number | null
+          descricao_completa: string | null
+          descricao_curta: string | null
+          empresa_id: number
+          galeria_imagens: string[] | null
+          id: number
+          imagem_principal: string | null
+          meta_description: string | null
+          meta_title: string | null
+          nome: string
+          ordem_exibicao: number | null
+          preco_padrao: number
+          preco_promocional: number | null
+          slug: string
+          status: string
+          updated_at: string
+          vagas_disponiveis: number | null
+          vagas_vendidas: number | null
+        }
+        Insert: {
+          categoria?: string | null
+          cliente_id?: number
+          controlar_estoque?: boolean | null
+          created_at?: string
+          desconto_percentual?: number | null
+          descricao_completa?: string | null
+          descricao_curta?: string | null
+          empresa_id?: number
+          galeria_imagens?: string[] | null
+          id?: number
+          imagem_principal?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          nome: string
+          ordem_exibicao?: number | null
+          preco_padrao?: number
+          preco_promocional?: number | null
+          slug: string
+          status?: string
+          updated_at?: string
+          vagas_disponiveis?: number | null
+          vagas_vendidas?: number | null
+        }
+        Update: {
+          categoria?: string | null
+          cliente_id?: number
+          controlar_estoque?: boolean | null
+          created_at?: string
+          desconto_percentual?: number | null
+          descricao_completa?: string | null
+          descricao_curta?: string | null
+          empresa_id?: number
+          galeria_imagens?: string[] | null
+          id?: number
+          imagem_principal?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          nome?: string
+          ordem_exibicao?: number | null
+          preco_padrao?: number
+          preco_promocional?: number | null
+          slug?: string
+          status?: string
+          updated_at?: string
+          vagas_disponiveis?: number | null
+          vagas_vendidas?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

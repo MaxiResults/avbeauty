@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import Campanhas from "./pages/admin/Campanhas";
@@ -24,9 +25,10 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
             
             {/* Admin Routes */}
-            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin/login" element={<Auth />} />
             <Route
               path="/admin/dashboard"
               element={

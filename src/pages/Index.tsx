@@ -7,6 +7,7 @@ import Gallery from "@/components/Gallery";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -20,6 +21,9 @@ const Index = () => {
         <Testimonials />
         <Contact />
       </main>
+      <section className="py-4 text-center">
+        <Link to="/auth" className="text-primary hover:underline">Área do Administrador</Link>
+      </section>
       <Footer />
       <FloatingButtons />
     </div>

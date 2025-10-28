@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
+import type { Session, User as SupaUser } from '@supabase/supabase-js';
 
 interface User {
   ID: string;
@@ -12,6 +13,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
 }
 
@@ -20,59 +22,43 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+
+  const mapUser = (u: SupaUser): User => {
+    const nome = (u.user_metadata?.Nome as string) ||
+      (u.user_metadata?.name as string) ||
+      (u.email ? u.email.split('@')[0] : 'Usuário');
+    const role = (u.app_metadata?.role as string) || 'user';
+    return { ID: u.id, Email: u.email ?? '', Nome: nome, Role: role };
+  };
 
   useEffect(() => {
-    // Check if user is logged in on mount
-    const storedUser = localStorage.getItem('admin_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
+    // 1) Listen for auth state changes FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, sess) => {
+      setSession(sess);
+      setUser(sess?.user ? mapUser(sess.user) : null);
+      setLoading(false);
+    });
+
+    // 2) Then retrieve existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ? mapUser(session.user) : null);
+      setLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (email: string, password: string) => {
     try {
-      const { data, error } = await supabase
-        .from('Usuarios')
-        .select('*')
-        .eq('Email', email)
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2)
-        .eq('Ativo', true)
-        .limit(1);
-
-      if (error || !data || data.length === 0) {
-        console.error('Login query error:', error);
-        return { success: false, error: 'Email ou senha incorretos' };
-      }
-
-      const row = data[0];
-
-      // In production, use bcrypt.compare(password, row.Senha)
-      // For now, simple comparison (assuming password is stored as hash)
-      // Note: The migration creates the password with bcrypt hash
-      const bcryptModule = await import('bcryptjs');
-      const bcrypt: any = (bcryptModule as any).default || (bcryptModule as any);
-      if (!row.Senha) {
-        console.error('Senha hash ausente no registro do usuário');
-        return { success: false, error: 'Email ou senha incorretos' };
-      }
-      const isValid = await bcrypt.compare(password, row.Senha);
-
-      if (!isValid) {
-        return { success: false, error: 'Email ou senha incorretos' };
-      }
-
-      const userData: User = {
-        ID: row.ID,
-        Email: row.Email,
-        Nome: row.Nome,
-        Role: row.Role,
-      };
-
-      setUser(userData);
-      localStorage.setItem('admin_user', JSON.stringify(userData));
-
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return { success: false, error: error.message || 'Email ou senha incorretos' };
+      if (!data.session || !data.user) return { success: false, error: 'Credenciais inválidas' };
+      setSession(data.session);
+      setUser(mapUser(data.user));
       return { success: true };
     } catch (err) {
       console.error('Login error:', err);
@@ -80,13 +66,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signUp = async (email: string, password: string) => {
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+        },
+      });
+      if (error) return { success: false, error: error.message || 'Falha no cadastro' };
+      if (data.user) setUser(mapUser(data.user));
+      if (data.session) setSession(data.session);
+      return { success: true };
+    } catch (err) {
+      console.error('Signup error:', err);
+      return { success: false, error: 'Erro ao cadastrar. Tente novamente.' };
+    }
+  };
+
   const logout = () => {
+    supabase.auth.signOut().catch((e) => console.error('Logout error:', e));
     setUser(null);
-    localStorage.removeItem('admin_user');
+    setSession(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, signUp, logout }}>
       {children}
     </AuthContext.Provider>
   );

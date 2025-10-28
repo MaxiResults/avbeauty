@@ -15,6 +15,9 @@ import ListaCampanhas from "./pages/admin/campanhas/ListaCampanhas";
 import NovaCampanha from "./pages/admin/campanhas/NovaCampanha";
 import EditarCampanha from "./pages/admin/campanhas/EditarCampanha";
 import Produtos from "./pages/admin/Produtos";
+import ListaProdutos from "./pages/admin/produtos/ListaProdutos";
+import NovoProduto from "./pages/admin/produtos/NovoProduto";
+import EditarProduto from "./pages/admin/produtos/EditarProduto";
 import Pedidos from "./pages/admin/Pedidos";
 
 const queryClient = new QueryClient();
@@ -68,7 +71,23 @@ const App = () => (
               path="/admin/produtos"
               element={
                 <ProtectedRoute>
-                  <Produtos />
+                  <ListaProdutos />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/produtos/novo"
+              element={
+                <ProtectedRoute>
+                  <NovoProduto />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/produtos/:id"
+              element={
+                <ProtectedRoute>
+                  <EditarProduto />
                 </ProtectedRoute>
               }
             />

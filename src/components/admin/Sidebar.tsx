@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Megaphone, Package, ShoppingCart, LogOut } from 'lucide-react';
+import { LayoutDashboard, Megaphone, ShoppingBag, ShoppingCart, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 const menuItems = [
   { title: 'Dashboard', url: '/admin/dashboard', icon: LayoutDashboard },
   { title: 'Campanhas', url: '/admin/campanhas', icon: Megaphone },
-  { title: 'Produtos', url: '/admin/produtos', icon: Package },
+  { title: 'Produtos', url: '/admin/produtos', icon: ShoppingBag },
   { title: 'Pedidos', url: '/admin/pedidos', icon: ShoppingCart },
 ];
 

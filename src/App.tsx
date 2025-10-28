@@ -11,6 +11,9 @@ import Auth from "./pages/Auth";
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import Campanhas from "./pages/admin/Campanhas";
+import ListaCampanhas from "./pages/admin/campanhas/ListaCampanhas";
+import NovaCampanha from "./pages/admin/campanhas/NovaCampanha";
+import EditarCampanha from "./pages/admin/campanhas/EditarCampanha";
 import Produtos from "./pages/admin/Produtos";
 import Pedidos from "./pages/admin/Pedidos";
 
@@ -41,7 +44,23 @@ const App = () => (
               path="/admin/campanhas"
               element={
                 <ProtectedRoute>
-                  <Campanhas />
+                  <ListaCampanhas />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/campanhas/nova"
+              element={
+                <ProtectedRoute>
+                  <NovaCampanha />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/campanhas/:id"
+              element={
+                <ProtectedRoute>
+                  <EditarCampanha />
                 </ProtectedRoute>
               }
             />

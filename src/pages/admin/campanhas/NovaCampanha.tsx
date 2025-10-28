@@ -106,7 +106,7 @@ export default function NovaCampanha() {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('campanhas').insert({
+      const { data, error } = await supabase.from('campanhas').insert([{
         cliente_id: 2,
         empresa_id: 2,
         nome_campanha: formData.Nome_campanha,
@@ -127,7 +127,7 @@ export default function NovaCampanha() {
         publico_alvo: formData.publico_alvo || null,
         criado_por: user?.Email || 'Sistema',
         ativo: true,
-      }).select();
+      }]).select();
 
       if (error) throw error;
 

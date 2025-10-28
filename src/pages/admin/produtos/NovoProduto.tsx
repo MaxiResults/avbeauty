@@ -146,7 +146,17 @@ export default function NovoProduto() {
         }
       }
 
-      const { error } = await supabase.from('produtos').insert([{
+      // Verifica colunas opcionalmente presentes no banco externo
+      const colExists = async (col: string) => {
+        try {
+          const { error } = await supabase.from('produtos').select(col).limit(1);
+          return !error;
+        } catch {
+          return false;
+        }
+      };
+
+      const baseRecord: any = {
         cliente_id: 2,
         empresa_id: 2,
         nome: formData.Nome,
@@ -159,16 +169,33 @@ export default function NovoProduto() {
         desconto_percentual: formData.Preco_Promocional 
           ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
           : null,
-        controlar_estoque: formData.Controla_Estoque === 'S',
-        vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
-        vagas_vendidas: 0,
         ordem_exibicao: formData.Ordem_exibicao,
         imagem_principal: imagemPrincipalUrl,
         galeria_imagens: galeriaUrls.length > 0 ? galeriaUrls : null,
         status: isDraft ? 'indisponivel' : 'ativo',
         meta_title: formData.Meta_Title || formData.Nome,
         meta_description: formData.Meta_Description || formData.Descricao_Curta,
-      }]);
+      };
+
+      // Só inclui colunas se existirem no schema atual
+      if (await colExists('controlar_estoque')) {
+        baseRecord.controlar_estoque = formData.Controla_Estoque === 'S';
+      }
+      if (await colExists('vagas_disponiveis')) {
+        baseRecord.vagas_disponiveis = formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null;
+      }
+      if (await colExists('vagas_vendidas')) {
+        baseRecord.vagas_vendidas = 0;
+      }
+
+      let { error } = await supabase.from('produtos').insert([baseRecord]);
+
+      // Fallback defensivo caso o schema mude e gere erro de cache/coluna
+      if (error && /schema cache|Could not find/.test(error.message)) {
+        delete baseRecord.controlar_estoque;
+        delete baseRecord.vagas_disponiveis;
+        ({ error } = await supabase.from('produtos').insert([baseRecord]));
+      }
 
       if (error) throw error;
 

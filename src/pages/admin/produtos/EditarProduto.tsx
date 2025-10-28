@@ -173,31 +173,59 @@ export default function EditarProduto() {
         await deleteProdutoImage(url);
       }
 
-      const { error } = await supabase
+      // Monta payload e inclui colunas apenas se existirem
+      const colExists = async (col: string) => {
+        try {
+          const { error } = await supabase.from('produtos').select(col).limit(1);
+          return !error;
+        } catch {
+          return false;
+        }
+      };
+
+      const updateRecord: any = {
+        nome: formData.Nome,
+        slug: formData.Slug,
+        descricao_curta: formData.Descricao_Curta,
+        descricao_completa: formData.Descricao_Completa || null,
+        categoria: formData.Categoria || null,
+        preco_padrao: formData.Preco_Padrao,
+        preco_promocional: formData.Preco_Promocional || null,
+        desconto_percentual: formData.Preco_Promocional 
+          ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
+          : null,
+        ordem_exibicao: formData.Ordem_exibicao,
+        imagem_principal: imagemPrincipalUrl,
+        galeria_imagens: galeriaUrls.length > 0 ? galeriaUrls : null,
+        status: formData.Status === 'Disponível' ? 'ativo' : 'indisponivel',
+        meta_title: formData.Meta_Title || formData.Nome,
+        meta_description: formData.Meta_Description || formData.Descricao_Curta,
+      };
+
+      if (await colExists('controlar_estoque')) {
+        updateRecord.controlar_estoque = formData.Controla_Estoque === 'S';
+      }
+      if (await colExists('vagas_disponiveis')) {
+        updateRecord.vagas_disponiveis = formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null;
+      }
+
+      let { error } = await supabase
         .from('produtos')
-        .update({
-          nome: formData.Nome,
-          slug: formData.Slug,
-          descricao_curta: formData.Descricao_Curta,
-          descricao_completa: formData.Descricao_Completa || null,
-          categoria: formData.Categoria || null,
-          preco_padrao: formData.Preco_Padrao,
-          preco_promocional: formData.Preco_Promocional || null,
-          desconto_percentual: formData.Preco_Promocional 
-            ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
-            : null,
-          controlar_estoque: formData.Controla_Estoque === 'S',
-          vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
-          ordem_exibicao: formData.Ordem_exibicao,
-          imagem_principal: imagemPrincipalUrl,
-          galeria_imagens: galeriaUrls.length > 0 ? galeriaUrls : null,
-          status: formData.Status === 'Disponível' ? 'ativo' : 'indisponivel',
-          meta_title: formData.Meta_Title || formData.Nome,
-          meta_description: formData.Meta_Description || formData.Descricao_Curta,
-        })
+        .update(updateRecord)
         .eq('id', parseInt(id))
         .eq('cliente_id', 2)
         .eq('empresa_id', 2);
+
+      if (error && /schema cache|Could not find/.test(error.message)) {
+        delete updateRecord.controlar_estoque;
+        delete updateRecord.vagas_disponiveis;
+        ({ error } = await supabase
+          .from('produtos')
+          .update(updateRecord)
+          .eq('id', parseInt(id))
+          .eq('cliente_id', 2)
+          .eq('empresa_id', 2));
+      }
 
       if (error) throw error;
 

@@ -36,17 +36,17 @@ export default function ListaCampanhas() {
       let query = supabase
         .from('campanhas')
         .select('*')
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2)
-        .eq('Ativo', true)
-        .order('Created_at', { ascending: false });
+        .eq('cliente_id', 2)
+        .eq('empresa_id', 2)
+        .eq('ativo', true)
+        .order('created_at', { ascending: false });
 
       if (statusFilter && statusFilter !== 'all') {
-        query = query.eq('Campanha_Status', statusFilter);
+        query = query.eq('campanha_status', statusFilter);
       }
 
       if (searchTerm) {
-        query = query.or(`Nome_campanha.ilike.%${searchTerm}%,Slug.ilike.%${searchTerm}%,Descricao.ilike.%${searchTerm}%`);
+        query = query.or(`nome_campanha.ilike.%${searchTerm}%,slug.ilike.%${searchTerm}%,descricao.ilike.%${searchTerm}%`);
       }
 
       const { data, error } = await query;
@@ -67,10 +67,10 @@ export default function ListaCampanhas() {
     try {
       const { error } = await supabase
         .from('campanhas')
-        .update({ Ativo: false })
-        .eq('ID', selectedCampanha.ID)
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2);
+        .update({ ativo: false })
+        .eq('id', selectedCampanha.ID)
+        .eq('cliente_id', 2)
+        .eq('empresa_id', 2);
 
       if (error) throw error;
 

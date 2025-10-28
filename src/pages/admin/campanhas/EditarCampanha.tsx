@@ -54,9 +54,9 @@ export default function EditarCampanha() {
       const { data, error } = await supabase
         .from('campanhas')
         .select('*')
-        .eq('ID', parseInt(id!))
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2)
+        .eq('id', parseInt(id!))
+        .eq('cliente_id', 2)
+        .eq('empresa_id', 2)
         .single();
 
       if (error) throw error;
@@ -144,26 +144,26 @@ export default function EditarCampanha() {
       const { error } = await supabase
         .from('campanhas')
         .update({
-          Nome_campanha: formData.Nome_campanha,
-          Campanha_Status: formData.Campanha_Status,
-          Campanha_Tipo: formData.Campanha_Tipo || null,
-          Descricao: formData.Descricao || null,
-          Data_Inicio: formData.Data_Inicio.toISOString(),
-          Data_Fim: formData.Data_Fim.toISOString(),
+          nome_campanha: formData.Nome_campanha,
+          campanha_status: formData.Campanha_Status,
+          campanha_tipo: formData.Campanha_Tipo || null,
+          descricao: formData.Descricao || null,
+          data_inicio: formData.Data_Inicio.toISOString(),
+          data_fim: formData.Data_Fim.toISOString(),
           utm_source: formData.utm_source || null,
           utm_medium: formData.utm_medium || null,
           utm_campaign: formData.utm_campaign || null,
           utm_content: formData.utm_content || null,
-          Canal_Principal: formData.canal_principal || null,
-          Plataforma_Ads: formData.plataforma_ads?.join(', ') || null,
-          Investimento_total: formData.Investimento_total,
-          URL_Principal: formData.url_principal,
-          Publico_Alvo: formData.publico_alvo || null,
-          Ativo: ativo,
+          canal_principal: formData.canal_principal || null,
+          plataforma_ads: formData.plataforma_ads?.join(', ') || null,
+          investimento_total: formData.Investimento_total,
+          url_principal: formData.url_principal,
+          publico_alvo: formData.publico_alvo || null,
+          ativo: ativo,
         })
-        .eq('ID', parseInt(id!))
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2);
+        .eq('id', parseInt(id!))
+        .eq('cliente_id', 2)
+        .eq('empresa_id', 2);
 
       if (error) throw error;
 

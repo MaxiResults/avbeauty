@@ -258,11 +258,11 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
   };
 
   return (
-    <div className="fixed bottom-28 right-6 w-[28.8rem] h-[720px] bg-background border border-border rounded-lg shadow-2xl flex flex-col z-50 animate-fade-in">
-      <div className="bg-primary text-primary-foreground p-4 rounded-t-lg flex items-center justify-between">
+    <div className="fixed inset-x-0 bottom-0 md:bottom-28 md:right-6 md:left-auto md:w-[28.8rem] h-[100dvh] md:h-[720px] bg-background border-t md:border md:border-border md:rounded-lg shadow-2xl flex flex-col z-50 animate-fade-in">
+      <div className="bg-primary text-primary-foreground p-3 md:p-4 md:rounded-t-lg flex items-center justify-between">
         <div>
-          <h3 className="font-semibold text-lg">Chat Online</h3>
-          <p className="text-sm opacity-90">Dra. Nicole - Harmonização Facial</p>
+          <h3 className="font-semibold text-base md:text-lg">Chat Online</h3>
+          <p className="text-xs md:text-sm opacity-90">Dra. Nicole - Harmonização Facial</p>
         </div>
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -290,9 +290,9 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
       </div>
 
       {showLeadForm ? (
-        <div className="flex-1 p-6 flex flex-col justify-center">
-          <h4 className="text-lg font-semibold mb-4">Olá! Vamos começar?</h4>
-          <p className="text-sm text-muted-foreground mb-6">
+        <div className="flex-1 p-4 md:p-6 flex flex-col justify-center">
+          <h4 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Olá! Vamos começar?</h4>
+          <p className="text-sm text-muted-foreground mb-4 md:mb-6">
             Para iniciar a conversa, por favor preencha seus dados:
           </p>
           <form onSubmit={handleLeadSubmit} className="space-y-4">
@@ -367,7 +367,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
             </div>
           </ScrollArea>
 
-          <div className="p-4 border-t border-border">
+          <div className="p-3 md:p-4 border-t border-border">
             <div className="flex gap-2 items-end">
               <Textarea
                 placeholder="Digite sua mensagem..."
@@ -380,8 +380,8 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
                   }
                 }}
                 disabled={isLoading}
-                rows={4}
-                className="resize-none"
+                rows={2}
+                className="resize-none min-h-[60px] md:min-h-[80px]"
               />
               <Button
                 onClick={sendMessage}

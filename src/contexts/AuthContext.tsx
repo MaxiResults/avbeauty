@@ -51,7 +51,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // In production, use bcrypt.compare(password, row.Senha)
       // For now, simple comparison (assuming password is stored as hash)
       // Note: The migration creates the password with bcrypt hash
-      const bcrypt = (await import('bcryptjs')).default;
+      const bcryptModule = await import('bcryptjs');
+      const bcrypt: any = (bcryptModule as any).default || (bcryptModule as any);
+      if (!row.Senha) {
+        console.error('Senha hash ausente no registro do usuário');
+        return { success: false, error: 'Email ou senha incorretos' };
+      }
       const isValid = await bcrypt.compare(password, row.Senha);
 
       if (!isValid) {

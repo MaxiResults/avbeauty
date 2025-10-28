@@ -1,12 +1,23 @@
-import { supabase } from './supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { toZonedTime } from 'date-fns-tz';
 
 const TIMEZONE = 'America/Sao_Paulo';
 
 export const uploadProdutoImage = async (file: File): Promise<string> => {
+  // Verificar autenticação
+  const { data: { session } } = await supabase.auth.getSession();
+  console.log('🔐 Upload - Sessão ativa?', !!session);
+  console.log('🔐 Upload - User ID:', session?.user?.id);
+  
+  if (!session) {
+    throw new Error('Usuário não autenticado. Faça login para fazer upload.');
+  }
+
   const timestamp = toZonedTime(new Date(), TIMEZONE).getTime();
   const fileName = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
   const filePath = `2/2/${fileName}`;
+
+  console.log('📁 Upload path:', filePath);
 
   const { error: uploadError } = await supabase.storage
     .from('produtos')
@@ -16,6 +27,7 @@ export const uploadProdutoImage = async (file: File): Promise<string> => {
     });
 
   if (uploadError) {
+    console.error('❌ Erro no upload:', uploadError);
     throw new Error(`Erro ao fazer upload: ${uploadError.message}`);
   }
 

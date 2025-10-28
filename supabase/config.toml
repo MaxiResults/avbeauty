@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.save-message]
 verify_jwt = false
+
+[functions.upload-produto-image]
+verify_jwt = false

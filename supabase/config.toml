@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.upload-produto-image]
 verify_jwt = false
+
+[functions.fix-external-triggers]
+verify_jwt = false

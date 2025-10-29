@@ -207,8 +207,8 @@ export default function ListaProdutos() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos Status</SelectItem>
-                    <SelectItem value="Disponível">Disponível</SelectItem>
-                    <SelectItem value="Indisponível">Indisponível</SelectItem>
+                    <SelectItem value="ativo">Disponível</SelectItem>
+                    <SelectItem value="indisponivel">Indisponível</SelectItem>
                   </SelectContent>
                 </Select>
 

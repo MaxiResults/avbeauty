@@ -173,58 +173,34 @@ export default function EditarProduto() {
         await deleteProdutoImage(url);
       }
 
-      // Monta payload e inclui colunas apenas se existirem
-      const colExists = async (col: string) => {
-        try {
-          const { error } = await supabase.from('produtos').select(col).limit(1);
-          return !error;
-        } catch {
-          return false;
-        }
-      };
-
-      // Campos mínimos (sempre presentes)
+      // Monta o payload de atualização
       const updateRecord: any = {
         nome: formData.Nome,
         slug: formData.Slug,
+        descricao_curta: formData.Descricao_Curta,
+        descricao_completa: formData.Descricao_Completa || null,
+        categoria: formData.Categoria || null,
         preco_padrao: formData.Preco_Padrao,
+        preco_promocional: formData.Preco_Promocional || null,
+        desconto_percentual: formData.Preco_Promocional 
+          ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
+          : null,
+        controlar_estoque: formData.Controla_Estoque === 'S',
+        vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
+        ordem_exibicao: formData.Ordem_exibicao,
+        imagem_principal: imagemPrincipalUrl,
+        galeria_imagens: galeriaUrls.length > 0 ? galeriaUrls : null,
+        status: formData.Status === 'Disponível' ? 'ativo' : 'indisponivel',
+        meta_title: formData.Meta_Title || formData.Nome,
+        meta_description: formData.Meta_Description || formData.Descricao_Curta,
       };
 
-      // Condicionais
-      if (await colExists('descricao_curta')) updateRecord.descricao_curta = formData.Descricao_Curta;
-      if (await colExists('descricao_completa')) updateRecord.descricao_completa = formData.Descricao_Completa || null;
-      if (await colExists('categoria')) updateRecord.categoria = formData.Categoria || null;
-      if (await colExists('preco_promocional')) updateRecord.preco_promocional = formData.Preco_Promocional || null;
-      if (await colExists('desconto_percentual')) {
-        updateRecord.desconto_percentual = formData.Preco_Promocional 
-          ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
-          : null;
-      }
-      if (await colExists('controlar_estoque')) updateRecord.controlar_estoque = formData.Controla_Estoque === 'S';
-      if (await colExists('vagas_disponiveis')) updateRecord.vagas_disponiveis = formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null;
-      if (await colExists('ordem_exibicao')) updateRecord.ordem_exibicao = formData.Ordem_exibicao;
-      if (await colExists('imagem_principal')) updateRecord.imagem_principal = imagemPrincipalUrl;
-      if (await colExists('galeria_imagens')) updateRecord.galeria_imagens = galeriaUrls.length > 0 ? galeriaUrls : null;
-      if (await colExists('status')) updateRecord.status = formData.Status === 'Disponível' ? 'ativo' : 'indisponivel';
-      if (await colExists('meta_title')) updateRecord.meta_title = formData.Meta_Title || formData.Nome;
-      if (await colExists('meta_description')) updateRecord.meta_description = formData.Meta_Description || formData.Descricao_Curta;
-
-      let { error } = await supabase
+      const { error } = await supabase
         .from('produtos')
         .update(updateRecord)
         .eq('id', parseInt(id))
         .eq('cliente_id', 2)
         .eq('empresa_id', 2);
-
-      if (error && /schema cache|Could not find/.test(error.message)) {
-        const safeRecord: any = { nome: formData.Nome, slug: formData.Slug, preco_padrao: formData.Preco_Padrao };
-        ({ error } = await supabase
-          .from('produtos')
-          .update(safeRecord)
-          .eq('id', parseInt(id))
-          .eq('cliente_id', 2)
-          .eq('empresa_id', 2));
-      }
 
       if (error) throw error;
 
@@ -334,32 +310,13 @@ export default function EditarProduto() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="categoria">Categoria</Label>
-                        <Input
-                          id="categoria"
-                          value={formData.Categoria}
-                          onChange={(e) => setFormData({ ...formData, Categoria: e.target.value })}
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="grupo">Grupo</Label>
-                        <Input
-                          id="grupo"
-                          value={formData.Grupo}
-                          onChange={(e) => setFormData({ ...formData, Grupo: e.target.value })}
-                        />
-                      </div>
-                    </div>
-
                     <div>
-                      <Label htmlFor="codigo">Código Externo</Label>
+                      <Label htmlFor="categoria">Categoria</Label>
                       <Input
-                        id="codigo"
-                        value={formData.Codigo_Externo}
-                        onChange={(e) => setFormData({ ...formData, Codigo_Externo: e.target.value })}
+                        id="categoria"
+                        value={formData.Categoria}
+                        onChange={(e) => setFormData({ ...formData, Categoria: e.target.value })}
+                        placeholder="Ex: Ortodontia, Estética, etc."
                       />
                     </div>
                   </CardContent>

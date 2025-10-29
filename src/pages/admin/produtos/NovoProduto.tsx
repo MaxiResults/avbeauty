@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ImageUpload } from '@/components/produtos/ImageUpload';
-import { GalleryUpload } from '@/components/produtos/GalleryUpload';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { uploadProdutoImage } from '@/lib/uploadHelpers';
@@ -48,7 +47,6 @@ export default function NovoProduto() {
     Meta_Description: '',
     Observacoes: '',
     Imagem_Principal: null,
-    Imagem_Galeria: [],
   });
 
   useEffect(() => {
@@ -135,17 +133,6 @@ export default function NovoProduto() {
         imagemPrincipalUrl = await uploadProdutoImage(formData.Imagem_Principal);
       }
 
-      // Upload galeria
-      const galeriaUrls: string[] = [];
-      for (const item of formData.Imagem_Galeria) {
-        if (item instanceof File) {
-          const url = await uploadProdutoImage(item);
-          galeriaUrls.push(url);
-        } else if (typeof item === 'string') {
-          galeriaUrls.push(item);
-        }
-      }
-
       // Verifica colunas opcionalmente presentes no banco externo
       const colExists = async (col: string) => {
         try {
@@ -177,7 +164,6 @@ export default function NovoProduto() {
       if (await colExists('vagas_vendidas')) baseRecord.vagas_vendidas = 0;
       if (await colExists('ordem_exibicao')) baseRecord.ordem_exibicao = formData.Ordem_exibicao;
       if (await colExists('imagem_principal')) baseRecord.imagem_principal = imagemPrincipalUrl;
-      if (await colExists('galeria_imagens')) baseRecord.galeria_imagens = galeriaUrls.length > 0 ? galeriaUrls : null;
       if (await colExists('status')) baseRecord.status = isDraft ? 'indisponivel' : 'ativo';
       if (await colExists('meta_title')) baseRecord.meta_title = formData.Meta_Title || formData.Nome;
       if (await colExists('meta_description')) baseRecord.meta_description = formData.Meta_Description || formData.Descricao_Curta;
@@ -558,13 +544,6 @@ export default function NovoProduto() {
                       value={formData.Imagem_Principal}
                       onChange={(file) => setFormData({ ...formData, Imagem_Principal: file })}
                     />
-
-                    <div className="pt-4 border-t">
-                      <GalleryUpload
-                        value={formData.Imagem_Galeria}
-                        onChange={(files) => setFormData({ ...formData, Imagem_Galeria: files })}
-                      />
-                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>

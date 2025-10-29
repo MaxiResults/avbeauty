@@ -49,23 +49,6 @@ export function PreviewDialog({ produto, open, onOpenChange }: PreviewDialogProp
                 </div>
               )}
             </div>
-
-            {produto.galeria_imagens && produto.galeria_imagens.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm">Galeria</h4>
-                <div className="grid grid-cols-3 gap-2">
-                  {produto.galeria_imagens.map((img, idx) => (
-                    <div key={idx} className="aspect-square bg-muted rounded-lg overflow-hidden">
-                      <img
-                        src={img}
-                        alt={`Galeria ${idx + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           <div className="space-y-4">

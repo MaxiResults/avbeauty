@@ -10,7 +10,6 @@ export interface ProdutoDB {
   preco_padrao: number;
   preco_promocional: number | null;
   imagem_principal: string | null;
-  galeria_imagens: string[] | null;
   status: string;
   controla_estoque: boolean | null;
   vagas_disponiveis: number | null;
@@ -34,7 +33,6 @@ export interface Produto {
   preco_padrao: number;
   preco_promocional?: number;
   imagem_principal?: string;
-  galeria_imagens?: string[];
   status: string;
   controla_estoque?: boolean;
   vagas_disponiveis?: number;
@@ -67,7 +65,6 @@ export interface ProdutoFormData {
   Meta_Description: string;
   Observacoes: string;
   Imagem_Principal: File | string | null;
-  Imagem_Galeria: (File | string)[];
 }
 
 export const dbToProduto = (db: ProdutoDB): Produto => ({
@@ -82,7 +79,6 @@ export const dbToProduto = (db: ProdutoDB): Produto => ({
   preco_padrao: db.preco_padrao,
   preco_promocional: db.preco_promocional || undefined,
   imagem_principal: db.imagem_principal || undefined,
-  galeria_imagens: db.galeria_imagens || undefined,
   status: db.status,
   controla_estoque: db.controla_estoque || undefined,
   vagas_disponiveis: db.vagas_disponiveis || undefined,

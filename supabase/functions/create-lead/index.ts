@@ -37,7 +37,7 @@ serve(async (req) => {
         telefone, 
         canal_origem, 
         origem_url, 
-        status, 
+        status: "novo", 
         observacoes, 
         interesse,
         Cliente_ID: 2,

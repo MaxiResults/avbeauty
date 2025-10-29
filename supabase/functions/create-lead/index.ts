@@ -39,9 +39,7 @@ serve(async (req) => {
         origem_url, 
         status, 
         observacoes, 
-        interesse,
-        cliente_id: 2,
-        created_at: saoPauloTimestamp
+        interesse
       })
       .select()
       .maybeSingle();

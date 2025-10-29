@@ -93,9 +93,34 @@ export function FormularioCadastro({ cadastroCount }: FormularioCadastroProps) {
         });
 
       if (error) {
-        console.error('Erro ao cadastrar:', error);
-        toast.error('Erro ao cadastrar. Tente novamente.');
-        return;
+        // Fallback: se a tabela teaser não existir no banco EXTERNO, salvar em Leads_Cadastro
+        const errMsg = (error as any)?.message?.toLowerCase?.() || '';
+        const relationMissing = errMsg.includes('relation') && errMsg.includes('does not exist');
+
+        if (relationMissing) {
+          const { error: fallbackError } = await supabase
+            .from('Leads_Cadastro')
+            .insert({
+              cliente_id: 2,
+              origem_url: window.location.href,
+              canal_origem: 'teaser_black_friday',
+              nome: formData.nome,
+              telefone: telefoneFormatado,
+              email: formData.email,
+              interesse: 'black_friday_teaser',
+              status: 'cadastrado',
+            });
+
+          if (fallbackError) {
+            console.error('Erro fallback Leads_Cadastro:', fallbackError);
+            toast.error('Erro ao cadastrar. Tente novamente.');
+            return;
+          }
+        } else {
+          console.error('Erro ao cadastrar (teaser):', error);
+          toast.error('Erro ao cadastrar. Tente novamente.');
+          return;
+        }
       }
 
       // Redirecionar para página de obrigado

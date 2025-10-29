@@ -24,14 +24,15 @@ export function Hero() {
                 alt="Dra. Nicole Guedes"
                 className="w-80 h-[480px] object-cover rounded-3xl shadow-2xl"
               />
-              <div className="absolute -top-4 -right-4 bg-success text-white px-4 py-2 rounded-lg font-semibold text-sm animate-pulse">
-                🔥 Lote 1 Ativo Agora
-              </div>
             </div>
           </div>
 
           {/* Conteúdo */}
           <div className="w-full lg:w-3/5 text-center lg:text-left space-y-6">
+            <div className="inline-flex items-center gap-2 bg-success text-white px-6 py-3 rounded-full font-semibold text-sm animate-pulse shadow-lg">
+              🔥 Lote 1 Ativo Agora
+            </div>
+            
             <p className="text-[#97624b] uppercase font-semibold text-sm tracking-wider">
               BLACK FRIDAY 2024
             </p>

@@ -13,6 +13,8 @@ import Auth from "./pages/Auth";
 import BlackFriday from "./pages/BlackFriday";
 import Checkout from "./pages/Checkout";
 import PedidoConfirmacao from "./pages/PedidoConfirmacao";
+import CadastroBlackFriday from "./pages/CadastroBlackFriday";
+import Obrigado from "./pages/Obrigado";
 
 // Admin
 import Login from "./pages/admin/Login";
@@ -43,6 +45,8 @@ const App = () => (
             {/* Loja Routes */}
             <Route path="/black-friday" element={<BlackFriday />} />
             <Route path="/promocao" element={<BlackFriday />} />
+            <Route path="/cadastro-black-friday" element={<CadastroBlackFriday />} />
+            <Route path="/obrigado" element={<Obrigado />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/pedido/:codigo" element={<PedidoConfirmacao />} />
             

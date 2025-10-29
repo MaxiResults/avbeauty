@@ -85,7 +85,7 @@ export default function EditarProduto() {
         Preco_Promocional: produtoData.preco_promocional || 0,
         Preco_Custo: 0,
         Tipo_Estoque: 'Ilimitado',
-        Controla_Estoque: produtoData.controlar_estoque ? 'S' : 'N',
+        Controla_Estoque: produtoData.controla_estoque ? 'S' : 'N',
         Vagas_Disponiveis: produtoData.vagas_disponiveis || 0,
         Status: produtoData.status === 'ativo' ? 'Disponível' : 'Indisponível',
         Principal_Destaque: false,
@@ -187,7 +187,7 @@ export default function EditarProduto() {
         desconto_percentual: formData.Preco_Promocional 
           ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
           : null,
-        controlar_estoque: formData.Controla_Estoque === 'S',
+        controla_estoque: formData.Controla_Estoque === 'S',
         vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
         ordem_exibicao: formData.Ordem_exibicao,
         imagem_principal: imagemPrincipalUrl,

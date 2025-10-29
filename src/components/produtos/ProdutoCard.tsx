@@ -85,7 +85,7 @@ export function ProdutoCard({ produto, onDelete, onPreview }: ProdutoCardProps) 
         </div>
 
         <div className="flex items-center gap-3 text-sm text-muted-foreground pt-2 border-t">
-          {produto.controlar_estoque && produto.vagas_disponiveis && (
+          {produto.controla_estoque && produto.vagas_disponiveis && (
             <span className="flex items-center gap-1">
               <Package className="w-4 h-4" />
               Estoque Limitado

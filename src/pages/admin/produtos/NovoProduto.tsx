@@ -177,7 +177,7 @@ export default function NovoProduto() {
           ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
           : null;
       }
-      if (await colExists('controlar_estoque')) baseRecord.controlar_estoque = formData.Controla_Estoque === 'S';
+      if (await colExists('controla_estoque')) baseRecord.controla_estoque = formData.Controla_Estoque === 'S';
       if (await colExists('vagas_disponiveis')) baseRecord.vagas_disponiveis = formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null;
       if (await colExists('vagas_vendidas')) baseRecord.vagas_vendidas = 0;
       if (await colExists('ordem_exibicao')) baseRecord.ordem_exibicao = formData.Ordem_exibicao;

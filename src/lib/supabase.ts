@@ -42,6 +42,7 @@ export async function submitLead(data: LeadData) {
       CP_3: null,
       Lead_Status: 'novo',
       Cliente_ID: 2,
+      empresa_id: 2,
     })
     .select()
     .single();

@@ -6,8 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { supabase } from '@/lib/supabase';
-import { supabase as cloud } from '@/integrations/supabase/client';
+import { submitLead } from '@/lib/supabase';
 
 interface FormularioCadastroProps {
   cadastroCount: number;
@@ -79,22 +78,18 @@ export function FormularioCadastro({ cadastroCount }: FormularioCadastroProps) {
         console.error('Erro ao obter IP:', error);
       }
 
-      // Enviar via Edge Function (sempre banco EXTERNO)
-      const { data: leadResp, error: leadErr } = await cloud.functions.invoke('create-lead', {
-        body: {
-          nome: formData.nome,
-          email: formData.email,
-          telefone: telefoneFormatado,
-          canal_origem: 'teaser_black_friday',
-          origem_url: window.location.href,
-          status: 'cadastrado',
-          interesse: 'black_friday_teaser',
-          observacoes: `link_exclusivo:${linkExclusivo}`,
-        },
-      });
-
-      if (leadErr) {
-        console.error('Erro create-lead:', leadErr);
+      // Salvar diretamente em Leads_Site (sempre banco EXTERNO)
+      try {
+        await submitLead({
+          site_url: window.location.href,
+          lead_nome: formData.nome,
+          lead_telefone: telefoneFormatado,
+          lead_email: formData.email,
+          lead_interest: 'black_friday_teaser',
+          lead_obs: `link_exclusivo:${linkExclusivo}${ipCadastro ? `|ip:${ipCadastro}` : ''}`,
+        });
+      } catch (leadErr) {
+        console.error('Erro ao salvar lead:', leadErr);
         toast.error('Erro ao cadastrar. Tente novamente.');
         return;
       }

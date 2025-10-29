@@ -156,45 +156,42 @@ export default function NovoProduto() {
         }
       };
 
+      // Campos mínimos (devem existir em qualquer schema)
       const baseRecord: any = {
         cliente_id: 2,
         empresa_id: 2,
         nome: formData.Nome,
         slug: formData.Slug,
-        descricao_curta: formData.Descricao_Curta,
-        descricao_completa: formData.Descricao_Completa || null,
-        categoria: formData.Categoria || null,
         preco_padrao: formData.Preco_Padrao,
-        preco_promocional: formData.Preco_Promocional || null,
-        desconto_percentual: formData.Preco_Promocional 
-          ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
-          : null,
-        ordem_exibicao: formData.Ordem_exibicao,
-        imagem_principal: imagemPrincipalUrl,
-        galeria_imagens: galeriaUrls.length > 0 ? galeriaUrls : null,
-        status: isDraft ? 'indisponivel' : 'ativo',
-        meta_title: formData.Meta_Title || formData.Nome,
-        meta_description: formData.Meta_Description || formData.Descricao_Curta,
       };
 
-      // Só inclui colunas se existirem no schema atual
-      if (await colExists('controlar_estoque')) {
-        baseRecord.controlar_estoque = formData.Controla_Estoque === 'S';
+      // Inclui campos somente se existirem no schema atual
+      if (await colExists('descricao_curta')) baseRecord.descricao_curta = formData.Descricao_Curta;
+      if (await colExists('descricao_completa')) baseRecord.descricao_completa = formData.Descricao_Completa || null;
+      if (await colExists('categoria')) baseRecord.categoria = formData.Categoria || null;
+      if (await colExists('preco_promocional')) baseRecord.preco_promocional = formData.Preco_Promocional || null;
+      if (await colExists('desconto_percentual')) {
+        baseRecord.desconto_percentual = formData.Preco_Promocional 
+          ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
+          : null;
       }
-      if (await colExists('vagas_disponiveis')) {
-        baseRecord.vagas_disponiveis = formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null;
-      }
-      if (await colExists('vagas_vendidas')) {
-        baseRecord.vagas_vendidas = 0;
-      }
+      if (await colExists('controlar_estoque')) baseRecord.controlar_estoque = formData.Controla_Estoque === 'S';
+      if (await colExists('vagas_disponiveis')) baseRecord.vagas_disponiveis = formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null;
+      if (await colExists('vagas_vendidas')) baseRecord.vagas_vendidas = 0;
+      if (await colExists('ordem_exibicao')) baseRecord.ordem_exibicao = formData.Ordem_exibicao;
+      if (await colExists('imagem_principal')) baseRecord.imagem_principal = imagemPrincipalUrl;
+      if (await colExists('galeria_imagens')) baseRecord.galeria_imagens = galeriaUrls.length > 0 ? galeriaUrls : null;
+      if (await colExists('status')) baseRecord.status = isDraft ? 'indisponivel' : 'ativo';
+      if (await colExists('meta_title')) baseRecord.meta_title = formData.Meta_Title || formData.Nome;
+      if (await colExists('meta_description')) baseRecord.meta_description = formData.Meta_Description || formData.Descricao_Curta;
 
       let { error } = await supabase.from('produtos').insert([baseRecord]);
 
       // Fallback defensivo caso o schema mude e gere erro de cache/coluna
       if (error && /schema cache|Could not find/.test(error.message)) {
-        delete baseRecord.controlar_estoque;
-        delete baseRecord.vagas_disponiveis;
-        ({ error } = await supabase.from('produtos').insert([baseRecord]));
+        // remove campos possivelmente inexistentes e tenta novamente com o mínimo
+        const safeRecord: any = { cliente_id: 2, empresa_id: 2, nome: formData.Nome, slug: formData.Slug, preco_padrao: formData.Preco_Padrao };
+        ({ error } = await supabase.from('produtos').insert([safeRecord]));
       }
 
       if (error) throw error;

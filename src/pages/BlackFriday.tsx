@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { Hero } from '@/components/loja/Hero';
 import { Contador } from '@/components/loja/Contador';
 import { ComoFunciona } from '@/components/loja/ComoFunciona';

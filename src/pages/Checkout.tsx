@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/hooks/useCart';
 import { CheckoutForm } from '@/components/loja/CheckoutForm';
 import { OrderSummary } from '@/components/loja/OrderSummary';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 

@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { toZonedTime } from 'date-fns-tz';
 
 const TIMEZONE = 'America/Sao_Paulo';
@@ -13,26 +13,31 @@ export const uploadProdutoImage = async (file: File): Promise<string> => {
     throw new Error('Usuário não autenticado. Faça login para fazer upload.');
   }
 
-  // Usa o método correto do Supabase client integrado
+  // Envia o arquivo para a função de backend que faz o upload com service role
   try {
+    const { SUPABASE_FUNCTIONS_URL, SUPABASE_ANON_KEY } = await import('@/lib/supabase');
+
     const form = new FormData();
     form.append('file', file);
     form.append('pathPrefix', '2/2');
 
-    const { data, error } = await supabase.functions.invoke('upload-produto-image', {
+    const resp = await fetch(`${SUPABASE_FUNCTIONS_URL}/upload-produto-image`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        apikey: SUPABASE_ANON_KEY,
+      },
       body: form,
     });
 
-    if (error) {
-      console.error('❌ Erro na função upload-produto-image:', error);
-      throw new Error(`Erro ao fazer upload: ${error.message}`);
+    if (!resp.ok) {
+      const text = await resp.text();
+      console.error('❌ Erro na função upload-produto-image:', text);
+      throw new Error(`Erro ao fazer upload: ${text}`);
     }
 
-    if (!data || !data.publicUrl) {
-      throw new Error('Resposta inválida da função de upload');
-    }
-
-    return data.publicUrl as string;
+    const json = await resp.json();
+    return json.publicUrl as string;
   } catch (err) {
     console.error('❌ Erro no upload via função:', err);
     throw err instanceof Error ? err : new Error(String(err));
@@ -41,9 +46,6 @@ export const uploadProdutoImage = async (file: File): Promise<string> => {
 
 export const deleteProdutoImage = async (imageUrl: string): Promise<void> => {
   try {
-    // Importa o cliente integrado
-    const { supabase: integratedSupabase } = await import('@/integrations/supabase/client');
-    
     // Extrair o caminho do arquivo da URL
     const url = new URL(imageUrl);
     const pathParts = url.pathname.split('/produtos/');
@@ -51,7 +53,7 @@ export const deleteProdutoImage = async (imageUrl: string): Promise<void> => {
     
     const filePath = pathParts[1];
 
-    const { error } = await integratedSupabase.storage
+    const { error } = await supabase.storage
       .from('produtos')
       .remove([filePath]);
 

@@ -17,54 +17,32 @@ serve(async (req) => {
   }
 
   try {
-    // Usar variáveis do ambiente integrado
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    // USA BANCO EXTERNO SEMPRE
+    const supabaseUrl = Deno.env.get("EXT_SUPABASE_URL");
+    const serviceKey = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY");
 
     if (!supabaseUrl || !serviceKey) {
-      console.error("❌ Variáveis não configuradas:", { supabaseUrl: !!supabaseUrl, serviceKey: !!serviceKey });
+      console.error("❌ Variáveis do banco EXTERNO não configuradas:", { supabaseUrl: !!supabaseUrl, serviceKey: !!serviceKey });
       return new Response(
-        JSON.stringify({ error: "Backend misconfigured: missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" }),
+        JSON.stringify({ error: "Backend misconfigured: missing EXT_SUPABASE_URL or EXT_SUPABASE_SERVICE_ROLE_KEY" }),
         { status: 500, headers: corsHeaders }
       );
     }
 
+    console.log("✅ Usando banco externo:", supabaseUrl);
     const supabase = createClient(supabaseUrl, serviceKey);
 
     const contentType = req.headers.get("content-type") || "";
-    
-    // Aceita tanto multipart/form-data direto quanto application/json do supabase.functions.invoke
-    let file: File | null = null;
-    let pathPrefix = "2/2";
-
-    if (contentType.includes("multipart/form-data")) {
-      const formData = await req.formData();
-      file = formData.get("file") as File | null;
-      pathPrefix = String(formData.get("pathPrefix") || "2/2");
-    } else if (contentType.includes("application/json")) {
-      // Quando chamado via supabase.functions.invoke, o body pode vir como JSON
-      const body = await req.json();
-      if (body.file) {
-        // Reconstrói o arquivo a partir do JSON
-        const base64Data = body.file.data || body.file;
-        const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-        file = new File([binaryData], body.file.name || 'upload.jpg', { type: body.file.type || 'image/jpeg' });
-      }
-      pathPrefix = body.pathPrefix || "2/2";
-    } else {
-      // Tenta ler como FormData de qualquer forma
-      try {
-        const formData = await req.formData();
-        file = formData.get("file") as File | null;
-        pathPrefix = String(formData.get("pathPrefix") || "2/2");
-      } catch (e) {
-        console.error("❌ Erro ao processar corpo da requisição:", e);
-        return new Response(JSON.stringify({ error: "Formato de requisição inválido" }), {
-          status: 400,
-          headers: corsHeaders,
-        });
-      }
+    if (!contentType.includes("multipart/form-data")) {
+      return new Response(JSON.stringify({ error: "Use multipart/form-data with a 'file' field" }), {
+        status: 400,
+        headers: corsHeaders,
+      });
     }
+
+    const formData = await req.formData();
+    const file = formData.get("file") as File | null;
+    const pathPrefix = String(formData.get("pathPrefix") || "2/2");
 
     if (!file) {
       return new Response(JSON.stringify({ error: "Campo 'file' é obrigatório" }), {
@@ -80,7 +58,7 @@ serve(async (req) => {
     const fileName = `${Date.now()}_${sanitizedName}`;
     const filePath = `${pathPrefix}/${fileName}`;
 
-    console.log("📤 Fazendo upload para:", filePath);
+    console.log("📤 Fazendo upload para banco EXTERNO:", filePath);
 
     const { error: uploadError } = await supabase.storage
       .from("produtos")
@@ -101,7 +79,7 @@ serve(async (req) => {
 
     const { data: urlData } = supabase.storage.from("produtos").getPublicUrl(filePath);
     
-    console.log("✅ Upload concluído:", urlData.publicUrl);
+    console.log("✅ Upload concluído no banco EXTERNO:", urlData.publicUrl);
 
     return new Response(
       JSON.stringify({ publicUrl: urlData.publicUrl, path: filePath }),

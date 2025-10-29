@@ -173,14 +173,36 @@ export default function EditarProduto() {
         codigo_externo: formData.Codigo_Externo || null,
         preco_padrao: formData.Preco_Padrao,
         preco_promocional: formData.Preco_Promocional || null,
-        controla_estoque: formData.Controla_Estoque === 'S',
         ordem_exibicao: formData.Ordem_exibicao,
         imagem_principal: imagemPrincipalUrl,
-        imagem_galeria: galeriaUrls,
         status: formData.Status === 'Disponível' ? 'ativo' : 'indisponivel',
         meta_title: formData.Meta_Title || formData.Nome,
         meta_description: formData.Meta_Description || formData.Descricao_Curta,
       };
+
+      // Checa colunas para compatibilidade entre ambientes e caches
+      const colExists = async (col: string) => {
+        try {
+          const { error } = await supabase.from('produtos').select(col).limit(1);
+          return !error;
+        } catch {
+          return false;
+        }
+      };
+
+      // controla_estoque vs controlar_estoque
+      if (await colExists('controla_estoque')) {
+        updateRecord.controla_estoque = formData.Controla_Estoque === 'S';
+      } else if (await colExists('controlar_estoque')) {
+        updateRecord.controlar_estoque = formData.Controla_Estoque === 'S';
+      }
+
+      // imagem_galeria vs galeria_imagens
+      if (await colExists('imagem_galeria')) {
+        updateRecord.imagem_galeria = galeriaUrls;
+      } else if (await colExists('galeria_imagens')) {
+        updateRecord.galeria_imagens = galeriaUrls;
+      }
 
       const { error } = await supabase
         .from('produtos')

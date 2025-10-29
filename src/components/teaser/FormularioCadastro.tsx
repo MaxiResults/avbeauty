@@ -78,49 +78,25 @@ export function FormularioCadastro({ cadastroCount }: FormularioCadastroProps) {
         console.error('Erro ao obter IP:', error);
       }
 
-      // Salvar no Supabase
+      // Salvar diretamente na Leads_Cadastro (banco externo)
       const { error } = await supabase
-        .from('leads_cadastro_teaser')
+        .from('Leads_Cadastro')
         .insert({
           cliente_id: 2,
-          empresa_id: 2,
+          origem_url: window.location.href,
+          canal_origem: 'teaser_black_friday',
           nome: formData.nome,
           telefone: telefoneFormatado,
           email: formData.email,
-          link_exclusivo: linkExclusivo,
+          interesse: 'black_friday_teaser',
           status: 'cadastrado',
-          ip_cadastro: ipCadastro,
+          observacoes: `link_exclusivo:${linkExclusivo}`,
         });
 
       if (error) {
-        // Fallback: se a tabela teaser não existir no banco EXTERNO, salvar em Leads_Cadastro
-        const errMsg = (error as any)?.message?.toLowerCase?.() || '';
-        const relationMissing = errMsg.includes('relation') && errMsg.includes('does not exist');
-
-        if (relationMissing) {
-          const { error: fallbackError } = await supabase
-            .from('Leads_Cadastro')
-            .insert({
-              cliente_id: 2,
-              origem_url: window.location.href,
-              canal_origem: 'teaser_black_friday',
-              nome: formData.nome,
-              telefone: telefoneFormatado,
-              email: formData.email,
-              interesse: 'black_friday_teaser',
-              status: 'cadastrado',
-            });
-
-          if (fallbackError) {
-            console.error('Erro fallback Leads_Cadastro:', fallbackError);
-            toast.error('Erro ao cadastrar. Tente novamente.');
-            return;
-          }
-        } else {
-          console.error('Erro ao cadastrar (teaser):', error);
-          toast.error('Erro ao cadastrar. Tente novamente.');
-          return;
-        }
+        console.error('Erro ao cadastrar lead:', error);
+        toast.error('Erro ao cadastrar. Tente novamente.');
+        return;
       }
 
       // Redirecionar para página de obrigado

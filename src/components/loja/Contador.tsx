@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 // CONFIGURAÇÃO: Defina a data de término do Lote 1
-const DATA_FIM_LOTE_1 = new Date('2025-12-31T23:59:59');
+const DATA_FIM_LOTE_1 = new Date('2025-11-12T23:59:59');
 
 export function Contador() {
   const [tempo, setTempo] = useState({
@@ -86,7 +86,7 @@ export function Contador() {
           </div>
 
           <p className="text-base lg:text-lg text-[#f59e0b] font-medium">
-            ⚠️ Após este prazo, os preços sobem!
+            Corre que o tempo tá acabando
           </p>
         </div>
       </div>

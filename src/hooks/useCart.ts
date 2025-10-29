@@ -20,15 +20,48 @@ export function useCart() {
 
   // Carregar carrinho do localStorage
   useEffect(() => {
-    const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-    if (savedCart) {
-      try {
-        const data = JSON.parse(savedCart);
-        setCart(data.carrinho || []);
-      } catch (error) {
-        console.error('Erro ao carregar carrinho:', error);
+    const loadFromStorage = () => {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      if (savedCart) {
+        try {
+          const data = JSON.parse(savedCart);
+          setCart(data.carrinho || []);
+        } catch (error) {
+          console.error('Erro ao carregar carrinho:', error);
+        }
+      } else {
+        setCart([]);
       }
-    }
+    };
+
+    loadFromStorage();
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === CART_STORAGE_KEY) {
+        try {
+          const data = e.newValue ? JSON.parse(e.newValue) : { carrinho: [] };
+          setCart(data.carrinho || []);
+        } catch {}
+      }
+    };
+
+    const onCartChanged = (e: Event) => {
+      // @ts-ignore - custom event detail
+      const detail = (e as CustomEvent).detail;
+      if (detail?.cart) {
+        setCart(detail.cart);
+      } else {
+        loadFromStorage();
+      }
+    };
+
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('cart:changed', onCartChanged as EventListener);
+
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('cart:changed', onCartChanged as EventListener);
+    };
   }, []);
 
   // Salvar carrinho no localStorage
@@ -41,6 +74,10 @@ export function useCart() {
       })
     );
     setCart(newCart);
+    // Notifica todas as instâncias do hook para sincronizar imediatamente
+    window.dispatchEvent(
+      new CustomEvent('cart:changed', { detail: { cart: newCart } })
+    );
   };
 
   // Adicionar ao carrinho
@@ -99,6 +136,9 @@ export function useCart() {
   const clearCart = () => {
     localStorage.removeItem(CART_STORAGE_KEY);
     setCart([]);
+    window.dispatchEvent(
+      new CustomEvent('cart:changed', { detail: { cart: [] } })
+    );
   };
 
   // Calcular totais

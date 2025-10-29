@@ -204,6 +204,11 @@ export default function EditarProduto() {
         updateRecord.galeria_imagens = galeriaUrls;
       }
 
+      // Campos adicionais
+      if (await colExists('preco_custo')) updateRecord.preco_custo = formData.Preco_Custo || null;
+      if (await colExists('principal_destaque')) updateRecord.principal_destaque = !!formData.Principal_Destaque;
+      if (await colExists('observacoes')) updateRecord.observacoes = formData.Observacoes || null;
+
       const { error } = await supabase
         .from('produtos')
         .update(updateRecord)

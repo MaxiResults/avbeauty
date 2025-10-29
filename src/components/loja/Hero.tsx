@@ -37,10 +37,7 @@ export function Hero() {
             </p>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#292823] leading-tight">
-              Sorrisos que encantam,
-              <br />
-              resultados que{' '}
-              <span className="text-[#3a4934]">transformam</span>
+              A maior promoção do ano chegou
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-600">
@@ -49,7 +46,7 @@ export function Hero() {
 
             <div className="bg-[#3a4934] text-white inline-block px-6 py-3 rounded-lg">
               <p className="text-2xl md:text-3xl font-bold">
-                Até 50% OFF em procedimentos selecionados
+                Descontos imperdíveis em procedimentos selecionados!
               </p>
             </div>
 

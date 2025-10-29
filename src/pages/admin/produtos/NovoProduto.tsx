@@ -167,7 +167,7 @@ export default function NovoProduto() {
       if (await colExists('descricao_completa')) baseRecord.descricao_completa = formData.Descricao_Completa || null;
       if (await colExists('categoria')) baseRecord.categoria = formData.Categoria || null;
       if (await colExists('preco_promocional')) baseRecord.preco_promocional = formData.Preco_Promocional || null;
-      if (await colExists('controlar_estoque')) baseRecord.controlar_estoque = formData.Controla_Estoque === 'S';
+      if (await colExists('controla_estoque')) baseRecord.controla_estoque = formData.Controla_Estoque === 'S';
       if (await colExists('vagas_vendidas')) baseRecord.vagas_vendidas = 0;
       if (await colExists('ordem_exibicao')) baseRecord.ordem_exibicao = formData.Ordem_exibicao;
       if (await colExists('imagem_principal')) baseRecord.imagem_principal = imagemPrincipalUrl;

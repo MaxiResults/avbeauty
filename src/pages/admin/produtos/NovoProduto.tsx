@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ImageUpload } from '@/components/produtos/ImageUpload';
+import { GalleryUpload } from '@/components/produtos/GalleryUpload';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { uploadProdutoImage } from '@/lib/uploadHelpers';
@@ -39,7 +40,6 @@ export default function NovoProduto() {
     Preco_Custo: 0,
     Tipo_Estoque: 'Ilimitado',
     Controla_Estoque: 'N',
-    Vagas_Disponiveis: 0,
     Status: 'Disponível',
     Principal_Destaque: false,
     Ordem_exibicao: 1,
@@ -47,6 +47,7 @@ export default function NovoProduto() {
     Meta_Description: '',
     Observacoes: '',
     Imagem_Principal: null,
+    Imagem_Galeria: [],
   });
 
   useEffect(() => {
@@ -115,10 +116,6 @@ export default function NovoProduto() {
       toast.error('Imagem principal é obrigatória');
       return false;
     }
-    if (formData.Tipo_Estoque === 'Limitado' && formData.Controla_Estoque === 'S' && formData.Vagas_Disponiveis <= 0) {
-      toast.error('Vagas disponíveis é obrigatório para estoque controlado');
-      return false;
-    }
     return true;
   };
 
@@ -131,6 +128,17 @@ export default function NovoProduto() {
       let imagemPrincipalUrl = '';
       if (formData.Imagem_Principal instanceof File) {
         imagemPrincipalUrl = await uploadProdutoImage(formData.Imagem_Principal);
+      }
+
+      // Upload de imagens da galeria
+      const galeriaUrls: string[] = [];
+      for (const item of formData.Imagem_Galeria) {
+        if (item instanceof File) {
+          const url = await uploadProdutoImage(item);
+          galeriaUrls.push(url);
+        } else {
+          galeriaUrls.push(item);
+        }
       }
 
       // Verifica colunas opcionalmente presentes no banco externo
@@ -160,10 +168,10 @@ export default function NovoProduto() {
       if (await colExists('categoria')) baseRecord.categoria = formData.Categoria || null;
       if (await colExists('preco_promocional')) baseRecord.preco_promocional = formData.Preco_Promocional || null;
       if (await colExists('controla_estoque')) baseRecord.controla_estoque = formData.Controla_Estoque === 'S';
-      if (await colExists('vagas_disponiveis')) baseRecord.vagas_disponiveis = formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null;
       if (await colExists('vagas_vendidas')) baseRecord.vagas_vendidas = 0;
       if (await colExists('ordem_exibicao')) baseRecord.ordem_exibicao = formData.Ordem_exibicao;
       if (await colExists('imagem_principal')) baseRecord.imagem_principal = imagemPrincipalUrl;
+      if (await colExists('imagem_galeria')) baseRecord.imagem_galeria = galeriaUrls;
       if (await colExists('status')) baseRecord.status = isDraft ? 'indisponivel' : 'ativo';
       if (await colExists('meta_title')) baseRecord.meta_title = formData.Meta_Title || formData.Nome;
       if (await colExists('meta_description')) baseRecord.meta_description = formData.Meta_Description || formData.Descricao_Curta;
@@ -505,25 +513,8 @@ export default function NovoProduto() {
                           />
                         </div>
 
-                        {formData.Controla_Estoque === 'S' && (
-                          <div>
-                            <Label htmlFor="vagas">Vagas Disponíveis *</Label>
-                            <Input
-                              id="vagas"
-                              type="number"
-                              min="0"
-                              placeholder="Ex: 20"
-                              value={formData.Vagas_Disponiveis || ''}
-                              onChange={(e) => setFormData({ ...formData, Vagas_Disponiveis: parseInt(e.target.value) || 0 })}
-                            />
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Quantidade de vagas disponíveis
-                            </p>
-                          </div>
-                        )}
-
                         <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg text-sm">
-                          ⚠️ Quando as vagas acabarem, o produto ficará indisponível automaticamente
+                          ⚠️ O estoque será controlado conforme as vendas
                         </div>
                       </>
                     )}
@@ -543,6 +534,11 @@ export default function NovoProduto() {
                       required
                       value={formData.Imagem_Principal}
                       onChange={(file) => setFormData({ ...formData, Imagem_Principal: file })}
+                    />
+                    
+                    <GalleryUpload
+                      value={formData.Imagem_Galeria}
+                      onChange={(files) => setFormData({ ...formData, Imagem_Galeria: files })}
                     />
                   </CardContent>
                 </Card>

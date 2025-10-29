@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ImageUpload } from '@/components/produtos/ImageUpload';
+import { GalleryUpload } from '@/components/produtos/GalleryUpload';
 import { supabase } from '@/lib/supabase';
 import { uploadProdutoImage, deleteProdutoImage } from '@/lib/uploadHelpers';
 import { Produto, ProdutoDB, dbToProduto, ProdutoFormData } from '@/types/produto';
@@ -37,7 +38,6 @@ export default function EditarProduto() {
     Preco_Custo: 0,
     Tipo_Estoque: 'Ilimitado',
     Controla_Estoque: 'N',
-    Vagas_Disponiveis: 0,
     Status: 'Disponível',
     Principal_Destaque: false,
     Ordem_exibicao: 1,
@@ -45,8 +45,10 @@ export default function EditarProduto() {
     Meta_Description: '',
     Observacoes: '',
     Imagem_Principal: null,
+    Imagem_Galeria: [],
   });
   const [imagemPrincipalOriginal, setImagemPrincipalOriginal] = useState<string | null>(null);
+  const [galeriaOriginal, setGaleriaOriginal] = useState<string[]>([]);
 
   useEffect(() => {
     fetchProduto();
@@ -68,6 +70,7 @@ export default function EditarProduto() {
       const produtoData = dbToProduto(data as ProdutoDB);
       setProduto(produtoData);
       setImagemPrincipalOriginal(produtoData.imagem_principal || null);
+      setGaleriaOriginal(produtoData.imagem_galeria || []);
 
       setFormData({
         Nome: produtoData.nome,
@@ -82,7 +85,6 @@ export default function EditarProduto() {
         Preco_Custo: 0,
         Tipo_Estoque: 'Ilimitado',
         Controla_Estoque: produtoData.controla_estoque ? 'S' : 'N',
-        Vagas_Disponiveis: produtoData.vagas_disponiveis || 0,
         Status: produtoData.status === 'ativo' ? 'Disponível' : 'Indisponível',
         Principal_Destaque: false,
         Ordem_exibicao: produtoData.ordem_exibicao || 0,
@@ -90,6 +92,7 @@ export default function EditarProduto() {
         Meta_Description: produtoData.meta_description || '',
         Observacoes: '',
         Imagem_Principal: produtoData.imagem_principal || null,
+        Imagem_Galeria: produtoData.imagem_galeria || [],
       });
     } catch (error: any) {
       toast.error('Erro ao carregar produto: ' + error.message);
@@ -142,6 +145,23 @@ export default function EditarProduto() {
         }
       }
 
+      // Upload de novas imagens da galeria
+      const galeriaUrls: string[] = [];
+      for (const item of formData.Imagem_Galeria) {
+        if (item instanceof File) {
+          const url = await uploadProdutoImage(item);
+          galeriaUrls.push(url);
+        } else {
+          galeriaUrls.push(item);
+        }
+      }
+
+      // Deletar imagens da galeria que foram removidas
+      const imagensRemovidas = galeriaOriginal.filter(url => !galeriaUrls.includes(url));
+      for (const url of imagensRemovidas) {
+        await deleteProdutoImage(url);
+      }
+
       // Monta o payload de atualização
       const updateRecord: any = {
         nome: formData.Nome,
@@ -154,9 +174,9 @@ export default function EditarProduto() {
         preco_padrao: formData.Preco_Padrao,
         preco_promocional: formData.Preco_Promocional || null,
         controla_estoque: formData.Controla_Estoque === 'S',
-        vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
         ordem_exibicao: formData.Ordem_exibicao,
         imagem_principal: imagemPrincipalUrl,
+        imagem_galeria: galeriaUrls,
         status: formData.Status === 'Disponível' ? 'ativo' : 'indisponivel',
         meta_title: formData.Meta_Title || formData.Nome,
         meta_description: formData.Meta_Description || formData.Descricao_Curta,
@@ -498,6 +518,11 @@ export default function EditarProduto() {
                       required
                       value={formData.Imagem_Principal}
                       onChange={(file) => setFormData({ ...formData, Imagem_Principal: file })}
+                    />
+                    
+                    <GalleryUpload
+                      value={formData.Imagem_Galeria}
+                      onChange={(files) => setFormData({ ...formData, Imagem_Galeria: files })}
                     />
                   </CardContent>
                 </Card>

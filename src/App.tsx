@@ -8,6 +8,13 @@ import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+
+// Loja
+import BlackFriday from "./pages/BlackFriday";
+import Checkout from "./pages/Checkout";
+import PedidoConfirmacao from "./pages/PedidoConfirmacao";
+
+// Admin
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import Campanhas from "./pages/admin/Campanhas";
@@ -32,6 +39,12 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            
+            {/* Loja Routes */}
+            <Route path="/black-friday" element={<BlackFriday />} />
+            <Route path="/promocao" element={<BlackFriday />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/pedido/:codigo" element={<PedidoConfirmacao />} />
             
             {/* Admin Routes */}
             <Route path="/admin/login" element={<Auth />} />

@@ -147,6 +147,19 @@ All colors MUST be HSL.
   .shadow-hover {
     box-shadow: var(--shadow-hover);
   }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
 }
 
 /* Darker scrollbar for chat */
@@ -165,4 +178,5 @@ All colors MUST be HSL.
   border-radius: 8px;
   border: 2px solid transparent;
 }
+
 

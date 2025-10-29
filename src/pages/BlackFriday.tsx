@@ -20,22 +20,20 @@ export default function BlackFriday() {
   const [nomeCliente, setNomeCliente] = useState('');
   const [accessChecked, setAccessChecked] = useState(false);
 
-  // Validar acesso exclusivo
+  // Verificar se tem link de acesso (apenas para tracking)
   useEffect(() => {
     const checkAccess = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const accessToken = urlParams.get('access');
 
+      // Se não tem token, permite acesso normalmente
       if (!accessToken) {
-        toast.error('⚠️ Acesso exclusivo apenas para cadastrados');
-        setTimeout(() => {
-          navigate('/cadastro-black-friday');
-        }, 2000);
+        setAccessChecked(true);
         return;
       }
 
+      // Se tem token, tenta validar e registrar acesso
       try {
-        // Validar token no Supabase (nomes de colunas em minúsculo)
         const { data: lead, error } = await supabase
           .from('leads_cadastro_teaser')
           .select('*')
@@ -44,35 +42,26 @@ export default function BlackFriday() {
           .eq('empresa_id', 2)
           .maybeSingle();
 
-        if (!lead || error) {
-          console.error('Erro ao validar lead:', error);
-          toast.error('❌ Link inválido ou expirado');
-          setTimeout(() => {
-            navigate('/cadastro-black-friday');
-          }, 2000);
-          return;
+        if (lead && !error) {
+          // Token válido! Registrar acesso
+          const dataAtual = new Date().toISOString();
+          await supabase
+            .from('leads_cadastro_teaser')
+            .update({
+              data_primeiro_acesso: lead.data_primeiro_acesso || dataAtual,
+              numero_acessos: (lead.numero_acessos || 0) + 1,
+            })
+            .eq('link_exclusivo', accessToken);
+
+          setNomeCliente(lead.nome);
+          toast.success(`Bem-vindo(a), ${lead.nome}! 🎉`);
         }
-
-        // Token válido! Registrar acesso
-        const dataAtual = new Date().toISOString();
-        await supabase
-          .from('leads_cadastro_teaser')
-          .update({
-            data_primeiro_acesso: lead.data_primeiro_acesso || dataAtual,
-            numero_acessos: (lead.numero_acessos || 0) + 1,
-          })
-          .eq('link_exclusivo', accessToken);
-
-        setNomeCliente(lead.nome);
-        toast.success(`Bem-vindo(a), ${lead.nome}! 🎉`);
-        setAccessChecked(true);
       } catch (error) {
         console.error('Erro ao validar acesso:', error);
-        toast.error('Erro ao validar acesso. Tente novamente.');
-        setTimeout(() => {
-          navigate('/cadastro-black-friday');
-        }, 2000);
       }
+      
+      // Permite acesso independente do resultado
+      setAccessChecked(true);
     };
 
     checkAccess();

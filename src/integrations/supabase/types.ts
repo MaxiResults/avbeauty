@@ -213,6 +213,57 @@ export type Database = {
         }
         Relationships: []
       }
+      leads_cadastro_teaser: {
+        Row: {
+          campanha_id: number | null
+          cliente_id: number
+          created_at: string | null
+          data_primeiro_acesso: string | null
+          email: string
+          empresa_id: number
+          id: string
+          ip_cadastro: string | null
+          link_exclusivo: string
+          nome: string
+          numero_acessos: number | null
+          status: string | null
+          telefone: string
+          updated_at: string | null
+        }
+        Insert: {
+          campanha_id?: number | null
+          cliente_id?: number
+          created_at?: string | null
+          data_primeiro_acesso?: string | null
+          email: string
+          empresa_id?: number
+          id?: string
+          ip_cadastro?: string | null
+          link_exclusivo: string
+          nome: string
+          numero_acessos?: number | null
+          status?: string | null
+          telefone: string
+          updated_at?: string | null
+        }
+        Update: {
+          campanha_id?: number | null
+          cliente_id?: number
+          created_at?: string | null
+          data_primeiro_acesso?: string | null
+          email?: string
+          empresa_id?: number
+          id?: string
+          ip_cadastro?: string | null
+          link_exclusivo?: string
+          nome?: string
+          numero_acessos?: number | null
+          status?: string | null
+          telefone?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       produtos: {
         Row: {
           categoria: string | null

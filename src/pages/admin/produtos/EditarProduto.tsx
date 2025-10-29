@@ -60,7 +60,7 @@ export default function EditarProduto() {
       setLoading(true);
       const { data, error } = await supabase
         .from('produtos')
-        .select('*, grupo, codigo_externo')
+        .select('*')
         .eq('id', parseInt(id!))
         .eq('cliente_id', 2)
         .eq('empresa_id', 2)
@@ -79,13 +79,13 @@ export default function EditarProduto() {
         Descricao_Curta: produtoData.descricao_curta || '',
         Descricao_Completa: produtoData.descricao_completa || '',
         Categoria: produtoData.categoria || '',
-        Grupo: (data as any).grupo || '',
-        Codigo_Externo: (data as any).codigo_externo || '',
+        Grupo: '',
+        Codigo_Externo: '',
         Preco_Padrao: produtoData.preco_padrao,
         Preco_Promocional: produtoData.preco_promocional || 0,
         Preco_Custo: 0,
         Tipo_Estoque: 'Ilimitado',
-        Controla_Estoque: produtoData.controla_estoque ? 'S' : 'N',
+        Controla_Estoque: produtoData.controlar_estoque ? 'S' : 'N',
         Vagas_Disponiveis: produtoData.vagas_disponiveis || 0,
         Status: produtoData.status === 'ativo' ? 'Disponível' : 'Indisponível',
         Principal_Destaque: false,
@@ -180,14 +180,12 @@ export default function EditarProduto() {
         descricao_curta: formData.Descricao_Curta,
         descricao_completa: formData.Descricao_Completa || null,
         categoria: formData.Categoria || null,
-        grupo: formData.Grupo || null,
-        codigo_externo: formData.Codigo_Externo || null,
         preco_padrao: formData.Preco_Padrao,
         preco_promocional: formData.Preco_Promocional || null,
         desconto_percentual: formData.Preco_Promocional 
           ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
           : null,
-        controla_estoque: formData.Controla_Estoque === 'S',
+        controlar_estoque: formData.Controla_Estoque === 'S',
         vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
         ordem_exibicao: formData.Ordem_exibicao,
         imagem_principal: imagemPrincipalUrl,

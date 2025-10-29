@@ -34,7 +34,7 @@ export default function BlackFriday() {
           preco_promocional,
           imagem_principal,
           galeria_imagens,
-          controla_estoque,
+          controlar_estoque,
           vagas_disponiveis,
           vagas_vendidas,
           ordem_exibicao

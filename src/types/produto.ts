@@ -13,7 +13,7 @@ export interface ProdutoDB {
   imagem_principal: string | null;
   galeria_imagens: string[] | null;
   status: string;
-  controla_estoque: boolean | null;
+  controlar_estoque: boolean | null;
   vagas_disponiveis: number | null;
   vagas_vendidas: number | null;
   ordem_exibicao: number | null;
@@ -38,7 +38,7 @@ export interface Produto {
   imagem_principal?: string;
   galeria_imagens?: string[];
   status: string;
-  controla_estoque?: boolean;
+  controlar_estoque?: boolean;
   vagas_disponiveis?: number;
   vagas_vendidas?: number;
   ordem_exibicao?: number;
@@ -87,7 +87,7 @@ export const dbToProduto = (db: ProdutoDB): Produto => ({
   imagem_principal: db.imagem_principal || undefined,
   galeria_imagens: db.galeria_imagens || undefined,
   status: db.status,
-  controla_estoque: db.controla_estoque || undefined,
+  controlar_estoque: db.controlar_estoque || undefined,
   vagas_disponiveis: db.vagas_disponiveis || undefined,
   vagas_vendidas: db.vagas_vendidas || undefined,
   ordem_exibicao: db.ordem_exibicao || undefined,

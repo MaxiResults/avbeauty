@@ -19,9 +19,6 @@ export function ProductCard({ produto }: ProductCardProps) {
     : 0;
   const economia = precoOriginal - precoPromocional;
   const parcelamento = precoPromocional / 12;
-  const vagasDisponiveis = produto.vagas_disponiveis 
-    ? produto.vagas_disponiveis - (produto.vagas_vendidas || 0)
-    : null;
 
   const handleAddToCart = () => {
     addToCart(produto);
@@ -51,11 +48,6 @@ export function ProductCard({ produto }: ProductCardProps) {
           {descontoPercentual > 0 && (
             <span className="bg-destructive text-white px-3 py-1 rounded-lg font-bold text-sm">
               {descontoPercentual}% OFF
-            </span>
-          )}
-          {vagasDisponiveis !== null && vagasDisponiveis > 0 && (
-            <span className="bg-warning text-white px-3 py-1 rounded-lg font-semibold text-sm ml-auto">
-              {vagasDisponiveis} vaga{vagasDisponiveis !== 1 ? 's' : ''}
             </span>
           )}
         </div>

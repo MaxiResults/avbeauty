@@ -94,7 +94,7 @@ export function PreviewDialog({ produto, open, onOpenChange }: PreviewDialogProp
               </div>
             </div>
 
-            {produto.controlar_estoque && produto.vagas_disponiveis && (
+            {produto.controla_estoque && produto.vagas_disponiveis && (
               <div className="flex items-center gap-2 text-sm p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                 <Package className="w-4 h-4" />
                 <span>Vagas limitadas disponíveis</span>

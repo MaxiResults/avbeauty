@@ -35,16 +35,17 @@ export default function BlackFriday() {
       }
 
       try {
-        // Validar token no Supabase
+        // Validar token no Supabase (nomes de colunas em minúsculo)
         const { data: lead, error } = await supabase
-          .from('Leads_Cadastro_Teaser')
+          .from('leads_cadastro_teaser')
           .select('*')
-          .eq('Link_Exclusivo', accessToken)
-          .eq('Cliente_ID', 2)
-          .eq('Empresa_ID', 2)
+          .eq('link_exclusivo', accessToken)
+          .eq('cliente_id', 2)
+          .eq('empresa_id', 2)
           .maybeSingle();
 
         if (!lead || error) {
+          console.error('Erro ao validar lead:', error);
           toast.error('❌ Link inválido ou expirado');
           setTimeout(() => {
             navigate('/cadastro-black-friday');
@@ -55,15 +56,15 @@ export default function BlackFriday() {
         // Token válido! Registrar acesso
         const dataAtual = new Date().toISOString();
         await supabase
-          .from('Leads_Cadastro_Teaser')
+          .from('leads_cadastro_teaser')
           .update({
-            Data_Primeiro_Acesso: lead.Data_Primeiro_Acesso || dataAtual,
-            Numero_Acessos: (lead.Numero_Acessos || 0) + 1,
+            data_primeiro_acesso: lead.data_primeiro_acesso || dataAtual,
+            numero_acessos: (lead.numero_acessos || 0) + 1,
           })
-          .eq('Link_Exclusivo', accessToken);
+          .eq('link_exclusivo', accessToken);
 
-        setNomeCliente(lead.Nome);
-        toast.success(`Bem-vindo(a), ${lead.Nome}! 🎉`);
+        setNomeCliente(lead.nome);
+        toast.success(`Bem-vindo(a), ${lead.nome}! 🎉`);
         setAccessChecked(true);
       } catch (error) {
         console.error('Erro ao validar acesso:', error);

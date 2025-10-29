@@ -80,16 +80,16 @@ export function FormularioCadastro({ cadastroCount }: FormularioCadastroProps) {
 
       // Salvar no Supabase
       const { error } = await supabase
-        .from('Leads_Cadastro_Teaser')
+        .from('leads_cadastro_teaser')
         .insert({
-          Cliente_ID: 2,
-          Empresa_ID: 2,
-          Nome: formData.nome,
-          Telefone: telefoneFormatado,
-          Email: formData.email,
-          Link_Exclusivo: linkExclusivo,
-          Status: 'cadastrado',
-          IP_Cadastro: ipCadastro,
+          cliente_id: 2,
+          empresa_id: 2,
+          nome: formData.nome,
+          telefone: telefoneFormatado,
+          email: formData.email,
+          link_exclusivo: linkExclusivo,
+          status: 'cadastrado',
+          ip_cadastro: ipCadastro,
         });
 
       if (error) {

@@ -5,8 +5,9 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export const LOVABLE_FUNCTIONS_BASE = 'https://prjylrbuvfgbirpgkeza.functions.supabase.co/functions/v1';
-export const LOVABLE_ANON = 'VRoaXO9doXjPXoYYfcmPRXQJbP7K-TmZsB6IIVV4DS4';
+// Edge functions base URL para o banco externo
+export const SUPABASE_FUNCTIONS_URL = 'https://sunccjukvrximjiqzdkm.supabase.co/functions/v1';
+export const SUPABASE_ANON_KEY = supabaseAnonKey;
 
 export interface LeadData {
   site_url: string;

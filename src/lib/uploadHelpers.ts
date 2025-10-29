@@ -15,17 +15,17 @@ export const uploadProdutoImage = async (file: File): Promise<string> => {
 
   // Envia o arquivo para a função de backend que faz o upload com service role
   try {
-    const { LOVABLE_FUNCTIONS_BASE, LOVABLE_ANON } = await import('@/lib/supabase');
+    const { SUPABASE_FUNCTIONS_URL, SUPABASE_ANON_KEY } = await import('@/lib/supabase');
 
     const form = new FormData();
     form.append('file', file);
     form.append('pathPrefix', '2/2'); // padrão atual do projeto
 
-    const resp = await fetch(`${LOVABLE_FUNCTIONS_BASE}/upload-produto-image`, {
+    const resp = await fetch(`${SUPABASE_FUNCTIONS_URL}/upload-produto-image`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${LOVABLE_ANON}`,
-        apikey: LOVABLE_ANON,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        apikey: SUPABASE_ANON_KEY,
       },
       body: form,
     });

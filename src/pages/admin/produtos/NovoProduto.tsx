@@ -172,11 +172,6 @@ export default function NovoProduto() {
       if (await colExists('descricao_completa')) baseRecord.descricao_completa = formData.Descricao_Completa || null;
       if (await colExists('categoria')) baseRecord.categoria = formData.Categoria || null;
       if (await colExists('preco_promocional')) baseRecord.preco_promocional = formData.Preco_Promocional || null;
-      if (await colExists('desconto_percentual')) {
-        baseRecord.desconto_percentual = formData.Preco_Promocional 
-          ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
-          : null;
-      }
       if (await colExists('controla_estoque')) baseRecord.controla_estoque = formData.Controla_Estoque === 'S';
       if (await colExists('vagas_disponiveis')) baseRecord.vagas_disponiveis = formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null;
       if (await colExists('vagas_vendidas')) baseRecord.vagas_vendidas = 0;

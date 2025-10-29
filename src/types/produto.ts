@@ -9,7 +9,6 @@ export interface ProdutoDB {
   categoria: string | null;
   preco_padrao: number;
   preco_promocional: number | null;
-  desconto_percentual: number | null;
   imagem_principal: string | null;
   galeria_imagens: string[] | null;
   status: string;
@@ -34,7 +33,6 @@ export interface Produto {
   categoria?: string;
   preco_padrao: number;
   preco_promocional?: number;
-  desconto_percentual?: number;
   imagem_principal?: string;
   galeria_imagens?: string[];
   status: string;
@@ -83,7 +81,6 @@ export const dbToProduto = (db: ProdutoDB): Produto => ({
   categoria: db.categoria || undefined,
   preco_padrao: db.preco_padrao,
   preco_promocional: db.preco_promocional || undefined,
-  desconto_percentual: db.desconto_percentual || undefined,
   imagem_principal: db.imagem_principal || undefined,
   galeria_imagens: db.galeria_imagens || undefined,
   status: db.status,

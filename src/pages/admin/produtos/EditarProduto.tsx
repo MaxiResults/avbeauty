@@ -184,9 +184,6 @@ export default function EditarProduto() {
         codigo_externo: formData.Codigo_Externo || null,
         preco_padrao: formData.Preco_Padrao,
         preco_promocional: formData.Preco_Promocional || null,
-        desconto_percentual: formData.Preco_Promocional 
-          ? Math.round(((formData.Preco_Padrao - formData.Preco_Promocional) / formData.Preco_Padrao) * 100)
-          : null,
         controla_estoque: formData.Controla_Estoque === 'S',
         vagas_disponiveis: formData.Controla_Estoque === 'S' ? formData.Vagas_Disponiveis : null,
         ordem_exibicao: formData.Ordem_exibicao,

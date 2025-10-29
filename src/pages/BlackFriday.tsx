@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
+import { supabase as cloud } from '@/integrations/supabase/client';
 import { Hero } from '@/components/loja/Hero';
 import { Contador } from '@/components/loja/Contador';
 import { ComoFunciona } from '@/components/loja/ComoFunciona';
@@ -75,28 +76,11 @@ export default function BlackFriday() {
 
   const loadProdutos = async () => {
     try {
-      const { data, error } = await supabase
-        .from('produtos')
-        .select(`
-          id,
-          nome,
-          slug,
-          descricao_curta,
-          categoria,
-          preco_padrao,
-          preco_promocional,
-          imagem_principal,
-          controla_estoque,
-          vagas_vendidas,
-          ordem_exibicao
-        `)
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
-        .eq('status', 'ativo')
-        .order('ordem_exibicao', { ascending: true });
-
+      // Buscar via Edge Function (banco EXTERNO, ignora RLS)
+      const { data, error } = await cloud.functions.invoke('get-produtos-public');
       if (error) throw error;
-      setProdutos(data || []);
+      const lista = (data as any)?.produtos ?? [];
+      setProdutos(lista);
     } catch (error) {
       console.error('Erro ao carregar produtos:', error);
     } finally {

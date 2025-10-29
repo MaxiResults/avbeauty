@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
+import { supabase as cloud } from '@/integrations/supabase/client';
 
 interface FormularioCadastroProps {
   cadastroCount: number;
@@ -78,23 +79,22 @@ export function FormularioCadastro({ cadastroCount }: FormularioCadastroProps) {
         console.error('Erro ao obter IP:', error);
       }
 
-      // Salvar diretamente na Leads_Cadastro (banco externo)
-      const { error } = await supabase
-        .from('Leads_Cadastro')
-        .insert({
-          cliente_id: 2,
-          origem_url: window.location.href,
-          canal_origem: 'teaser_black_friday',
+      // Enviar via Edge Function (sempre banco EXTERNO)
+      const { data: leadResp, error: leadErr } = await cloud.functions.invoke('create-lead', {
+        body: {
           nome: formData.nome,
-          telefone: telefoneFormatado,
           email: formData.email,
-          interesse: 'black_friday_teaser',
+          telefone: telefoneFormatado,
+          canal_origem: 'teaser_black_friday',
+          origem_url: window.location.href,
           status: 'cadastrado',
+          interesse: 'black_friday_teaser',
           observacoes: `link_exclusivo:${linkExclusivo}`,
-        });
+        },
+      });
 
-      if (error) {
-        console.error('Erro ao cadastrar lead:', error);
+      if (leadErr) {
+        console.error('Erro create-lead:', leadErr);
         toast.error('Erro ao cadastrar. Tente novamente.');
         return;
       }

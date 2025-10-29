@@ -217,14 +217,14 @@ export type Database = {
         Row: {
           categoria: string | null
           cliente_id: number
-          controlar_estoque: boolean | null
+          controla_estoque: boolean | null
           created_at: string
           desconto_percentual: number | null
           descricao_completa: string | null
           descricao_curta: string | null
           empresa_id: number
-          galeria_imagens: string[] | null
           id: number
+          imagem_galeria: string[] | null
           imagem_principal: string | null
           meta_description: string | null
           meta_title: string | null
@@ -241,14 +241,14 @@ export type Database = {
         Insert: {
           categoria?: string | null
           cliente_id?: number
-          controlar_estoque?: boolean | null
+          controla_estoque?: boolean | null
           created_at?: string
           desconto_percentual?: number | null
           descricao_completa?: string | null
           descricao_curta?: string | null
           empresa_id?: number
-          galeria_imagens?: string[] | null
           id?: number
+          imagem_galeria?: string[] | null
           imagem_principal?: string | null
           meta_description?: string | null
           meta_title?: string | null
@@ -265,14 +265,14 @@ export type Database = {
         Update: {
           categoria?: string | null
           cliente_id?: number
-          controlar_estoque?: boolean | null
+          controla_estoque?: boolean | null
           created_at?: string
           desconto_percentual?: number | null
           descricao_completa?: string | null
           descricao_curta?: string | null
           empresa_id?: number
-          galeria_imagens?: string[] | null
           id?: number
+          imagem_galeria?: string[] | null
           imagem_principal?: string | null
           meta_description?: string | null
           meta_title?: string | null

@@ -163,6 +163,8 @@ export default function NovoProduto() {
         nome: formData.Nome,
         slug: formData.Slug,
         preco_padrao: formData.Preco_Padrao,
+        grupo: formData.Grupo || null,
+        codigo_externo: formData.Codigo_Externo || null,
       };
 
       // Inclui campos somente se existirem no schema atual

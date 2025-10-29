@@ -60,7 +60,7 @@ export default function EditarProduto() {
       setLoading(true);
       const { data, error } = await supabase
         .from('produtos')
-        .select('*')
+        .select('*, grupo, codigo_externo')
         .eq('id', parseInt(id!))
         .eq('cliente_id', 2)
         .eq('empresa_id', 2)
@@ -79,8 +79,8 @@ export default function EditarProduto() {
         Descricao_Curta: produtoData.descricao_curta || '',
         Descricao_Completa: produtoData.descricao_completa || '',
         Categoria: produtoData.categoria || '',
-        Grupo: '',
-        Codigo_Externo: '',
+        Grupo: (data as any).grupo || '',
+        Codigo_Externo: (data as any).codigo_externo || '',
         Preco_Padrao: produtoData.preco_padrao,
         Preco_Promocional: produtoData.preco_promocional || 0,
         Preco_Custo: 0,
@@ -180,6 +180,8 @@ export default function EditarProduto() {
         descricao_curta: formData.Descricao_Curta,
         descricao_completa: formData.Descricao_Completa || null,
         categoria: formData.Categoria || null,
+        grupo: formData.Grupo || null,
+        codigo_externo: formData.Codigo_Externo || null,
         preco_padrao: formData.Preco_Padrao,
         preco_promocional: formData.Preco_Promocional || null,
         desconto_percentual: formData.Preco_Promocional 
@@ -310,13 +312,35 @@ export default function EditarProduto() {
                       />
                     </div>
 
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="categoria">Categoria</Label>
+                        <Input
+                          id="categoria"
+                          value={formData.Categoria}
+                          onChange={(e) => setFormData({ ...formData, Categoria: e.target.value })}
+                          placeholder="Ex: Ortodontia, Estética, etc."
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="grupo">Grupo</Label>
+                        <Input
+                          id="grupo"
+                          value={formData.Grupo}
+                          onChange={(e) => setFormData({ ...formData, Grupo: e.target.value })}
+                          placeholder="Ex: Lentes Dentais"
+                        />
+                      </div>
+                    </div>
+
                     <div>
-                      <Label htmlFor="categoria">Categoria</Label>
+                      <Label htmlFor="codigo">Código Externo</Label>
                       <Input
-                        id="categoria"
-                        value={formData.Categoria}
-                        onChange={(e) => setFormData({ ...formData, Categoria: e.target.value })}
-                        placeholder="Ex: Ortodontia, Estética, etc."
+                        id="codigo"
+                        value={formData.Codigo_Externo}
+                        onChange={(e) => setFormData({ ...formData, Codigo_Externo: e.target.value })}
+                        placeholder="Código do fornecedor ou referência interna"
                       />
                     </div>
                   </CardContent>

@@ -29,7 +29,7 @@ export async function submitLead(data: LeadData) {
     .from('Leads_Site')
     .insert({
       Site_URL: data.site_url,
-      Form_Name: 'Agende sua avaliação',
+      
       Lead_Nome: data.lead_nome,
       Lead_Telefone: telefone,
       Lead_Email: data.lead_email,

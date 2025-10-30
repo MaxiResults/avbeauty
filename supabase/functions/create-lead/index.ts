@@ -19,12 +19,19 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Use external database credentials directly
-    const SUPABASE_URL = "https://sunccjukvrximjiqzdkm.supabase.co";
-    const SERVICE_KEY = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY");
-    if (!SERVICE_KEY) throw new Error("EXT_SUPABASE_SERVICE_ROLE_KEY not configured");
+    // Use external database credentials directly - same as submit-lead-site
+    const EXT_SUPABASE_URL = "https://sunccjukvrximjiqzdkm.supabase.co";
+    const EXT_SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY");
+    
+    if (!EXT_SUPABASE_SERVICE_ROLE_KEY) {
+      console.error("EXT_SUPABASE_SERVICE_ROLE_KEY not configured");
+      return new Response(JSON.stringify({ error: "Backend secrets not configured" }), { 
+        status: 500, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      });
+    }
 
-    const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
+    const supabase = createClient(EXT_SUPABASE_URL, EXT_SUPABASE_SERVICE_ROLE_KEY);
 
     // Create timestamp in São Paulo timezone
     const saoPauloTimestamp = formatInTimeZone(new Date(), 'America/Sao_Paulo', "yyyy-MM-dd'T'HH:mm:ssXXX");

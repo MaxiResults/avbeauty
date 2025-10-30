@@ -15,9 +15,10 @@ serve(async (req) => {
     const { leadId, canal = "site", origem = "chat" } = await req.json();
     if (!leadId) return new Response(JSON.stringify({ error: "leadId is required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const SUPABASE_URL = Deno.env.get("EXT_SUPABASE_URL") ?? Deno.env.get("SUPABASE_URL");
-    const SERVICE_KEY = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!SUPABASE_URL || !SERVICE_KEY) throw new Error("Backend not configured");
+    // Use external database credentials directly
+    const SUPABASE_URL = "https://sunccjukvrximjiqzdkm.supabase.co";
+    const SERVICE_KEY = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY");
+    if (!SERVICE_KEY) throw new Error("EXT_SUPABASE_SERVICE_ROLE_KEY not configured");
 
     const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 

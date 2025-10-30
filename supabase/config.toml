@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.fix-external-triggers]
 verify_jwt = false
+
+[functions.submit-lead-site]
+verify_jwt = false

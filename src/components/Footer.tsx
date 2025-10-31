@@ -1,4 +1,5 @@
 import { Instagram, MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const scrollToSection = (id: string) => {
@@ -80,13 +81,19 @@ const Footer = () => {
               © 2024 Nicole Guedes Odonto - Todos os direitos reservados
             </p>
             <div className="flex justify-center gap-4 text-sm text-secondary-foreground/60">
-              <button className="hover:text-secondary-foreground transition-smooth">
+              <Link 
+                to="/politica-de-privacidade" 
+                className="hover:text-secondary-foreground transition-smooth"
+              >
                 Política de Privacidade
-              </button>
+              </Link>
               <span>|</span>
-              <button className="hover:text-secondary-foreground transition-smooth">
+              <Link 
+                to="/termos-de-uso" 
+                className="hover:text-secondary-foreground transition-smooth"
+              >
                 Termos de Uso
-              </button>
+              </Link>
             </div>
           </div>
         </div>

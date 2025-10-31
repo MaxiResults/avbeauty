@@ -1,4 +1,5 @@
 import { Instagram, Mail, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function FooterTeaser() {
   return (
@@ -44,13 +45,13 @@ export function FooterTeaser() {
         </div>
 
         <div className="flex items-center justify-center gap-6 text-xs text-[#666]">
-          <a href="#" className="hover:text-[#FFD700] transition-colors">
+          <Link to="/politica-de-privacidade" className="hover:text-[#FFD700] transition-colors">
             Política de Privacidade
-          </a>
+          </Link>
           <span>|</span>
-          <a href="#" className="hover:text-[#FFD700] transition-colors">
+          <Link to="/termos-de-uso" className="hover:text-[#FFD700] transition-colors">
             Termos de Uso
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

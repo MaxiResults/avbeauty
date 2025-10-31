@@ -8,6 +8,8 @@ import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
+import TermosUso from "./pages/TermosUso";
 
 // Loja
 import BlackFriday from "./pages/BlackFriday";
@@ -49,6 +51,10 @@ const App = () => (
             <Route path="/obrigado" element={<Obrigado />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/pedido/:codigo" element={<PedidoConfirmacao />} />
+            
+            {/* Legal Routes */}
+            <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+            <Route path="/termos-de-uso" element={<TermosUso />} />
             
             {/* Admin Routes */}
             <Route path="/admin/login" element={<Auth />} />

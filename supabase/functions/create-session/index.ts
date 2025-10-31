@@ -15,7 +15,6 @@ serve(async (req) => {
     const { leadId, canal = "site", origem = "chat" } = await req.json();
     if (!leadId) return new Response(JSON.stringify({ error: "leadId is required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    // Use external database credentials directly - same as submit-lead-site
     const EXT_SUPABASE_URL = "https://sunccjukvrximjiqzdkm.supabase.co";
     const EXT_SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY");
     
@@ -33,12 +32,14 @@ serve(async (req) => {
     const saoPauloTimestamp = formatInTimeZone(new Date(), 'America/Sao_Paulo', "yyyy-MM-dd'T'HH:mm:ssXXX");
 
     const { data, error } = await supabase
-      .from("Conversas_sessao")
+      .from("Conversas_Sessoes")
       .insert({
         lead_id: leadId, 
         canal, 
         origem,
-        Cliente_id: 2,
+        status_sessac: 'ativa',
+        Cliente_ID: 2,
+        Empresa_ID: 2,
         created_at: saoPauloTimestamp 
       })
       .select()

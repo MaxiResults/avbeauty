@@ -63,7 +63,7 @@ serve(async (req) => {
         const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
         const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
         await supabase
-          .from("Conversas_sessao")
+          .from("Conversas_Sessoes")
           .update({ thread_id: threadId })
           .eq("id", sessionId);
         console.log("Thread ID salvo na sessão");

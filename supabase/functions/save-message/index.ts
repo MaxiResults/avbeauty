@@ -17,7 +17,6 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Use external database credentials directly - same as submit-lead-site
     const EXT_SUPABASE_URL = "https://sunccjukvrximjiqzdkm.supabase.co";
     const EXT_SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("EXT_SUPABASE_SERVICE_ROLE_KEY");
     
@@ -42,7 +41,8 @@ serve(async (req) => {
         tipo_mensagem, 
         mensagem, 
         origem,
-        cliente_id: 2,
+        Cliente_ID: 2,           // ✅ CORRIGIDO: "Cliente_ID" maiúsculo
+        Empresa_ID: 2,           // ✅ ADICIONADO: campo que estava faltando
         data_envio: saoPauloTimestamp 
       })
       .select()

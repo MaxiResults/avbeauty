@@ -73,6 +73,14 @@ export default function ListaProdutos() {
         query = query.eq('categoria', categoriaFilter);
       }
 
+      if (tipoFilter && tipoFilter !== 'all') {
+        if (tipoFilter === 'Limitado') {
+          query = query.eq('controla_estoque', true);
+        } else if (tipoFilter === 'Ilimitado') {
+          query = query.eq('controla_estoque', false);
+        }
+      }
+
       if (searchTerm) {
         query = query.or(
           `nome.ilike.%${searchTerm}%,slug.ilike.%${searchTerm}%,descricao_curta.ilike.%${searchTerm}%,categoria.ilike.%${searchTerm}%`

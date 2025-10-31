@@ -9,7 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/contexts/AuthContext';
+import { useCustomAuth } from '@/hooks/useCustomAuth';
+import { customLogout } from '@/utils/customAuth';
 import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
@@ -17,10 +18,11 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ title }) => {
-  const { user, logout } = useAuth();
+  const { user } = useCustomAuth();
   const navigate = useNavigate();
 
-  const getInitials = (name: string) => {
+  const getInitials = (name?: string) => {
+    if (!name) return 'U';
     return name
       .split(' ')
       .map(n => n[0])
@@ -30,8 +32,7 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/admin/login');
+    customLogout();
   };
 
   return (
@@ -51,10 +52,10 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
             <Button variant="ghost" className="gap-2">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-terracota text-terracota-foreground text-xs">
-                  {user ? getInitials(user.Nome) : 'AD'}
+                  {getInitials(user?.nome)}
                 </AvatarFallback>
               </Avatar>
-              <span className="hidden md:inline text-sm font-medium">{user?.Nome}</span>
+              <span className="hidden md:inline text-sm font-medium">{user?.nome || 'Usuário'}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">

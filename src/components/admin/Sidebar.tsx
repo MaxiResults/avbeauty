@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Megaphone, ShoppingBag, ShoppingCart, LogOut } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { LayoutDashboard, Megaphone, ShoppingBag, ShoppingCart, Users, LogOut } from 'lucide-react';
+import { useCustomAuth } from '@/hooks/useCustomAuth';
+import { customLogout } from '@/utils/customAuth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
@@ -9,12 +10,14 @@ const menuItems = [
   { title: 'Campanhas', url: '/admin/campanhas', icon: Megaphone },
   { title: 'Produtos', url: '/admin/produtos', icon: ShoppingBag },
   { title: 'Pedidos', url: '/admin/pedidos', icon: ShoppingCart },
+  { title: 'Usuários', url: '/admin/usuarios', icon: Users },
 ];
 
 export const Sidebar = () => {
-  const { user, logout } = useAuth();
+  const { user } = useCustomAuth();
 
-  const getInitials = (name: string) => {
+  const getInitials = (name?: string) => {
+    if (!name) return 'U';
     return name
       .split(' ')
       .map(n => n[0])
@@ -60,16 +63,16 @@ export const Sidebar = () => {
         <div className="flex items-center gap-3 mb-3">
           <Avatar>
             <AvatarFallback className="bg-terracota text-terracota-foreground">
-              {user ? getInitials(user.Nome) : 'AD'}
+              {getInitials(user?.nome)}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{user?.Nome}</p>
-            <p className="text-xs text-secondary-foreground/70 truncate">{user?.Email}</p>
+            <p className="text-sm font-medium truncate">{user?.nome || 'Usuário'}</p>
+            <p className="text-xs text-secondary-foreground/70 truncate">{user?.email || ''}</p>
           </div>
         </div>
         <Button
-          onClick={logout}
+          onClick={customLogout}
           variant="outline"
           size="sm"
           className="w-full justify-start gap-2"

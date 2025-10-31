@@ -30,6 +30,8 @@ import ListaProdutos from "./pages/admin/produtos/ListaProdutos";
 import NovoProduto from "./pages/admin/produtos/NovoProduto";
 import EditarProduto from "./pages/admin/produtos/EditarProduto";
 import Pedidos from "./pages/admin/Pedidos";
+import Usuarios from "./pages/admin/Usuarios";
+import NovoUsuario from "./pages/admin/NovoUsuario";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +121,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Pedidos />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/usuarios"
+              element={
+                <ProtectedRoute>
+                  <Usuarios />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/usuarios/novo"
+              element={
+                <ProtectedRoute>
+                  <NovoUsuario />
                 </ProtectedRoute>
               }
             />

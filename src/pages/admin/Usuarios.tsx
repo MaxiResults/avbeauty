@@ -90,32 +90,32 @@ export default function Usuarios() {
             </thead>
             <tbody className="bg-background divide-y divide-border">
               {usuarios.map((usuario) => (
-                <tr key={usuario.id}>
+                <tr key={id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-foreground">{usuario.nome}</div>
+                    <div className="font-medium text-foreground">{nome}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-muted-foreground">{usuario.email}</div>
+                    <div className="text-muted-foreground">{email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-                      {usuario.role}
+                      {role}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      usuario.ativo 
+                      ativo 
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                     }`}>
-                      {usuario.ativo ? 'Ativo' : 'Inativo'}
+                      {ativo ? 'Ativo' : 'Inativo'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => toggleAtivo(usuario.ID, usuario.Ativo)}
+                      onClick={() => toggleAtivo(usuario.id, usuario.ativo)}
                     >
                       {usuario.ativo ? 'Desativar' : 'Ativar'}
                     </Button>

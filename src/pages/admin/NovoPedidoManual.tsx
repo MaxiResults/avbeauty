@@ -191,7 +191,7 @@ export default function NovoPedidoManual() {
           forma_pagto: `${formaPagamento} - ${parcelas}x`,
           numero_parcelas: parseInt(parcelas),
           status_pedido: pagamentoConfirmado ? 'pago' : 'pendente',
-          status_pagamento: pagamentoConfirmado ? 'pago' : 'pendente',
+          status_pagamento: pagamentoConfirmado ? 'approved' : 'pending',
           observacoes_gerais: obsGerais || null
         })
         .select('id, codigo')

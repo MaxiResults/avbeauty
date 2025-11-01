@@ -60,17 +60,17 @@ export const customLogin = async (email: string, senha: string) => {
     }
 
     // Verificar senha
-    if (senhaHash !== user.Senha_Hash) {
+    if (senhaHash !== user.senha_hash) {
       return { success: false, error: 'Senha incorreta' };
     }
 
     // Criar sessão (INSEGURO - localStorage pode ser manipulado!)
     const sessionData: SessionData = {
       user: {
-        id: user.ID,
-        nome: user.Nome,
-        email: user.Email,
-        role: user.Role
+        id: user.id,
+        nome: user.nome,
+        email: user.email,
+        role: user.role
       },
       expires: Date.now() + (24 * 60 * 60 * 1000), // 24 horas
       timestamp: Date.now()

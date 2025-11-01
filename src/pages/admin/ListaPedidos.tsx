@@ -78,7 +78,7 @@ export default function ListaPedidos() {
         .from('pedidos')
         .select(`
           *,
-          campanhas:campanha_id(nome_campanha)
+          campanhas(nome_campanha)
         `)
         .eq('cliente_id', 2)
         .eq('empresa_id', 2)

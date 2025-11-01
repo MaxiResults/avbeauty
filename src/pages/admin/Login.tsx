@@ -8,12 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'sonner';
 
 // =============================================
-// CONFIGURAÇÃO DO SUPABASE (DIRETA NO ARQUIVO)
+// CONFIGURAÇÃO DO SUPABASE (AUTH DESABILITADO)
 // =============================================
 const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1bmNjanVrdnJ4aW1qaXF6ZGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyODUsImV4cCI6MjA3NDg0OTI4NX0.Xt68Jol4GQ-GeL7g4z_wmm6ui81BIpTNJmNO7WhR_7E';
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Cliente com auth COMPLETAMENTE desabilitado
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: false // ✅ DESABILITA TODO O SISTEMA DE AUTH
+});
 
 // =============================================
 // TIPOS E INTERFACES
@@ -38,7 +41,7 @@ interface LoginResult {
 }
 
 // =============================================
-// FUNÇÕES DE AUTENTICAÇÃO (DIRETAS NO ARQUIVO)
+// FUNÇÕES DE AUTENTICAÇÃO CUSTOMIZADA
 // =============================================
 
 // Função para gerar hash SHA-256
@@ -49,69 +52,6 @@ const hashSenha = async (senha: string): Promise<string> => {
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
-};
-
-// Login
-const customLogin = async (email: string, senha: string): Promise<LoginResult> => {
-  try {
-    console.log('🔐 === INICIANDO LOGIN ===');
-    console.log('📧 Email fornecido:', email);
-
-    const senhaHash = await hashSenha(senha);
-    console.log('🔐 Hash da senha gerado:', senhaHash);
-
-    console.log('📋 Executando query no Supabase...');
-    
-    const { data: user, error } = await supabase
-      .from('usuarios')
-      .select('id, nome, email, senha_hash, role, ativo, cliente_id, empresa_id')
-      .eq('email', email)
-      .eq('cliente_id', 2)
-      .eq('empresa_id', 2)
-      .eq('ativo', true)
-      .single();
-
-    console.log('📊 RESULTADO DA QUERY:', { user, error });
-
-    if (error || !user) {
-      return { success: false, error: 'Usuário não encontrado ou inativo' };
-    }
-
-    console.log('👤 USUÁRIO ENCONTRADO:', user);
-
-    // Verificar senha
-    console.log('🔍 COMPARANDO SENHAS:');
-    console.log('- Hash fornecido:', senhaHash);
-    console.log('- Hash no banco:', user.senha_hash);
-
-    if (senhaHash !== user.senha_hash) {
-      console.log('❌ SENHA INCORRETA');
-      return { success: false, error: 'Senha incorreta' };
-    }
-
-    console.log('✅ SENHA CORRETA!');
-
-    // Criar sessão
-    const sessionData: SessionData = {
-      user: {
-        id: user.id,
-        nome: user.nome,
-        email: user.email,
-        role: user.role
-      },
-      expires: Date.now() + (24 * 60 * 60 * 1000), // 24 horas
-      timestamp: Date.now()
-    };
-
-    localStorage.setItem('custom_auth_session', JSON.stringify(sessionData));
-    console.log('🎉 LOGIN REALIZADO COM SUCESSO!');
-
-    return { success: true, user: sessionData.user };
-
-  } catch (error) {
-    console.error('💥 ERRO NO LOGIN:', error);
-    return { success: false, error: 'Erro ao fazer login. Tente novamente.' };
-  }
 };
 
 // Obter sessão
@@ -140,8 +80,72 @@ const isCustomAuthenticated = (): boolean => {
   return getCustomSession() !== null;
 };
 
-// Logout (se precisar em outros lugares)
-export const customLogout = () => {
+// Login CUSTOMIZADO (não usa auth nativa)
+const customLogin = async (email: string, senha: string): Promise<LoginResult> => {
+  try {
+    console.log('🔐 === INICIANDO LOGIN CUSTOMIZADO ===');
+    console.log('📧 Email fornecido:', email);
+
+    const senhaHash = await hashSenha(senha);
+    console.log('🔐 Hash da senha gerado:', senhaHash);
+
+    console.log('📋 Executando query no Supabase...');
+    
+    // Buscar usuário - APENAS consulta normal, SEM auth
+    const { data: user, error } = await supabase
+      .from('usuarios')
+      .select('id, nome, email, senha_hash, role, ativo, cliente_id, empresa_id')
+      .eq('email', email)
+      .eq('cliente_id', 2)
+      .eq('empresa_id', 2)
+      .eq('ativo', true)
+      .single();
+
+    console.log('📊 RESULTADO DA QUERY:', { user, error });
+
+    if (error || !user) {
+      return { success: false, error: 'Usuário não encontrado ou inativo' };
+    }
+
+    console.log('👤 USUÁRIO ENCONTRADO:', user);
+
+    // Verificar senha
+    console.log('🔍 COMPARANDO SENHAS:');
+    console.log('- Hash fornecido:', senhaHash);
+    console.log('- Hash no banco:', user.senha_hash);
+    console.log('- São iguais?', senhaHash === user.senha_hash);
+
+    if (senhaHash !== user.senha_hash) {
+      return { success: false, error: 'Senha incorreta' };
+    }
+
+    console.log('✅ SENHA CORRETA!');
+
+    // Criar sessão CUSTOMIZADA
+    const sessionData: SessionData = {
+      user: {
+        id: user.id,
+        nome: user.nome,
+        email: user.email,
+        role: user.role
+      },
+      expires: Date.now() + (24 * 60 * 60 * 1000), // 24 horas
+      timestamp: Date.now()
+    };
+
+    localStorage.setItem('custom_auth_session', JSON.stringify(sessionData));
+    console.log('🎉 LOGIN CUSTOMIZADO REALIZADO COM SUCESSO!');
+
+    return { success: true, user: sessionData.user };
+
+  } catch (error) {
+    console.error('💥 ERRO NO LOGIN CUSTOMIZADO:', error);
+    return { success: false, error: 'Erro ao fazer login. Tente novamente.' };
+  }
+};
+
+// Logout CUSTOMIZADO
+const customLogout = () => {
   localStorage.removeItem('custom_auth_session');
   window.location.href = '/admin/login';
 };
@@ -156,8 +160,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('🔧 LOGIN - Verificando autenticação...');
-    // Redirect if already logged in
+    console.log('🔧 LOGIN - Verificando autenticação customizada...');
     if (isCustomAuthenticated()) {
       console.log('🔧 LOGIN - Usuário já autenticado, redirecionando...');
       navigate('/admin/dashboard');
@@ -166,7 +169,7 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('🔧 LOGIN - Form submetido', { email, senha: senha ? '***' : 'vazia' });
+    console.log('🔧 LOGIN - Form submetido para auth CUSTOMIZADA');
 
     if (!email || !senha) {
       toast.error('Por favor, preencha todos os campos');
@@ -176,7 +179,6 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      console.log('🔧 LOGIN - Chamando customLogin...');
       const result = await customLogin(email, senha);
       console.log('🔧 LOGIN - Resultado do customLogin:', result);
 
@@ -198,7 +200,6 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md shadow-hover">
         <CardHeader className="text-center">
-          {/* Logo */}
           <div className="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-terracota rounded-lg">
             <span className="text-3xl font-bold text-terracota-foreground">NG</span>
           </div>

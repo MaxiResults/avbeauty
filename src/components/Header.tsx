@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Instagram, Facebook } from "lucide-react";
+import { Menu, X, Instagram, Facebook, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -98,6 +100,15 @@ const Header = () => {
               className="bg-terracota hover:bg-terracota/90 text-terracota-foreground"
             >
               Agendar Consulta
+            </Button>
+            <Button
+              onClick={() => navigate('/admin/login')}
+              size="icon"
+              className="bg-terracota hover:bg-terracota/90 text-terracota-foreground"
+              title="Área Restrita"
+              aria-label="Login"
+            >
+              <User className="w-5 h-5" />
             </Button>
           </div>
 

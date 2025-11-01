@@ -38,7 +38,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
+    <AuthProvider> {/* ✅ AGORA USA AUTH CUSTOMIZADA (sem auth nativo) */}
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -59,8 +59,8 @@ const App = () => (
             <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
             <Route path="/termos-de-uso" element={<TermosUso />} />
             
-            {/* Admin Routes */}
-            <Route path="/admin/login" element={<Auth />} />
+            {/* Admin Routes - CORRIGIDAS */}
+            <Route path="/admin/login" element={<Login />} /> {/* ✅ Use Login, não Auth */}
             <Route
               path="/admin/dashboard"
               element={

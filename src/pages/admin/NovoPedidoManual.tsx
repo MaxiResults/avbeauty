@@ -124,7 +124,8 @@ export default function NovoPedidoManual() {
         .from('Leads_Cadastro')
         .select('id')
         .eq('email', email)
-        .eq('cliente_id', 2)
+        .eq('Cliente_ID', 2)
+        .eq('Empresa_ID',2)
         .maybeSingle();
 
       if (leadError && leadError.code !== 'PGRST116') throw leadError;
@@ -149,7 +150,8 @@ export default function NovoPedidoManual() {
         const { data: novo, error: insertError } = await supabase
           .from('Leads_Cadastro')
           .insert({
-            cliente_id: 2,
+            Cliente_ID: 2,
+            Empresa_ID: 2, 
             nome: nome,
             email: email,
             telefone: telefone,

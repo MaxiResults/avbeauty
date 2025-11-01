@@ -29,7 +29,7 @@ export default function ListaPedidos() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
+  const [edPedido, setedPedido] = useState<Pedido | null>(null);
   const [pedidoItens, setPedidoItens] = useState<PedidoItem[]>([]);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,7 +78,7 @@ export default function ListaPedidos() {
         .from('pedidos')
         .select(`
           *,
-          campanhas(nome_campanha)
+          campanhas:campanha_id(nome_campanha)
         `)
         .eq('cliente_id', 2)
         .eq('empresa_id', 2)

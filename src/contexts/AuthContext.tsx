@@ -1,12 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import type { Session, User as SupaUser } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
+import { 
+  customLogin, 
+  customLogout, 
+  isCustomAuthenticated, 
+  getCurrentUser,
+  getCustomSession 
+} from '@/utils/customAuth';
 
 interface User {
-  ID: string;
-  Email: string;
-  Nome: string;
-  Role: string;
+  id: string;
+  email: string;
+  nome: string;
+  role: string;
 }
 
 interface AuthContextType {
@@ -19,81 +25,95 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Cliente Supabase SEM auth (apenas para consultas)
+const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1bmNjanVrdnJ4aW1qaXF6ZGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyODUsImV4cCI6MjA3NDg0OTI4NX0.Xt68Jol4GQ-GeL7g4z_wmm6ui81BIpTNJmNO7WhR_7E';
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: false // ✅ DESABILITA AUTH NATIVO
+});
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<Session | null>(null);
-
-  const mapUser = (u: SupaUser): User => {
-    const nome = (u.user_metadata?.Nome as string) ||
-      (u.user_metadata?.name as string) ||
-      (u.email ? u.email.split('@')[0] : 'Usuário');
-    const role = (u.app_metadata?.role as string) || 'user';
-    return { ID: u.id, Email: u.email ?? '', Nome: nome, Role: role };
-  };
 
   useEffect(() => {
-    // 1) Listen for auth state changes FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, sess) => {
-      setSession(sess);
-      setUser(sess?.user ? mapUser(sess.user) : null);
-      setLoading(false);
-    });
-
-    // 2) Then retrieve existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ? mapUser(session.user) : null);
-      setLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
+    console.log('🔧 AUTH CONTEXT - Verificando autenticação customizada...');
+    
+    // ✅ Use APENAS nossa auth customizada
+    if (isCustomAuthenticated()) {
+      const currentUser = getCurrentUser();
+      console.log('✅ AUTH CONTEXT - Usuário autenticado:', currentUser);
+      setUser(currentUser);
+    } else {
+      console.log('❌ AUTH CONTEXT - Usuário não autenticado');
+      setUser(null);
+    }
+    
+    setLoading(false);
+    
+    // Listen for storage changes (logout from other tabs)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'custom_auth_session') {
+        if (!e.newValue) {
+          setUser(null); // Logout from other tab
+        } else {
+          const currentUser = getCurrentUser();
+          setUser(currentUser);
+        }
+      }
     };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return { success: false, error: error.message || 'Email ou senha incorretos' };
-      if (!data.session || !data.user) return { success: false, error: 'Credenciais inválidas' };
-      setSession(data.session);
-      setUser(mapUser(data.user));
-      return { success: true };
+      console.log('🔧 AUTH CONTEXT - Login customizado chamado');
+      
+      // ✅ Use nossa função customizada
+      const result = await customLogin(email, password);
+      
+      if (result.success && result.user) {
+        setUser(result.user);
+        console.log('✅ AUTH CONTEXT - Login customizado sucesso');
+      } else {
+        console.log('❌ AUTH CONTEXT - Login customizado falhou:', result.error);
+      }
+      
+      return result;
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('💥 AUTH CONTEXT - Erro no login:', err);
       return { success: false, error: 'Erro ao fazer login. Tente novamente.' };
     }
   };
 
   const signUp = async (email: string, password: string) => {
-    try {
-      const redirectUrl = `${window.location.origin}/`;
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-        },
-      });
-      if (error) return { success: false, error: error.message || 'Falha no cadastro' };
-      if (data.user) setUser(mapUser(data.user));
-      if (data.session) setSession(data.session);
-      return { success: true };
-    } catch (err) {
-      console.error('Signup error:', err);
-      return { success: false, error: 'Erro ao cadastrar. Tente novamente.' };
-    }
+    // ❌ Desabilite signUp por enquanto (ou implemente customizado)
+    console.log('🚫 AUTH CONTEXT - SignUp desabilitado, use admin para criar usuários');
+    return { 
+      success: false, 
+      error: 'Cadastro desabilitado. Contate o administrador.' 
+    };
   };
 
   const logout = () => {
-    supabase.auth.signOut().catch((e) => console.error('Logout error:', e));
+    console.log('🔧 AUTH CONTEXT - Logout customizado');
+    customLogout();
     setUser(null);
-    setSession(null);
+  };
+
+  const value: AuthContextType = {
+    user,
+    loading,
+    login,
+    signUp,
+    logout
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signUp, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

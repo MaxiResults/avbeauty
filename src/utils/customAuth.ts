@@ -1,5 +1,5 @@
 /**
- * ⚠️ AVISO DE SEGURANÇA CRÍTICO ⚠️
+ * ⚠️ AVISO DE SEGURANÇA CRÍTICO ⚠️ ajustado
  * 
  * Este sistema de autenticação tem FALHAS GRAVES de segurança:
  * 1. localStorage pode ser manipulado pelo usuário (F12 > Application > Local Storage)

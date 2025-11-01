@@ -92,10 +92,10 @@ export default function Usuarios() {
               {usuarios.map((usuario) => (
                 <tr key={usuario.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-foreground">{usuario.Nome}</div>
+                    <div className="font-medium text-foreground">{usuario.nome}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-muted-foreground">{usuario.Email}</div>
+                    <div className="text-muted-foreground">{usuario.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">

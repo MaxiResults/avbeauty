@@ -90,25 +90,25 @@ export default function Usuarios() {
             </thead>
             <tbody className="bg-background divide-y divide-border">
               {usuarios.map((usuario) => (
-                <tr key={id}>
+                <tr key={usuario.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-foreground">{nome}</div>
+                    <div className="font-medium text-foreground">{usuario.nome}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-muted-foreground">{email}</div>
+                    <div className="text-muted-foreground">{usuario.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-                      {role}
+                      {usuario.role}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      ativo 
+                      usuario.ativo 
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                     }`}>
-                      {ativo ? 'Ativo' : 'Inativo'}
+                      {usuario.ativo ? 'Ativo' : 'Inativo'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">

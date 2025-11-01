@@ -13,7 +13,7 @@ import { DetalhesDialog } from '@/components/pedidos/DetalhesDialog';
 import { supabase } from '@/lib/supabase';
 import { Pedido, PedidoDB, PedidoItem, dbToPedido } from '@/types/pedido';
 import { toast } from 'sonner';
-import { Package2, CheckCircle, Clock, DollarSign, Search, Download, RefreshCw, Eye, FileText, Copy, MoreVertical, Plus } from 'lucide-react';
+import { Package2, CheckCircle, Clock, DollarSign, Search, Download, RefreshCw, Eye, FileText, Copy, MoreVertical, Plus, Edit, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
@@ -160,6 +160,43 @@ export default function ListaPedidos() {
     if (pedido.Link_Pagamento) {
       navigator.clipboard.writeText(pedido.Link_Pagamento);
       toast.success('Link copiado!');
+    }
+  };
+
+  const handleExcluirPedido = async (pedido: Pedido, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (pedido.Status_Pedido === 'cancelado') {
+      toast.error('Este pedido já está cancelado');
+      return;
+    }
+
+    const confirmar = window.confirm(
+      `Tem certeza que deseja CANCELAR este pedido?\n\n` +
+      `Pedido: ${pedido.Codigo}\n` +
+      `Cliente: ${pedido.Lead_Nome}\n` +
+      `Valor: ${formatCurrency(pedido.Valor_Total)}\n\n` +
+      `Esta ação marcará o pedido como CANCELADO.`
+    );
+
+    if (!confirmar) return;
+
+    try {
+      const { error } = await supabase
+        .from('pedidos')
+        .update({ 
+          status_pedido: 'cancelado',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', pedido.ID);
+
+      if (error) throw error;
+
+      toast.success('Pedido cancelado com sucesso!');
+      fetchPedidos();
+    } catch (error: any) {
+      console.error('Erro ao cancelar pedido:', error);
+      toast.error('Erro ao cancelar pedido: ' + error.message);
     }
   };
 
@@ -347,13 +384,39 @@ export default function ListaPedidos() {
                           <StatusBadge status={pedido.Status_Pagamento} />
                         </TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                             <Button
                               size="icon"
                               variant="ghost"
-                              onClick={() => handleViewDetails(pedido)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleViewDetails(pedido);
+                              }}
+                              title="Ver detalhes"
                             >
                               <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/admin/pedidos/${pedido.ID}/editar`);
+                              }}
+                              disabled={pedido.Status_Pedido === 'cancelado'}
+                              title="Editar"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={(e) => handleExcluirPedido(pedido, e)}
+                              disabled={pedido.Status_Pedido === 'cancelado'}
+                              title="Excluir"
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4" />
                             </Button>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>

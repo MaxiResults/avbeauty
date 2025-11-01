@@ -32,6 +32,7 @@ import EditarProduto from "./pages/admin/produtos/EditarProduto";
 import Pedidos from "./pages/admin/Pedidos";
 import NovoPedidoManual from "./pages/admin/NovoPedidoManual";
 import DetalhePedido from "./pages/admin/DetalhePedido";
+import EditarPedido from "./pages/admin/EditarPedido";
 import Usuarios from "./pages/admin/Usuarios";
 import NovoUsuario from "./pages/admin/NovoUsuario";
 
@@ -139,6 +140,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <DetalhePedido />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/pedidos/:id/editar"
+              element={
+                <ProtectedRoute>
+                  <EditarPedido />
                 </ProtectedRoute>
               }
             />

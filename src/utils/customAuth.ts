@@ -48,11 +48,11 @@ export const customLogin = async (email: string, senha: string) => {
     // Buscar usuário no banco EXTERNO do Supabase
     const { data: user, error } = await supabase
       .from('usuarios')
-      .select('ID, Nome, Email, Senha_Hash, Role, Ativo, Cliente_ID, Empresa_ID')
-      .eq('Email', email)
-      .eq('Cliente_ID', 2)
-      .eq('Empresa_ID', 2)
-      .eq('Ativo', true)
+      .select('id, nome, email, senha_hash, role, ativo, cliente_id, empresa_id')
+      .eq('email', email)
+      .eq('cliente_id', 2)
+      .eq('empresa_id', 2)
+      .eq('ativo', true)
       .single();
 
     if (error || !user) {

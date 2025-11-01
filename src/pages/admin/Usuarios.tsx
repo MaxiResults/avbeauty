@@ -18,10 +18,10 @@ export default function Usuarios() {
     try {
       const { data, error } = await supabase
         .from('usuarios')
-        .select('ID, Nome, Email, Role, Ativo, Created_at')
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2)
-        .order('Created_at', { ascending: false });
+        .select('id, nome, email, role, ativo, created_at')
+        .eq('cliente_id', 2)
+        .eq('empresa_id', 2)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setUsuarios(data || []);
@@ -37,7 +37,7 @@ export default function Usuarios() {
     try {
       const { error } = await supabase
         .from('usuarios')
-        .update({ Ativo: !ativoAtual, Updated_at: new Date().toISOString() })
+        .update({ ativo: !ativoAtual, updated_at: new Date().toISOString() })
         .eq('ID', id);
 
       if (error) throw error;
@@ -90,7 +90,7 @@ export default function Usuarios() {
             </thead>
             <tbody className="bg-background divide-y divide-border">
               {usuarios.map((usuario) => (
-                <tr key={usuario.ID}>
+                <tr key={usuario.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="font-medium text-foreground">{usuario.Nome}</div>
                   </td>
@@ -99,16 +99,16 @@ export default function Usuarios() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-                      {usuario.Role}
+                      {usuario.role}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      usuario.Ativo 
+                      usuario.ativo 
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                     }`}>
-                      {usuario.Ativo ? 'Ativo' : 'Inativo'}
+                      {usuario.ativo ? 'Ativo' : 'Inativo'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -117,7 +117,7 @@ export default function Usuarios() {
                       size="sm"
                       onClick={() => toggleAtivo(usuario.ID, usuario.Ativo)}
                     >
-                      {usuario.Ativo ? 'Desativar' : 'Ativar'}
+                      {usuario.ativo ? 'Desativar' : 'Ativar'}
                     </Button>
                   </td>
                 </tr>

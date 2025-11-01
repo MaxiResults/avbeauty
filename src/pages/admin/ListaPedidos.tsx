@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '@/components/admin/Sidebar';
 import { Header } from '@/components/admin/Header';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,7 @@ import { DetalhesDialog } from '@/components/pedidos/DetalhesDialog';
 import { supabase } from '@/lib/supabase';
 import { Pedido, PedidoDB, PedidoItem, dbToPedido } from '@/types/pedido';
 import { toast } from 'sonner';
-import { Package2, CheckCircle, Clock, DollarSign, Search, Download, RefreshCw, Eye, FileText, Copy, MoreVertical } from 'lucide-react';
+import { Package2, CheckCircle, Clock, DollarSign, Search, Download, RefreshCw, Eye, FileText, Copy, MoreVertical, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 export default function ListaPedidos() {
+  const navigate = useNavigate();
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -184,6 +186,13 @@ export default function ListaPedidos() {
                 </p>
               </div>
               <div className="flex gap-2">
+                <Button 
+                  onClick={() => navigate('/admin/pedidos/novo-manual')}
+                  className="bg-[#97624b] hover:bg-[#7d5340]"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Pedido Presencial
+                </Button>
                 <Button variant="outline" onClick={fetchPedidos}>
                   <RefreshCw className="mr-2 h-4 w-4" />
                   Atualizar

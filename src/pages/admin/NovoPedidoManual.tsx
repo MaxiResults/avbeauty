@@ -10,13 +10,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import EnderecoForm from '@/components/EnderecoForm';
+import ItemPedido from '@/components/pedidos/ItemPedido';
 import { toast } from 'sonner';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus } from 'lucide-react';
 
-interface Campanha {
+interface Produto {
   id: number;
-  nome_campanha: string;
-  investimento_total: number;
+  nome: string;
+  preco_padrao: number;
+  preco_promocional: number | null;
+}
+
+interface ItemPedidoData {
+  produto_id: number | null;
+  produto_nome: string;
+  quantidade: number;
+  preco_unitario: number;
+  desconto_item: number;
+  observacoes: string;
 }
 
 export default function NovoPedidoManual() {
@@ -24,15 +35,23 @@ export default function NovoPedidoManual() {
   const [email, setEmail] = useState('');
   const [telefone, setTelefone] = useState('');
   const [cpf, setCpf] = useState('');
-  const [campanhas, setCampanhas] = useState<Campanha[]>([]);
-  const [campanhaId, setCampanhaId] = useState('');
-  const [valorTotal, setValorTotal] = useState(0);
   const [formaPagamento, setFormaPagamento] = useState('');
   const [parcelas, setParcelas] = useState('1');
   const [pagamentoConfirmado, setPagamentoConfirmado] = useState(false);
-  const [obs, setObs] = useState('');
+  const [obsGerais, setObsGerais] = useState('');
+  const [descontoGeral, setDescontoGeral] = useState(0);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [itens, setItens] = useState<ItemPedidoData[]>([{
+    produto_id: null,
+    produto_nome: '',
+    quantidade: 1,
+    preco_unitario: 0,
+    desconto_item: 0,
+    observacoes: ''
+  }]);
 
   const [endereco, setEndereco] = useState({
     cep: '', logradouro: '', numero: '', complemento: '',
@@ -40,30 +59,59 @@ export default function NovoPedidoManual() {
   });
 
   useEffect(() => {
-    carregarCampanhas();
+    carregarProdutos();
   }, []);
 
-  const carregarCampanhas = async () => {
+  const carregarProdutos = async () => {
     try {
       const { data, error } = await supabase
-        .from('campanhas')
-        .select('id, nome_campanha, investimento_total')
+        .from('produtos')
+        .select('id, nome, preco_padrao, preco_promocional')
         .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
-        .eq('ativo', true)
-        .order('nome_campanha');
+        .eq('status', 'ativo')
+        .order('nome');
 
       if (error) throw error;
-      setCampanhas(data || []);
+      setProdutos(data || []);
     } catch (error: any) {
-      toast.error('Erro ao carregar campanhas: ' + error.message);
+      toast.error('Erro ao carregar produtos: ' + error.message);
     }
   };
 
-  const handleCampanhaChange = (id: string) => {
-    setCampanhaId(id);
-    const camp = campanhas.find(c => c.id.toString() === id);
-    if (camp) setValorTotal(camp.investimento_total);
+  const handleItemChange = (index: number, novoItem: ItemPedidoData) => {
+    const novosItens = [...itens];
+    novosItens[index] = novoItem;
+    setItens(novosItens);
+  };
+
+  const adicionarItem = () => {
+    setItens([...itens, {
+      produto_id: null,
+      produto_nome: '',
+      quantidade: 1,
+      preco_unitario: 0,
+      desconto_item: 0,
+      observacoes: ''
+    }]);
+  };
+
+  const removerItem = (index: number) => {
+    if (itens.length > 1) {
+      setItens(itens.filter((_, i) => i !== index));
+    }
+  };
+
+  const calcularSubtotal = () => {
+    return itens.reduce((soma, item) => {
+      const qtd = item.quantidade || 1;
+      const preco = item.preco_unitario || 0;
+      const desc = item.desconto_item || 0;
+      return soma + ((qtd * preco) - desc);
+    }, 0);
+  };
+
+  const calcularTotal = () => {
+    return calcularSubtotal() - (descontoGeral || 0);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -124,7 +172,7 @@ export default function NovoPedidoManual() {
         .insert({
           cliente_id: 2,
           empresa_id: 2,
-          campanha_id: campanhaId ? parseInt(campanhaId) : null,
+          lead_id: leadId,
           lead_nome: nome,
           lead_email: email,
           lead_telefone: telefone,
@@ -137,17 +185,37 @@ export default function NovoPedidoManual() {
           endereco_cidade: endereco.cidade || null,
           endereco_estado: endereco.estado || null,
           endereco_pais: 'Brasil',
-          valor_total: valorTotal,
-          status_pagamento: pagamentoConfirmado ? 'pago' : 'pendente',
-          forma_pagto: formaPagamento,
+          desconto_geral: descontoGeral || 0,
+          forma_pagto: `${formaPagamento} - ${parcelas}x`,
           numero_parcelas: parseInt(parcelas),
-          origem: 'presencial',
-          observacoes_internas: obs || null
+          status_pedido: pagamentoConfirmado ? 'pago' : 'pendente',
+          status_pagamento: pagamentoConfirmado ? 'pago' : 'pendente',
+          observacoes_gerais: obsGerais || null
         })
-        .select('codigo')
+        .select('id, codigo')
         .single();
 
       if (pedidoError) throw pedidoError;
+
+      // Criar itens do pedido
+      const itensParaInserir = itens.map(item => ({
+        cliente_id: 2,
+        empresa_id: 2,
+        pedido_id: pedidoData.id,
+        produto_id: item.produto_id,
+        produto_nome: item.produto_nome,
+        quantidade: item.quantidade || 1,
+        preco_unitario: item.preco_unitario || 0,
+        desconto_item: item.desconto_item || 0,
+        preco_total: ((item.quantidade || 1) * (item.preco_unitario || 0)) - (item.desconto_item || 0),
+        observacoes: item.observacoes || null
+      }));
+
+      const { error: itensError } = await supabase
+        .from('pedidos_itens')
+        .insert(itensParaInserir);
+
+      if (itensError) throw itensError;
 
       toast.success('Pedido criado com sucesso!');
       navigate('/admin/pedidos');
@@ -236,87 +304,114 @@ export default function NovoPedidoManual() {
               <EnderecoForm endereco={endereco} onChange={setEndereco} />
 
               <div>
-                <h2 className="text-xl font-semibold mb-4">Dados do Pedido</h2>
+                <h2 className="text-xl font-semibold mb-4">Produtos/Serviços</h2>
                 <div className="space-y-4">
+                  {itens.map((item, index) => (
+                    <ItemPedido
+                      key={index}
+                      item={item}
+                      index={index}
+                      produtos={produtos}
+                      onChange={handleItemChange}
+                      onRemove={removerItem}
+                    />
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={adicionarItem}
+                    className="w-full border-dashed border-2"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Adicionar Produto
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Resumo do Pedido</h2>
+                
+                <div className="bg-muted/50 rounded-lg p-4 space-y-2 mb-4">
+                  <div className="flex justify-between">
+                    <span>Subtotal:</span>
+                    <span className="font-semibold">R$ {calcularSubtotal().toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="descontoGeral">Desconto Geral:</Label>
+                    <Input
+                      id="descontoGeral"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={descontoGeral}
+                      onChange={(e) => setDescontoGeral(parseFloat(e.target.value) || 0)}
+                      className="w-32 text-right"
+                      placeholder="R$ 0,00"
+                    />
+                  </div>
+                  <div className="flex justify-between text-lg font-bold border-t pt-2">
+                    <span>TOTAL:</span>
+                    <span className="text-primary">R$ {calcularTotal().toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 mb-4">
                   <div>
-                    <Label htmlFor="campanha">Pacote *</Label>
-                    <Select value={campanhaId} onValueChange={handleCampanhaChange} required>
-                      <SelectTrigger id="campanha">
-                        <SelectValue placeholder="Selecione o Pacote" />
+                    <Label htmlFor="formaPagamento">Forma de Pagamento *</Label>
+                    <Select value={formaPagamento} onValueChange={setFormaPagamento} required>
+                      <SelectTrigger id="formaPagamento">
+                        <SelectValue placeholder="Selecione" />
                       </SelectTrigger>
                       <SelectContent>
-                        {campanhas.map(c => (
-                          <SelectItem key={c.id} value={c.id.toString()}>
-                            {c.nome_campanha} - R$ {c.investimento_total.toFixed(2)}
-                          </SelectItem>
-                        ))}
+                        <SelectItem value="Pix">Pix</SelectItem>
+                        <SelectItem value="Dinheiro">Dinheiro</SelectItem>
+                        <SelectItem value="Débito">Débito</SelectItem>
+                        <SelectItem value="Crédito">Crédito</SelectItem>
+                        <SelectItem value="Misto">Misto</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="formaPagamento">Forma de Pagamento *</Label>
-                      <Select value={formaPagamento} onValueChange={setFormaPagamento} required>
-                        <SelectTrigger id="formaPagamento">
-                          <SelectValue placeholder="Selecione" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Pix">Pix</SelectItem>
-                          <SelectItem value="Dinheiro">Dinheiro</SelectItem>
-                          <SelectItem value="Débito">Débito</SelectItem>
-                          <SelectItem value="Crédito">Crédito</SelectItem>
-                          <SelectItem value="Misto">Misto</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="parcelas">Parcelas</Label>
-                      <Select value={parcelas} onValueChange={setParcelas}>
-                        <SelectTrigger id="parcelas">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1x</SelectItem>
-                          <SelectItem value="2">2x</SelectItem>
-                          <SelectItem value="3">3x</SelectItem>
-                          <SelectItem value="4">4x</SelectItem>
-                          <SelectItem value="6">6x</SelectItem>
-                          <SelectItem value="12">12x</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label>Valor Total</Label>
-                      <div className="px-4 py-2 border rounded-lg bg-muted flex items-center justify-center font-semibold h-10">
-                        R$ {valorTotal.toFixed(2)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="pagamentoConfirmado"
-                      checked={pagamentoConfirmado}
-                      onCheckedChange={(checked) => setPagamentoConfirmado(checked === true)}
-                    />
-                    <Label htmlFor="pagamentoConfirmado" className="cursor-pointer">
-                      Pagamento já confirmado
-                    </Label>
-                  </div>
-
                   <div>
-                    <Label htmlFor="obs">Observações Internas</Label>
-                    <Textarea
-                      id="obs"
-                      value={obs}
-                      onChange={(e) => setObs(e.target.value)}
-                      placeholder="Observações internas (opcional)"
-                      rows={3}
-                    />
+                    <Label htmlFor="parcelas">Parcelas</Label>
+                    <Select value={parcelas} onValueChange={setParcelas}>
+                      <SelectTrigger id="parcelas">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1x</SelectItem>
+                        <SelectItem value="2">2x</SelectItem>
+                        <SelectItem value="3">3x</SelectItem>
+                        <SelectItem value="4">4x</SelectItem>
+                        <SelectItem value="6">6x</SelectItem>
+                        <SelectItem value="12">12x</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
+
+                  <div className="flex items-center">
+                    <div className="flex items-center space-x-2 pt-6">
+                      <Checkbox
+                        id="pagamentoConfirmado"
+                        checked={pagamentoConfirmado}
+                        onCheckedChange={(checked) => setPagamentoConfirmado(checked === true)}
+                      />
+                      <Label htmlFor="pagamentoConfirmado" className="cursor-pointer">
+                        Pago
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="obsGerais">Observações Gerais</Label>
+                  <Textarea
+                    id="obsGerais"
+                    value={obsGerais}
+                    onChange={(e) => setObsGerais(e.target.value)}
+                    placeholder="Observações gerais do pedido (opcional)"
+                    rows={2}
+                  />
                 </div>
               </div>
 

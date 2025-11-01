@@ -78,7 +78,8 @@ export default function ListaPedidos() {
         .from('pedidos')
         .select(`
           *,
-          campanhas(nome_campanha)
+          campanhas(nome_campanha),
+          itens:pedidos_itens(count)
         `)
         .eq('cliente_id', 2)
         .eq('empresa_id', 2)
@@ -304,15 +305,15 @@ export default function ListaPedidos() {
                   </TableHeader>
                   <TableBody>
                     {currentPedidos.map((pedido) => (
-                      <TableRow key={pedido.ID} className="hover:bg-muted/50">
+                      <TableRow 
+                        key={pedido.ID} 
+                        className="hover:bg-muted/50 cursor-pointer"
+                        onClick={() => navigate(`/admin/pedidos/${pedido.ID}`)}
+                      >
                         <TableCell>
-                          <Button
-                            variant="link"
-                            className="font-bold p-0 h-auto"
-                            onClick={() => handleViewDetails(pedido)}
-                          >
+                          <span className="font-bold text-primary">
                             {pedido.Codigo}
-                          </Button>
+                          </span>
                         </TableCell>
                         <TableCell>
                           <div>

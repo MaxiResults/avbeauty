@@ -13,6 +13,7 @@ import EnderecoForm from '@/components/EnderecoForm';
 import ItemPedido from '@/components/pedidos/ItemPedido';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2, Plus } from 'lucide-react';
+import { maskPhone, onlyNumbers } from '@/utils/formatadores';
 
 interface Produto {
   id: number;
@@ -170,6 +171,10 @@ export default function NovoPedidoManual() {
       }
 
       // Criar pedido
+      // Normalizar telefone com 55
+      const telefoneNormalizado = onlyNumbers(telefone);
+      const telefoneComDDI = telefoneNormalizado.startsWith('55') ? telefoneNormalizado : '55' + telefoneNormalizado;
+
       const { data: pedidoData, error: pedidoError } = await supabase
         .from('pedidos')
         .insert({
@@ -178,7 +183,7 @@ export default function NovoPedidoManual() {
           lead_id: leadId,
           lead_nome: nome,
           lead_email: email,
-          lead_telefone: telefone,
+          lead_telefone: telefoneComDDI,
           lead_cpf: cpf || null,
           endereco_cep: endereco.cep || null,
           endereco_logradouro: endereco.logradouro || null,
@@ -291,9 +296,10 @@ export default function NovoPedidoManual() {
                         id="telefone"
                         type="text"
                         value={telefone}
-                        onChange={(e) => setTelefone(e.target.value)}
+                        onChange={(e) => setTelefone(maskPhone(e.target.value))}
                         placeholder="(11) 98765-4321"
                         required
+                        maxLength={15}
                       />
                     </div>
                     <div>

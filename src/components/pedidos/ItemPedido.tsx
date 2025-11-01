@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
+import { formatCurrency } from '@/utils/formatadores';
 
 interface Produto {
   id: number;
@@ -101,7 +102,7 @@ export default function ItemPedido({
             <SelectContent>
               {produtos.map(p => (
                 <SelectItem key={p.id} value={p.id.toString()}>
-                  {p.nome} - R$ {(p.preco_promocional || p.preco_padrao).toFixed(2)}
+                  {p.nome} - {formatCurrency(p.preco_promocional || p.preco_padrao)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -156,7 +157,7 @@ export default function ItemPedido({
 
       <div className="text-right pt-2 border-t">
         <span className="font-semibold text-lg">
-          Total: R$ {calcularTotal().toFixed(2)}
+          Total: {formatCurrency(calcularTotal())}
         </span>
       </div>
     </div>

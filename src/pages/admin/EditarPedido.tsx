@@ -12,6 +12,7 @@ import EnderecoForm from '@/components/EnderecoForm';
 import ItemPedido from '@/components/pedidos/ItemPedido';
 import { toast } from 'sonner';
 import { ArrowLeft, Save } from 'lucide-react';
+import { maskPhone, onlyNumbers } from '@/utils/formatadores';
 
 interface Produto {
   id: number;
@@ -195,12 +196,16 @@ export default function EditarPedido() {
 
     try {
       // 1. Atualizar pedido
+      // Normalizar telefone com 55
+      const telefoneNormalizado = onlyNumbers(telefone);
+      const telefoneComDDI = telefoneNormalizado.startsWith('55') ? telefoneNormalizado : '55' + telefoneNormalizado;
+
       const { error: pedidoError } = await supabase
         .from('pedidos')
         .update({
           lead_nome: nome,
           lead_email: email,
-          lead_telefone: telefone,
+          lead_telefone: telefoneComDDI,
           lead_cpf: cpf,
           endereco_cep: endereco.cep || null,
           endereco_logradouro: endereco.logradouro || null,
@@ -369,8 +374,9 @@ export default function EditarPedido() {
                     <Input 
                       id="telefone"
                       value={telefone} 
-                      onChange={(e) => setTelefone(e.target.value)} 
+                      onChange={(e) => setTelefone(maskPhone(e.target.value))} 
                       required 
+                      maxLength={15}
                     />
                   </div>
                   <div className="space-y-2">

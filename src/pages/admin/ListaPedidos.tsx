@@ -52,17 +52,17 @@ export default function ListaPedidos() {
     try {
       const { data, error } = await supabase
         .from('pedidos')
-        .select('status_pagamento, valor_total')
+        .select('status_pedido, valor_total')
         .eq('cliente_id', 2)
         .eq('empresa_id', 2);
 
       if (error) throw error;
 
       const total = data.length;
-      const pagos = data.filter(p => p.status_pagamento === 'pago').length;
-      const pendentes = data.filter(p => p.status_pagamento === 'pendente').length;
+      const pagos = data.filter(p => p.status_pedido === 'pago').length;
+      const pendentes = data.filter(p => p.status_pedido === 'pendente').length;
       const faturamento = data
-        .filter(p => p.status_pagamento === 'pago')
+        .filter(p => p.status_pedido === 'pago')
         .reduce((sum, p) => sum + p.valor_total, 0);
 
       setStats({ total, pagos, pendentes, faturamento });
@@ -86,7 +86,7 @@ export default function ListaPedidos() {
         .order('created_at', { ascending: false });
 
       if (statusFilter && statusFilter !== 'all') {
-        query = query.eq('status_pagamento', statusFilter);
+        query = query.eq('status_pedido', statusFilter);
       }
 
       if (searchTerm) {
@@ -381,7 +381,7 @@ export default function ListaPedidos() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <StatusBadge status={pedido.Status_Pagamento} />
+                          <StatusBadge status={pedido.Status_Pedido} />
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>

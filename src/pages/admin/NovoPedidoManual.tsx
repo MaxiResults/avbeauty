@@ -19,6 +19,7 @@ interface Produto {
   nome: string;
   preco_padrao: number;
   preco_promocional: number | null;
+  codigo_externo: string | null;
 }
 
 interface ItemPedidoData {
@@ -66,7 +67,7 @@ export default function NovoPedidoManual() {
     try {
       const { data, error } = await supabase
         .from('produtos')
-        .select('id, nome, preco_padrao, preco_promocional')
+        .select('id, nome, preco_padrao, preco_promocional, codigo_externo')
         .eq('cliente_id', 2)
         .eq('status', 'ativo')
         .order('nome');
@@ -200,18 +201,24 @@ export default function NovoPedidoManual() {
       if (pedidoError) throw pedidoError;
 
       // Criar itens do pedido
-      const itensParaInserir = itens.map(item => ({
-        cliente_id: 2,
-        empresa_id: 2,
-        pedido_id: pedidoData.id,
-        produto_id: item.produto_id,
-        produto_nome: item.produto_nome,
-        quantidade: item.quantidade || 1,
-        preco_unitario: item.preco_unitario || 0,
-        desconto_item: item.desconto_item || 0,
-        preco_total: ((item.quantidade || 1) * (item.preco_unitario || 0)) - (item.desconto_item || 0),
-        observacoes: item.observacoes || null
-      }));
+      const itensParaInserir = itens.map(item => {
+        // Buscar produto completo para pegar codigo_externo
+        const produto = produtos.find(p => p.id === item.produto_id);
+        
+        return {
+          cliente_id: 2,
+          empresa_id: 2,
+          pedido_id: pedidoData.id,
+          produto_id: item.produto_id,
+          produto_nome: item.produto_nome,
+          codigo_externo: produto?.codigo_externo || null,
+          quantidade: item.quantidade || 1,
+          preco_unitario: item.preco_unitario || 0,
+          desconto_item: item.desconto_item || 0,
+          preco_total: ((item.quantidade || 1) * (item.preco_unitario || 0)) - (item.desconto_item || 0),
+          observacoes: item.observacoes || null
+        };
+      });
 
       const { error: itensError } = await supabase
         .from('pedidos_itens')

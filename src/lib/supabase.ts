@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { supabase as cloud } from '@/integrations/supabase/client';
 
 const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1bmNjanVrdnJ4aW1qaXF6ZGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyODUsImV4cCI6MjA3NDg0OTI4NX0.Xt68Jol4GQ-GeL7g4z_wmm6ui81BIpTNJmNO7WhR_7E';
@@ -25,8 +24,11 @@ export async function submitLead(data: LeadData) {
   let telefone = onlyDigits(data.lead_telefone || '');
   if (!telefone.startsWith('55')) telefone = '55' + telefone;
 
+  // Criar cliente temporário para evitar importação circular
+  const tempSupabase = createClient(supabaseUrl, supabaseAnonKey);
+
   // Delegate to backend function that writes to external DB with service role
-  const { data: result, error } = await cloud.functions.invoke('submit-lead-site', {
+  const { data: result, error } = await tempSupabase.functions.invoke('submit-lead-site', {
     body: {
       site_url: data.site_url,
       lead_nome: data.lead_nome,

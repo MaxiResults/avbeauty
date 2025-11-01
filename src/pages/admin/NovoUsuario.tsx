@@ -42,15 +42,15 @@ export default function NovoUsuario() {
       const { error } = await supabase
         .from('usuarios')
         .insert({
-          Cliente_ID: 2,
-          Empresa_ID: 2,
-          Nome: nome,
-          Email: email,
-          Senha_Hash: senhaHash,
-          Role: role,
-          Ativo: true,
-          Created_at: new Date().toISOString(),
-          Updated_at: new Date().toISOString()
+          cliente_id: 2,
+          empresa_id: 2,
+          nome: nome,
+          email: email,
+          senha_hash: senhaHash,
+          role: role,
+          ativo: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         });
 
       if (error) {

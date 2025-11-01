@@ -4,16 +4,8 @@ import { toZonedTime } from 'date-fns-tz';
 const TIMEZONE = 'America/Sao_Paulo';
 
 export const uploadProdutoImage = async (file: File): Promise<string> => {
-  // Verificar autenticação
-  const { data: { session } } = await supabase.auth.getSession();
-  console.log('🔐 Upload - Sessão ativa?', !!session);
-  console.log('🔐 Upload - User ID:', session?.user?.id);
-  
-  if (!session) {
-    throw new Error('Usuário não autenticado. Faça login para fazer upload.');
-  }
-
   // Envia o arquivo para a função de backend que faz o upload com service role
+  // A autenticação já é validada pela ProtectedRoute
   try {
     const FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
     const PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;

@@ -19,7 +19,8 @@ if (!window._supabaseAuthBlocked) {
   // @ts-ignore
   window.fetch = function(...args) {
     const url = args[0];
-    if (url && url.includes('/auth/v1/token')) {
+    const urlString = typeof url === 'string' ? url : url instanceof Request ? url.url : '';
+    if (urlString && urlString.includes('/auth/v1/token')) {
       console.log('🚫 AUTH NATIVO BLOQUEADO');
       return Promise.reject(new Error('Use auth customizada'));
     }
@@ -34,7 +35,13 @@ const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1bmNjanVrdnJ4aW1qaXF6ZGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyODUsImV4cCI6MjA3NDg0OTI4NX0.Xt68Jol4GQ-GeL7g4z_wmm6ui81BIpTNJmNO7WhR_7E';
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: false // ✅ DESABILITA COMPLETAMENTE
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+    storage: localStorage,
+    storageKey: 'ext-login-temp' // Unique key to avoid conflicts
+  }
 });
 
 // =============================================

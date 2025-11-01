@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
-import { gerarHashSenha } from '@/utils/customAuth';
+import { supabase, gerarHashSenha } from '@/utils/customAuth'; // ✅ Usar banco externo
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

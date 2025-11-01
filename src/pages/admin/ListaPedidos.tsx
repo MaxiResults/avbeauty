@@ -137,7 +137,7 @@ export default function ListaPedidos() {
       }));
 
       setPedidoItens(itens);
-      setSelectedPedido(pedido);
+      setedPedido(pedido);
       setDetailsOpen(true);
     } catch (error: any) {
       toast.error('Erro ao carregar detalhes: ' + error.message);
@@ -435,7 +435,7 @@ export default function ListaPedidos() {
       </div>
 
       <DetalhesDialog
-        pedido={selectedPedido}
+        pedido={edPedido}
         itens={pedidoItens}
         open={detailsOpen}
         onOpenChange={setDetailsOpen}

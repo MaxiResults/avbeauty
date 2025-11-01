@@ -1,12 +1,12 @@
 import { Navigate } from 'react-router-dom';
-import { useCustomAuth } from '@/hooks/useCustomAuth';
+import { useAuth } from '@/contexts/AuthContext'; // ✅ Use useAuth, não useCustomAuth
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, loading } = useCustomAuth();
+  const { user, loading } = useAuth(); // ✅ Use user e loading do AuthContext
 
   if (loading) {
     return (
@@ -16,7 +16,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!user) { // ✅ Verifique user, não isAuthenticated
     return <Navigate to="/admin/login" replace />;
   }
 

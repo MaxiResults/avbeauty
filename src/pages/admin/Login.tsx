@@ -1,3 +1,42 @@
+// =============================================
+// BLOQUEADOR DEFINITIVO DE AUTH NATIVO
+// =============================================
+
+// @ts-ignore
+if (!window._supabaseAuthBlocked) {
+  // @ts-ignore
+  window._supabaseAuthBlocked = true;
+  
+  console.log('🛡️ BLOQUEADOR DE AUTH NATIVO ATIVADO');
+  
+  // Bloquear fetch
+  const originalFetch = window.fetch;
+  // @ts-ignore
+  window.fetch = function(...args) {
+    const url = args[0];
+    if (url && url.includes('/auth/v1/token')) {
+      console.log('🚫 AUTH NATIVO BLOQUEADO - usando auth customizada');
+      return Promise.reject(new Error('Auth nativo bloqueado - use auth customizada'));
+    }
+    return originalFetch.apply(this, args);
+  };
+  
+  // Bloquear XMLHttpRequest
+  const originalXHROpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(...args) {
+    const url = args[1];
+    if (url && url.includes('/auth/v1/token')) {
+      console.log('🚫 AUTH NATIVO BLOQUEADO (XHR)');
+      this.addEventListener('error', () => {}); // Silenciar erro
+      return;
+    }
+    // @ts-ignore
+    return originalXHROpen.apply(this, args);
+  };
+}
+
+
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';

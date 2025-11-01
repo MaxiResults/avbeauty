@@ -266,7 +266,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 md:bottom-28 md:right-6 md:left-auto md:w-[28.8rem] h-[100dvh] md:h-[720px] bg-background border-t md:border md:border-border md:rounded-lg shadow-2xl flex flex-col z-50 animate-fade-in">
+    <div className="fixed inset-x-0 bottom-0 md:bottom-28 md:right-6 md:left-auto md:w-[28.8rem] h-[100dvh] md:h-[580px] bg-background border-t md:border md:border-border md:rounded-lg shadow-2xl flex flex-col z-50 animate-fade-in">
       <div className="bg-primary text-primary-foreground p-3 md:p-4 md:rounded-t-lg flex items-center justify-between">
         <div>
           <h3 className="font-semibold text-base md:text-lg">Chat Online</h3>
@@ -298,12 +298,12 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
       </div>
 
       {showLeadForm ? (
-        <div className="flex-1 p-4 md:p-6 flex flex-col justify-center">
-          <h4 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Olá! Vamos começar?</h4>
-          <p className="text-sm text-muted-foreground mb-4 md:mb-6">
+        <div className="flex-1 p-3 md:p-4 flex flex-col justify-center">
+          <h4 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Olá! Vamos começar?</h4>
+          <p className="text-sm text-muted-foreground mb-3 md:mb-4">
             Para iniciar a conversa, por favor preencha seus dados:
           </p>
-          <form onSubmit={handleLeadSubmit} className="space-y-4">
+          <form onSubmit={handleLeadSubmit} className="space-y-3">
             <div>
               <Input
                 placeholder="Seu nome"

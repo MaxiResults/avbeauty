@@ -1,5 +1,5 @@
 /**
- * ⚠️ AVISO DE SEGURANÇA CRÍTICO ⚠️ ajustado
+ * ⚠️ AVISO DE SEGURANÇA CRÍTICO ⚠️
  * 
  * Este sistema de autenticação tem FALHAS GRAVES de segurança:
  * 1. localStorage pode ser manipulado pelo usuário (F12 > Application > Local Storage)
@@ -14,7 +14,14 @@
  * - Rate limiting para prevenir ataques de força bruta
  */
 
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// CONFIGURAÇÃO DIRETA (que funcionou no teste)
+const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1bmNjanVrdnJ4aW1qaXF6ZGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyODUsImV4cCI6MjA3NDg0OTI4NX0.Xt68Jol4GQ-GeL7g4z_wmm6ui81BIpTNJmNO7WhR_7E';
+
+// Crie o cliente Supabase DIRETAMENTE aqui
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface User {
   id: string;

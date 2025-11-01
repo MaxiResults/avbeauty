@@ -7,10 +7,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import foto1Antes from "@/assets/foto-1-antes.png";
-import foto1Depois from "@/assets/foto-1-depois.png";
-import foto2Antes from "@/assets/foto-2-antes.png";
-import foto2Depois from "@/assets/foto-2-depois.png";
+import foto1Antes from "@/assets/foto-1-antes.jpg";
+import foto1Depois from "@/assets/foto-1-depois.jpg";
+import foto2Antes from "@/assets/foto-2-antes.jpg";
+import foto2Depois from "@/assets/foto-2-depois.jpg";
+import foto3Antes from "@/assets/foto-3-antes.jpg";
+import foto3Depois from "@/assets/foto-3-depois.jpg";
+import foto4Antes from "@/assets/foto-4-antes.jpg";
+import foto4Depois from "@/assets/foto-4-depois.jpg";
 
 const Gallery = () => {
   const [selectedCase, setSelectedCase] = useState<number | null>(null);
@@ -27,6 +31,18 @@ const Gallery = () => {
       id: 2,
       beforeImage: foto2Antes,
       afterImage: foto2Depois
+    },
+    { 
+      title: "Sorriso Perfeito", 
+      id: 3,
+      beforeImage: foto3Antes,
+      afterImage: foto3Depois
+    },
+    { 
+      title: "Resultado Extraordinário", 
+      id: 4,
+      beforeImage: foto4Antes,
+      afterImage: foto4Depois
     },
   ];
 

@@ -42,9 +42,16 @@ const hashSenha = async (senha: string): Promise<string> => {
 // Login
 export const customLogin = async (email: string, senha: string) => {
   try {
+    console.log('🔐 === INICIANDO LOGIN ===');
+    console.log('📧 Email fornecido:', email);
+    console.log('🔑 Senha fornecida:', senha ? '***' : 'vazia');
+
     // Gerar hash da senha digitada
     const senhaHash = await hashSenha(senha);
+    console.log('🔐 Hash da senha gerado:', senhaHash);
 
+    console.log('📋 Executando query no Supabase...');
+    
     // Buscar usuário no banco EXTERNO do Supabase
     const { data: user, error } = await supabase
       .from('usuarios')
@@ -55,16 +62,51 @@ export const customLogin = async (email: string, senha: string) => {
       .eq('ativo', true)
       .single();
 
-    if (error || !user) {
+    console.log('📊 RESULTADO DA QUERY:');
+    console.log('- Error:', error);
+    console.log('- User encontrado:', user);
+
+    if (error) {
+      console.log('❌ ERRO NA QUERY:', error.message);
+      console.log('- Detalhes:', error.details);
+      console.log('- Hint:', error.hint);
+      return { success: false, error: 'Erro ao buscar usuário: ' + error.message };
+    }
+
+    if (!user) {
+      console.log('❌ USUÁRIO NÃO ENCONTRADO');
+      console.log('- Verifique se existe usuário com:');
+      console.log('  • email:', email);
+      console.log('  • cliente_id: 2');
+      console.log('  • empresa_id: 2');
+      console.log('  • ativo: true');
       return { success: false, error: 'Usuário não encontrado ou inativo' };
     }
 
+    console.log('👤 USUÁRIO ENCONTRADO:');
+    console.log('- ID:', user.id);
+    console.log('- Nome:', user.nome);
+    console.log('- Email:', user.email);
+    console.log('- Role:', user.role);
+    console.log('- Senha_hash no banco:', user.senha_hash);
+    console.log('- Ativo:', user.ativo);
+    console.log('- Cliente_ID:', user.cliente_id);
+    console.log('- Empresa_ID:', user.empresa_id);
+
     // Verificar senha
+    console.log('🔍 COMPARANDO SENHAS:');
+    console.log('- Hash fornecido:', senhaHash);
+    console.log('- Hash no banco:', user.senha_hash);
+    console.log('- São iguais?', senhaHash === user.senha_hash);
+
     if (senhaHash !== user.senha_hash) {
+      console.log('❌ SENHA INCORRETA');
       return { success: false, error: 'Senha incorreta' };
     }
 
-    // Criar sessão (INSEGURO - localStorage pode ser manipulado!)
+    console.log('✅ SENHA CORRETA!');
+
+    // Criar sessão
     const sessionData: SessionData = {
       user: {
         id: user.id,
@@ -77,11 +119,13 @@ export const customLogin = async (email: string, senha: string) => {
     };
 
     localStorage.setItem('custom_auth_session', JSON.stringify(sessionData));
+    console.log('🎉 LOGIN REALIZADO COM SUCESSO!');
+    console.log('💾 Sessão salva no localStorage');
 
     return { success: true, user: sessionData.user };
 
   } catch (error) {
-    console.error('Erro no login:', error);
+    console.error('💥 ERRO NO LOGIN:', error);
     return { success: false, error: 'Erro ao fazer login. Tente novamente.' };
   }
 };

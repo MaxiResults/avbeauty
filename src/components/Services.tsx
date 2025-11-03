@@ -4,34 +4,54 @@ import { Button } from "@/components/ui/button";
 const Services = () => {
   const services = [
     {
-      icon: Gem,
-      title: "Lentes Naturais Hiper-Realistas",
-      description: "Transformação natural e duradoura do seu sorriso com tecnologia de última geração",
-    },
-    {
       icon: Sparkle,
-      title: "Clareamento Dental",
-      description: "Dentes brancos e saudáveis com segurança e resultados impressionantes",
+      title: "Design Simples",
+      description: "Sobrancelhas bem desenhadas que valorizam muito a expressão e harmonia facial",
     },
     {
       icon: Palette,
-      title: "Harmonização Facial",
-      description: "Equilíbrio e rejuvenescimento do rosto com técnicas modernas",
+      title: "Design com Henna",
+      description: "Nutrição dos fios, preenchimento natural de falhas com duração até 15 dias",
     },
     {
-      icon: Waves,
-      title: "Preenchimento Labial",
-      description: "Volume e definição natural dos lábios respeitando sua harmonia facial",
+      icon: Gem,
+      title: "NV Brow (Fio a Fio)",
+      description: "Técnica que desenha fios naturais, praticidade no dia a dia com resultado duradouro",
     },
     {
       icon: Star,
-      title: "Bioestimuladores de Colágeno",
-      description: "Estímulo natural do colágeno da pele para rejuvenescimento duradouro",
+      title: "Coloração Labial",
+      description: "Lábios sempre corados, realce do contorno natural sem necessidade de batom",
+    },
+    {
+      icon: Waves,
+      title: "Shadow Brow (Sombreada)",
+      description: "Efeito maquiagem permanente, volume sofisticado para quem gosta de sobrancelha marcante",
+    },
+    {
+      icon: Sparkle,
+      title: "Hidragloss",
+      description: "Hidratação profunda com ácido hialurônico, lábios macios e volume sutil",
+    },
+    {
+      icon: Star,
+      title: "Reconstrução de Sobrancelhas",
+      description: "Tratamento que estimula crescimento, fortalece e recupera sobrancelhas ralas",
     },
     {
       icon: Syringe,
-      title: "Toxina Botulínica",
-      description: "Suavização de linhas de expressão com resultados naturais e elegantes",
+      title: "Despigmentação a Laser",
+      description: "Remoção segura de pigmentação antiga, correção de designs indesejados",
+    },
+    {
+      icon: Waves,
+      title: "Brow Lamination",
+      description: "Alinha e realça pelos, efeito lifting com volume instantâneo durando até 2 meses",
+    },
+    {
+      icon: Gem,
+      title: "Derma (Dermaplaning)",
+      description: "Renovação celular, clareia manchas, estimula colágeno devolvendo viço e maciez",
     },
   ];
 
@@ -43,7 +63,7 @@ const Services = () => {
             Nossos Serviços
           </h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-            Procedimentos especializados para transformar seu sorriso e realçar sua beleza natural
+            Procedimentos especializados em estética facial para realçar sua beleza natural
           </p>
         </div>
 
@@ -72,7 +92,7 @@ const Services = () => {
             size="lg"
             onClick={() =>
               window.open(
-                "https://wa.me/5511951903402?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20procedimentos",
+                "https://wa.me/5511989368534?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20procedimentos",
                 "_blank"
               )
             }

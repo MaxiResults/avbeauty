@@ -51,9 +51,9 @@ const Header = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Nicole Guedes Odonto" className="h-10 w-auto" />
+            <img src={logo} alt="AVBeauty" className="h-10 w-auto" />
             <span className="font-display font-bold text-xl text-foreground hidden sm:block">
-              Nicole Guedes
+              AVBeauty
             </span>
           </div>
 
@@ -73,19 +73,19 @@ const Header = () => {
           {/* Social + CTA */}
           <div className="hidden lg:flex items-center gap-4">
             <a
-              href="https://instagram.com/dra.nicoleguedess"
+              href="https://www.instagram.com/andreiavieira_beauty/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram da Dra. Nicole"
+              aria-label="Instagram AVBeauty"
               className="p-2 rounded-full hover:bg-primary/10 transition-smooth"
             >
               <Instagram className="w-5 h-5 text-foreground" />
             </a>
             <a
-              href="https://www.facebook.com/dranicoleguedes"
+              href="https://www.facebook.com/andreiavieiraclinic/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Facebook da Dra. Nicole"
+              aria-label="Facebook AVBeauty"
               className="p-2 rounded-full hover:bg-primary/10 transition-smooth"
             >
               <Facebook className="w-5 h-5 text-foreground" />
@@ -93,18 +93,18 @@ const Header = () => {
             <Button
               onClick={() =>
                 window.open(
-                  "https://wa.me/5511951903402?text=Olá!%20Gostaria%20de%20agendar%20uma%20avaliação",
+                  "https://wa.me/5511989368534?text=Olá!%20Gostaria%20de%20agendar%20um%20horário",
                   "_blank"
                 )
               }
-              className="bg-terracota hover:bg-terracota/90 text-terracota-foreground"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              Agendar Consulta
+              Agendar Horário
             </Button>
             <Button
               onClick={() => navigate('/admin/login')}
               size="icon"
-              className="bg-terracota hover:bg-terracota/90 text-terracota-foreground"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
               title="Área Restrita"
               aria-label="Login"
             >
@@ -142,13 +142,13 @@ const Header = () => {
               <Button
                 onClick={() =>
                   window.open(
-                    "https://wa.me/5511951903402?text=Olá!%20Gostaria%20de%20agendar%20uma%20avaliação",
+                    "https://wa.me/5511989368534?text=Olá!%20Gostaria%20de%20agendar%20um%20horário",
                     "_blank"
                   )
                 }
-                className="bg-terracota hover:bg-terracota/90 text-terracota-foreground w-full"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full"
               >
-                Agendar Consulta
+                Agendar Horário
               </Button>
             </nav>
           </div>

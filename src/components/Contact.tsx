@@ -69,7 +69,7 @@ const Contact = () => {
     setIsSubmitting(true);
     try {
       const leadData: LeadData = {
-        site_url: window.location.hostname || "nicoleguedesodonto.com.br",
+        site_url: window.location.hostname || "avbeauty.com.br",
         lead_nome: formData.nome.trim(),
         lead_telefone: phoneNumbers,
         // normalizado para +55 no submitLead
@@ -106,38 +106,38 @@ const Contact = () => {
   const infoItems = [{
     icon: MapPin,
     title: "Endereço",
-    content: "Av. Aniello Pratici, 50 - Centro - Guarulhos/SP"
+    content: "Rua Governador Archer, 22 - Parque Cisper, São Paulo/SP"
   }, {
     icon: Phone,
     title: "WhatsApp",
-    content: "(11) 95190-3402",
-    link: "https://wa.me/5511951903402"
+    content: "(11) 98936-8534",
+    link: "https://wa.me/5511989368534"
   }, {
     icon: Mail,
     title: "E-mail",
-    content: "contato@nicoleguedesodonto.com.br",
-    link: "mailto:contato@nicoleguedesodonto.com.br"
+    content: "contato@avbeauty.com.br",
+    link: "mailto:contato@avbeauty.com.br"
   }, {
     icon: Instagram,
     title: "Instagram",
-    content: "@dra.nicoleguedess",
-    link: "https://instagram.com/dra.nicoleguedess"
+    content: "@andreiavieira_beauty",
+    link: "https://www.instagram.com/andreiavieira_beauty/"
   }, {
     icon: Facebook,
     title: "Facebook",
-    content: "facebook.com/dranicoleguedes",
-    link: "https://www.facebook.com/dranicoleguedes"
+    content: "andreiavieiraclinic",
+    link: "https://www.facebook.com/andreiavieiraclinic/"
   }, {
     icon: Clock,
     title: "Horário",
-    content: "Seg a Sex: 9h às 18h | Sáb: 9h às 13h"
+    content: "Seg a Sex: 9h às 18h | Sáb: 9h às 14h"
   }];
   return <section id="contato" className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Entre em Contato Conosco</h2>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Entre em Contato</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Agende sua avaliação e dê o primeiro passo para transformar seu sorriso
+            Agende seu horário e dê o primeiro passo para reconectar com sua beleza natural
           </p>
         </div>
 
@@ -145,7 +145,7 @@ const Contact = () => {
           {/* Form */}
           <div className="animate-fade-in h-full flex flex-col">
             <h3 className="text-2xl font-display font-semibold text-foreground mb-6">
-              Agende sua avaliação
+              Agende seu horário
             </h3>
             <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
               <div>
@@ -179,12 +179,16 @@ const Contact = () => {
                     <SelectValue placeholder="Selecione seu interesse" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Lentes Naturais">Lentes Naturais</SelectItem>
-                    <SelectItem value="Clareamento">Clareamento</SelectItem>
-                    <SelectItem value="Harmonização Facial">Harmonização Facial</SelectItem>
-                    <SelectItem value="Preenchimento Labial">Preenchimento Labial</SelectItem>
-                    <SelectItem value="Bioestimuladores">Bioestimuladores</SelectItem>
-                    <SelectItem value="Toxina Botulínica">Toxina Botulínica</SelectItem>
+                    <SelectItem value="Design Simples">Design Simples</SelectItem>
+                    <SelectItem value="Design com Henna">Design com Henna</SelectItem>
+                    <SelectItem value="NV Brow (Fio a Fio)">NV Brow (Fio a Fio)</SelectItem>
+                    <SelectItem value="Coloração Labial">Coloração Labial</SelectItem>
+                    <SelectItem value="Shadow Brow">Shadow Brow (Sombreada)</SelectItem>
+                    <SelectItem value="Hidragloss">Hidragloss</SelectItem>
+                    <SelectItem value="Reconstrução de Sobrancelhas">Reconstrução de Sobrancelhas</SelectItem>
+                    <SelectItem value="Despigmentação a Laser">Despigmentação a Laser</SelectItem>
+                    <SelectItem value="Brow Lamination">Brow Lamination</SelectItem>
+                    <SelectItem value="Derma (Dermaplaning)">Derma (Dermaplaning)</SelectItem>
                     <SelectItem value="Outro">Outro</SelectItem>
                   </SelectContent>
                 </Select>
@@ -198,7 +202,7 @@ const Contact = () => {
               })} placeholder="Conte-nos mais sobre suas expectativas (opcional)" rows={3} />
               </div>
 
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-terracota hover:bg-terracota/90 text-terracota-foreground">
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                 {isSubmitting ? "Enviando..." : "Enviar solicitação"}
               </Button>
             </form>
@@ -229,9 +233,9 @@ const Contact = () => {
             {/* Google Map */}
             <div className="mt-8">
               <div className="aspect-video rounded-xl overflow-hidden shadow-soft">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.8934567890123!2d-46.533333!3d-23.463333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cef4b9bbbbbbbb%3A0x1111111111111111!2sAv.%20Aniello%20Pratici%2C%2050%20-%20Centro%2C%20Guarulhos%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr" width="100%" height="100%" style={{
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3658.123456789!2d-46.4962!3d-23.5432!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMyJzM1LjUiUyA0NsKwMjknNDYuMyJX!5e0!3m2!1spt-BR!2sbr!4v1234567890!5m2!1spt-BR!2sbr" width="100%" height="100%" style={{
                 border: 0
-              }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Localização Nicole Guedes Odonto"></iframe>
+              }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Localização AVBeauty"></iframe>
               </div>
             </div>
           </div>

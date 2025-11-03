@@ -29,14 +29,14 @@ const Footer = () => {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
               <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-display font-bold text-xl">NG</span>
+                <span className="text-primary-foreground font-display font-bold text-xl">AV</span>
               </div>
               <span className="ml-3 font-display font-semibold text-lg">
-                Nicole Guedes Odonto
+                AVBeauty
               </span>
             </div>
             <p className="text-secondary-foreground/80 max-w-md mx-auto">
-              Especialistas em lentes naturais hiper-realistas e harmonização facial
+              Studio de estética facial em Ermelino Matarazzo - Zona Leste de SP
             </p>
           </div>
 
@@ -56,7 +56,7 @@ const Footer = () => {
           {/* Social links */}
           <div className="flex justify-center gap-4 mb-8">
             <a
-              href="https://instagram.com/dra.nicoleguedess"
+              href="https://www.instagram.com/andreiavieira_beauty/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-full bg-secondary-foreground/10 hover:bg-secondary-foreground/20 flex items-center justify-center transition-smooth"
@@ -65,7 +65,7 @@ const Footer = () => {
               <Instagram className="w-5 h-5" />
             </a>
             <a
-              href="https://wa.me/5511951903402"
+              href="https://wa.me/5511989368534"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-full bg-secondary-foreground/10 hover:bg-secondary-foreground/20 flex items-center justify-center transition-smooth"
@@ -78,7 +78,7 @@ const Footer = () => {
           {/* Bottom section */}
           <div className="border-t border-secondary-foreground/10 pt-8 text-center">
             <p className="text-sm text-secondary-foreground/60 mb-2">
-              © 2024 Nicole Guedes Odonto - Todos os direitos reservados
+              © 2024 AVBeauty - Todos os direitos reservados
             </p>
             <div className="flex justify-center gap-4 text-sm text-secondary-foreground/60">
               <Link 

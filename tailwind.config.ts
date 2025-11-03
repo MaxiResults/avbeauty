@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Playfair Display', 'serif'],
+        sans: ["Inter", "sans-serif"],
+        display: ["Kanon Sans Serif", "sans-serif"],
+        subtitle: ["Manison", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -43,17 +44,13 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
-        terracota: {
-          DEFAULT: "hsl(var(--terracota))",
-          foreground: "hsl(var(--terracota-foreground))",
+        dark: {
+          DEFAULT: "hsl(var(--dark))",
+          foreground: "hsl(var(--dark-foreground))",
         },
-        rose: {
-          DEFAULT: "hsl(var(--rose))",
-          foreground: "hsl(var(--rose-foreground))",
-        },
-        "rose-light": {
-          DEFAULT: "hsl(var(--rose-light))",
-          foreground: "hsl(var(--rose-light-foreground))",
+        light: {
+          DEFAULT: "hsl(var(--light))",
+          foreground: "hsl(var(--light-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

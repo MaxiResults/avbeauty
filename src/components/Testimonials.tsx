@@ -8,32 +8,32 @@ const Testimonials = () => {
   const testimonials = [
     {
       name: "Ana Paula Santos",
-      text: "Resultado incrível! As lentes ficaram tão naturais que ninguém acredita que não são meus dentes originais. A Dra. Nicole tem um olhar muito especial para os detalhes.",
+      text: "Resultado incrível! Minhas sobrancelhas ficaram tão naturais e bem desenhadas. Andréia tem um olhar muito especial para os detalhes.",
       rating: 5,
     },
     {
       name: "Mariana Costa",
-      text: "O atendimento é excepcional do início ao fim. Me senti acolhida e segura durante todo o processo. Meu sorriso ficou perfeito, exatamente como sonhei!",
+      text: "O atendimento é excepcional do início ao fim. Me senti acolhida e segura durante todo o processo. Minhas sobrancelhas ficaram perfeitas!",
       rating: 5,
     },
     {
       name: "Juliana Oliveira",
-      text: "A harmonização facial superou todas as minhas expectativas. Resultados naturais e um atendimento humanizado. Recomendo de olhos fechados!",
+      text: "A coloração labial superou todas as minhas expectativas. Resultados naturais e um atendimento humanizado. Recomendo de olhos fechados!",
       rating: 5,
     },
     {
       name: "Fernanda Lima",
-      text: "Clínica impecável, tecnologia de ponta e profissionais extremamente qualificados. Meu sorriso está radiante e minha autoestima lá em cima!",
+      text: "Studio impecável, higiene nota 10 e profissionais extremamente qualificadas. Minha autoestima está lá em cima!",
       rating: 5,
     },
     {
       name: "Beatriz Mendes",
-      text: "Fiz o clareamento e as lentes. O resultado ficou tão perfeito e natural que todos acham que é meu sorriso original. Gratidão eterna!",
+      text: "Fiz o NV Brow. O resultado ficou tão perfeito e natural que todos acham que são minhas sobrancelhas originais. Gratidão eterna!",
       rating: 5,
     },
     {
       name: "Camila Rodrigues",
-      text: "Profissionalismo, cuidado e atenção em cada detalhe. A Dra. Nicole é uma verdadeira artista! Meu sorriso nunca esteve tão bonito.",
+      text: "Profissionalismo, cuidado e atenção em cada detalhe. Andréia e Vanessa são verdadeiras artistas! Meu rosto nunca esteve tão bonito.",
       rating: 5,
     },
   ];
@@ -54,10 +54,10 @@ const Testimonials = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">
-            O que nossos pacientes dizem
+            O que nossas clientes dizem
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Depoimentos reais de quem transformou o sorriso e a autoestima conosco
+            Depoimentos reais de quem reconectou com sua beleza natural conosco
           </p>
         </div>
 

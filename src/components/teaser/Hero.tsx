@@ -85,7 +85,7 @@ export function Hero({
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         textShadow: '0 0 40px rgba(255, 215, 0, 0.3)'
-      }} className="text-5xl font-black leading-tight md:text-6xl">
+      }} className="text-5xl font-black leading-tight md:text-6xl text-yellow-500">
           A MAIOR PROMOÇÃO<br />DO ANO ESTÁ CHEGANDO...
         </motion.h1>
 

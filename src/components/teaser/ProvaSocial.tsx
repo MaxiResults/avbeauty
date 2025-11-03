@@ -4,34 +4,34 @@ export function ProvaSocial() {
   const depoimentos = [
     {
       stars: 5,
-      text: 'Sempre confiei na AV Beauty. Mal posso esperar por essa promoção!',
-      autor: 'Maria S.',
+      text: 'Minha sobrancelha ficou perfeita com a Andréia! Resultado super natural e sofisticado.',
+      autor: 'Carla M. - Ermelino Matarazzo',
     },
     {
       stars: 5,
-      text: 'Se é da AV Beauty, eu sei que será incrível!',
-      autor: 'João P.',
+      text: 'Fiz coloração labial e adorei! Atendimento humanizado e cuidadoso da equipe AV Beauty.',
+      autor: 'Beatriz S. - Zona Leste',
     },
     {
       stars: 5,
       text: 'Já fiz 3 procedimentos na AV Beauty. Ansiosa pela Black Friday!',
-      autor: 'Ana C.',
+      autor: 'Ana C. - São Miguel',
     },
     {
       stars: 5,
-      text: 'Equipe maravilhosa e resultados impecáveis!',
-      autor: 'Carlos R.',
+      text: 'Equipe maravilhosa, lugar acolhedor e resultados impecáveis! Super recomendo!',
+      autor: 'Juliana R. - Penha',
     },
   ];
 
   return (
-    <section className="py-20 px-4 bg-[#1a1a1a]">
+    <section className="py-20 px-4 bg-[#000000]">
       <div className="max-w-6xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl font-bold text-white text-center mb-12"
+          className="text-4xl font-display font-bold text-[#fdfdfd] text-center mb-12"
         >
           O QUE NOSSOS CLIENTES ESTÃO DIZENDO
         </motion.h2>
@@ -45,7 +45,7 @@ export function ProvaSocial() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -4 }}
-              className="p-8 rounded-2xl bg-[#2a2a2a] border border-[#3a3a3a] hover:border-[#FFD700] transition-all"
+              className="p-8 rounded-2xl bg-[#181818] border border-[#64473b] hover:border-[#704e3b] transition-all"
             >
               {/* Estrelas */}
               <div className="text-2xl mb-4">
@@ -53,12 +53,12 @@ export function ProvaSocial() {
               </div>
 
               {/* Texto */}
-              <p className="text-lg text-[#E0E0E0] italic mb-4 leading-relaxed">
+              <p className="text-lg font-sans text-[#ececec] italic mb-4 leading-relaxed">
                 "{depoimento.text}"
               </p>
 
               {/* Autor */}
-              <p className="text-sm text-[#FFD700] font-semibold">
+              <p className="text-sm font-sans text-[#704e3b] font-semibold">
                 - {depoimento.autor}
               </p>
             </motion.div>
@@ -71,8 +71,8 @@ export function ProvaSocial() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <p className="text-lg text-[#FFD700]">
-            💬 Mais de 500 avaliações 5 estrelas
+          <p className="text-lg font-sans text-[#704e3b]">
+            💬 Mais de 500 clientes satisfeitas na Zona Leste
           </p>
         </motion.div>
       </div>

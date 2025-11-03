@@ -6,8 +6,12 @@ export function FAQ() {
 
   const faqs = [
     {
-      pergunta: 'Quando a promoção começa?',
-      resposta: 'Em breve! Cadastrados receberão aviso por email e WhatsApp 24h antes do lançamento.',
+      pergunta: 'Quando a promoção Black Friday começa?',
+      resposta: 'Em breve! Cadastradas receberão aviso por email e WhatsApp 24h antes do lançamento.',
+    },
+    {
+      pergunta: 'Quais procedimentos terão desconto?',
+      resposta: 'AV Brow, Coloração Labial, Brow Lamination, Hidragloss, Design de Sobrancelha e muito mais!',
     },
     {
       pergunta: 'Preciso pagar para me cadastrar?',
@@ -18,15 +22,11 @@ export function FAQ() {
       resposta: 'Automaticamente por email e WhatsApp logo após o cadastro.',
     },
     {
-      pergunta: 'Posso compartilhar meu link?',
-      resposta: 'O link é pessoal e rastreável para garantir exclusividade aos cadastrados.',
+      pergunta: 'Os procedimentos são seguros?',
+      resposta: 'Sim! Todos os procedimentos são realizados por profissionais qualificadas com produtos de alta qualidade.',
     },
     {
-      pergunta: 'O que acontece se eu não me cadastrar?',
-      resposta: 'Você perderá as condições exclusivas e descontos especiais para cadastrados.',
-    },
-    {
-      pergunta: 'O cadastro me obriga a comprar?',
+      pergunta: 'O cadastro me obriga a agendar?',
       resposta: 'Não! Você recebe o acesso e decide depois se quer aproveitar a promoção.',
     },
   ];
@@ -36,13 +36,13 @@ export function FAQ() {
   };
 
   return (
-    <section className="py-20 px-4 bg-[#0a0a0a]">
+    <section className="py-20 px-4 bg-[#181818]">
       <div className="max-w-4xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl font-bold text-white text-center mb-12"
+          className="text-4xl font-display font-bold text-[#fdfdfd] text-center mb-12"
         >
           DÚVIDAS FREQUENTES
         </motion.h2>
@@ -57,23 +57,23 @@ export function FAQ() {
               transition={{ delay: index * 0.1 }}
               className={`rounded-xl overflow-hidden border transition-all ${
                 activeIndex === index
-                  ? 'border-[#FFD700] bg-[#1a1a1a]'
-                  : 'border-[#3a3a3a] bg-[#1a1a1a]'
+                  ? 'border-[#704e3b] bg-[#000000]'
+                  : 'border-[#64473b] bg-[#000000]'
               }`}
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full p-6 flex items-center justify-between text-left hover:bg-[#2a2a2a] transition-colors"
+                className="w-full p-6 flex items-center justify-between text-left hover:bg-[#181818] transition-colors"
               >
-                <span className={`text-lg font-semibold ${
-                  activeIndex === index ? 'text-[#FFD700]' : 'text-white'
+                <span className={`text-lg font-subtitle font-semibold ${
+                  activeIndex === index ? 'text-[#704e3b]' : 'text-[#fdfdfd]'
                 }`}>
                   {faq.pergunta}
                 </span>
                 <motion.span
                   animate={{ rotate: activeIndex === index ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
-                  className="text-2xl text-[#FFD700]"
+                  className="text-2xl text-[#704e3b]"
                 >
                   ▼
                 </motion.span>
@@ -88,7 +88,7 @@ export function FAQ() {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-6 text-[#B8B8B8] leading-relaxed">
+                    <div className="px-6 pb-6 font-sans text-[#737373] leading-relaxed">
                       {faq.resposta}
                     </div>
                   </motion.div>

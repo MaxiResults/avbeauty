@@ -37,7 +37,7 @@ serve(async (req) => {
         lead_id: leadId, 
         canal, 
         origem,
-        status_sessac: 'ativa',
+        status_sessao: 'ativa',
         Cliente_ID: 2,
         Empresa_ID: 2,
         created_at: saoPauloTimestamp 

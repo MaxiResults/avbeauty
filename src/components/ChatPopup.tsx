@@ -7,6 +7,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { toZonedTime } from 'date-fns-tz';
+import logoAVBeauty from "@/assets/logo-avbeauty-chat.png";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -184,7 +185,7 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
       const welcomeMsg: Message = {
         id: Date.now().toString(),
         remetente: 'IA',
-        mensagem: `Olá ${leadData.nome}! Sou a assistente virtual da Dra. Nicole. Como posso ajudá-lo hoje?`,
+        mensagem: `Olá ${leadData.nome}! Sou a assistente virtual da AV Beauty. Como posso ajudá-lo hoje?`,
         data_envio: toSaoPauloTime(new Date())
       };
       setMessages([welcomeMsg]);
@@ -267,10 +268,11 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
 
   return (
     <div className="fixed inset-x-0 bottom-0 md:bottom-28 md:right-6 md:left-auto md:w-[28.8rem] h-[100dvh] md:h-[580px] bg-background border-t md:border md:border-border md:rounded-lg shadow-2xl flex flex-col z-50 animate-fade-in">
-      <div className="bg-primary text-primary-foreground p-3 md:p-4 md:rounded-t-lg flex items-center justify-between">
-        <div>
+      <div className="bg-primary text-primary-foreground p-3 md:p-4 md:rounded-t-lg flex items-center justify-between gap-3">
+        <img src={logoAVBeauty} alt="AV Beauty" className="h-10 w-auto" />
+        <div className="flex-1">
           <h3 className="font-semibold text-base md:text-lg">Chat Online</h3>
-          <p className="text-xs md:text-sm opacity-90">Dra. Nicole - Harmonização Facial</p>
+          <p className="text-xs md:text-sm opacity-90">AV Beauty - Estética Facial</p>
         </div>
         <AlertDialog>
           <AlertDialogTrigger asChild>

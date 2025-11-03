@@ -52,7 +52,7 @@ const Hero = () => {
               Agende seu horário
             </Button>
             <Button size="lg" variant="outline" onClick={() => scrollToSection("servicos")} className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
-              Conheça nossos serviços
+              Conheça nossos procedimentos
             </Button>
           </div>
 

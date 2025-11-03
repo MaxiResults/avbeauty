@@ -88,7 +88,7 @@ const Gallery = () => {
                         <img 
                           src={item.beforeImage} 
                           alt={`${item.title} - Antes`}
-                          className="w-full h-full object-cover aspect-[3/4]"
+                          className="w-full h-full object-contain aspect-[3/4] bg-muted/10"
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 md:p-4">
                           <p className="font-display font-semibold text-white text-sm md:text-base text-center mb-1">
@@ -108,7 +108,7 @@ const Gallery = () => {
                         <img 
                           src={item.afterImage} 
                           alt={`${item.title} - Depois`}
-                          className="w-full h-full object-cover aspect-[3/4]"
+                          className="w-full h-full object-contain aspect-[3/4] bg-muted/10"
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 md:p-4">
                           <p className="font-display font-semibold text-white text-sm md:text-base text-center mb-1">
@@ -170,7 +170,7 @@ const Gallery = () => {
                 <img 
                   src={transformations[selectedCase].beforeImage} 
                   alt={`${transformations[selectedCase].title} - Antes`}
-                  className="w-full h-full object-cover aspect-[3/4]"
+                  className="w-full h-full object-contain aspect-[3/4] bg-black"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8">
                   <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-2 text-center">
@@ -185,7 +185,7 @@ const Gallery = () => {
                 <img 
                   src={transformations[selectedCase].afterImage} 
                   alt={`${transformations[selectedCase].title} - Depois`}
-                  className="w-full h-full object-cover aspect-[3/4]"
+                  className="w-full h-full object-contain aspect-[3/4] bg-black"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8">
                   <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-2 text-center">

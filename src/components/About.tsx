@@ -1,4 +1,4 @@
-import draNicole from "@/assets/dra-nicole.jpg";
+import avbeautyTeam from "@/assets/andreia-vanessa.jpg";
 
 const About = () => {
   return (
@@ -44,7 +44,7 @@ const About = () => {
           <div className="relative animate-fade-in order-1 lg:order-2" style={{ animationDelay: "0.2s" }}>
             <div className="aspect-[4/5] rounded-2xl shadow-soft overflow-hidden">
               <img 
-                src={draNicole} 
+                src={avbeautyTeam} 
                 alt="Andréia Vieira e Vanessa - AVBeauty" 
                 className="w-full h-full object-cover"
               />

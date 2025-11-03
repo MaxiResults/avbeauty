@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Instagram, Facebook, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-avbeauty.jpeg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img src={logo} alt="AVBeauty" className="h-10 w-auto" />
+            <img src={logo} alt="AVBeauty" className="h-10 w-auto object-contain" />
             <span className="font-display font-bold text-xl text-foreground hidden sm:block">
               AVBeauty
             </span>

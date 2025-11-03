@@ -143,7 +143,7 @@ export default function Obrigado() {
                     Aguarde nosso aviso
                   </h3>
                   <p className="text-sm text-[#B8B8B8]">
-                    Você receberá uma notificação 24h antes do lançamento
+                    Você receberá uma notificação antes do lançamento
                   </p>
                 </div>
               </div>
@@ -198,7 +198,7 @@ export default function Obrigado() {
             className="text-center"
           >
             <p className="text-lg text-[#B8B8B8]">Até breve! 💚</p>
-            <p className="text-sm text-[#666]">Equipe Nicole Guedes</p>
+            <p className="text-sm text-[#666]">Equipe AV Beauty</p>
           </motion.div>
         </div>
       </motion.div>

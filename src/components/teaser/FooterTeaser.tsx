@@ -7,40 +7,36 @@ export function FooterTeaser() {
       <div className="max-w-4xl mx-auto text-center space-y-6">
         <div>
           <h3 className="text-2xl font-bold text-[#FFD700] mb-2">
-            Nicole Guedes Odonto
+            AV Beauty
           </h3>
           <p className="text-[#666] text-sm">
-            Sorrisos que encantam, resultados que transformam
+            Studio de estética facial em Ermelino Matarazzo - Zona Leste de SP
           </p>
         </div>
 
         <div className="flex items-center justify-center gap-8">
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/andreiavieira_beauty/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#666] hover:text-[#FFD700] transition-colors"
+            aria-label="Instagram"
           >
             <Instagram className="w-6 h-6" />
           </a>
           <a
-            href="https://wa.me/5511999999999"
+            href="https://wa.me/5511989368534"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#666] hover:text-[#FFD700] transition-colors"
+            aria-label="WhatsApp"
           >
-            <Phone className="w-6 h-6" />
-          </a>
-          <a
-            href="mailto:contato@nicoleguedesodonto.com.br"
-            className="text-[#666] hover:text-[#FFD700] transition-colors"
-          >
-            <Mail className="w-6 h-6" />
+            <MessageCircle className="w-6 h-6" />
           </a>
         </div>
 
         <div className="text-[#666] text-sm space-y-2">
-          <p>© 2024 Nicole Guedes Odonto</p>
+          <p>© 2024 AV Beauty</p>
           <p>Todos os direitos reservados</p>
         </div>
 

@@ -16,8 +16,6 @@ interface LeadPayload {
   lead_email: string
   lead_interest: string
   lead_obs?: string | null
-  cliente_id?: number
-  empresa_id?: number
 }
 
 Deno.serve(async (req) => {
@@ -26,7 +24,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { site_url, lead_nome, lead_telefone, lead_email, lead_interest, lead_obs, cliente_id, empresa_id }: LeadPayload = await req.json()
+    const { site_url, lead_nome, lead_telefone, lead_email, lead_interest, lead_obs }: LeadPayload = await req.json()
 
     if (!lead_nome || !lead_email || !lead_telefone) {
       return new Response(
@@ -66,8 +64,8 @@ Deno.serve(async (req) => {
       CP_2: null,
       CP_3: null,
       Lead_Status: 'novo',
-      Cliente_ID: cliente_id ?? 2,
-      empresa_id: empresa_id ?? 2,
+      Cliente_ID: 2,
+      empresa_id: 2,
     }
 
     const { data, error } = await supabase

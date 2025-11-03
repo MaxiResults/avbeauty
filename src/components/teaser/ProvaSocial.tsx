@@ -4,17 +4,17 @@ export function ProvaSocial() {
   const depoimentos = [
     {
       stars: 5,
-      text: 'Sempre confiei na AV Beauty. Mal posso esperar por essa promoção!',
+      text: 'Sempre confiei na Nicole. Mal posso esperar por essa promoção!',
       autor: 'Maria S.',
     },
     {
       stars: 5,
-      text: 'Se é da AV Beauty, eu sei que será incrível!',
+      text: 'Se é da Nicole, eu sei que será incrível!',
       autor: 'João P.',
     },
     {
       stars: 5,
-      text: 'Já fiz 3 procedimentos na AV Beauty. Ansiosa pela Black Friday!',
+      text: 'Já fiz 3 procedimentos com ela. Ansiosa pela Black Friday!',
       autor: 'Ana C.',
     },
     {

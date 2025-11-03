@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import avBeautyHero from '@/assets/av-beauty-hero.jpg';
 
 interface HeroProps {
   onCTAClick: () => void;
@@ -35,6 +36,27 @@ export function Hero({ onCTAClick, cadastroCount }: HeroProps) {
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
+        {/* Foto AV Beauty */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex justify-center mb-8"
+        >
+          <div 
+            className="w-48 h-48 rounded-full overflow-hidden border-4 border-[#FFD700]"
+            style={{
+              boxShadow: '0 0 60px rgba(255, 215, 0, 0.6), 0 0 100px rgba(255, 215, 0, 0.4)',
+            }}
+          >
+            <img 
+              src={avBeautyHero} 
+              alt="AV Beauty" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </motion.div>
+
         {/* Emoji de Fogo */}
         <motion.div
           className="text-7xl"

@@ -15,34 +15,42 @@ import foto3Antes from "@/assets/foto-3-antes.jpg";
 import foto3Depois from "@/assets/foto-3-depois.jpg";
 import foto4Antes from "@/assets/foto-4-antes.jpg";
 import foto4Depois from "@/assets/foto-4-depois.jpg";
+import foto5Antes from "@/assets/foto-5-antes.jpg";
+import foto5Depois from "@/assets/foto-5-depois.jpg";
 
 const Gallery = () => {
   const [selectedCase, setSelectedCase] = useState<number | null>(null);
 
   const transformations = [
     { 
-      title: "Transformação Dental", 
+      title: "Design de Sobrancelhas", 
       id: 1,
       beforeImage: foto1Antes,
       afterImage: foto1Depois
     },
     { 
-      title: "Harmonização Completa", 
+      title: "Design com Henna", 
       id: 2,
       beforeImage: foto2Antes,
       afterImage: foto2Depois
     },
     { 
-      title: "Sorriso Perfeito", 
+      title: "Brow Lamination", 
       id: 3,
       beforeImage: foto3Antes,
       afterImage: foto3Depois
     },
     { 
-      title: "Resultado Extraordinário", 
+      title: "Reconstrução de Sobrancelhas", 
       id: 4,
       beforeImage: foto4Antes,
       afterImage: foto4Depois
+    },
+    { 
+      title: "Despigmentação a Laser", 
+      id: 5,
+      beforeImage: foto5Antes,
+      afterImage: foto5Depois
     },
   ];
 
@@ -54,7 +62,7 @@ const Gallery = () => {
             Galeria de Transformações
           </h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-            Resultados reais de pacientes que confiaram em nosso trabalho
+            Resultados reais de clientes que confiaram em nosso trabalho
           </p>
         </div>
 

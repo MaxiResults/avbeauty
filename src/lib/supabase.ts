@@ -16,6 +16,8 @@ export interface LeadData {
   lead_email: string;
   lead_interest: string;
   lead_obs?: string;
+  cliente_id?: number;
+  empresa_id?: number;
 }
 
 export async function submitLead(data: LeadData) {
@@ -36,6 +38,8 @@ export async function submitLead(data: LeadData) {
       lead_email: data.lead_email,
       lead_interest: data.lead_interest,
       lead_obs: data.lead_obs ?? null,
+      cliente_id: data.cliente_id,
+      empresa_id: data.empresa_id,
     },
   });
 

@@ -87,6 +87,8 @@ export function FormularioCadastro({ cadastroCount }: FormularioCadastroProps) {
           lead_email: formData.email,
           lead_interest: 'black_friday_teaser',
           lead_obs: `link_exclusivo:${linkExclusivo}${ipCadastro ? `|ip:${ipCadastro}` : ''}`,
+          cliente_id: 3,
+          empresa_id: 3,
         });
       } catch (leadErr) {
         console.error('Erro ao salvar lead:', leadErr);

@@ -7,16 +7,44 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import designFoto1Antes from "@/assets/design-foto-1-antes.png";
+import designFoto1Depois from "@/assets/design-foto-1-depois.png";
+import blowlaminationFoto3Antes from "@/assets/blowlamination-foto-3-antes.png";
+import blowlaminationFoto3Depois from "@/assets/blowlamination-foto-3-depois.png";
+import reconstrucaoFoto4Antes from "@/assets/reconstrucao-foto-4-antes.png";
+import reconstrucaoFoto4Depois from "@/assets/reconstrucao-foto-4-depois.png";
+import despigmentacaoFoto5Antes from "@/assets/despigmentacao-foto-5-antes.png";
+import despigmentacaoFoto5Depois from "@/assets/despigmentacao-foto-5-depois.png";
 
 const Gallery = () => {
   const [selectedCase, setSelectedCase] = useState<number | null>(null);
 
-  const transformations: {
-    title: string;
-    id: number;
-    beforeImage: string;
-    afterImage: string;
-  }[] = [];
+  const transformations = [
+    { 
+      title: "Design de Sobrancelhas", 
+      id: 1,
+      beforeImage: designFoto1Antes,
+      afterImage: designFoto1Depois
+    },
+    { 
+      title: "Brow Lamination", 
+      id: 3,
+      beforeImage: blowlaminationFoto3Antes,
+      afterImage: blowlaminationFoto3Depois
+    },
+    { 
+      title: "Reconstrução de Sobrancelhas", 
+      id: 4,
+      beforeImage: reconstrucaoFoto4Antes,
+      afterImage: reconstrucaoFoto4Depois
+    },
+    { 
+      title: "Despigmentação a Laser", 
+      id: 5,
+      beforeImage: despigmentacaoFoto5Antes,
+      afterImage: despigmentacaoFoto5Depois
+    },
+  ];
 
   return (
     <section id="galeria" className="py-16 md:py-20 bg-muted/30">

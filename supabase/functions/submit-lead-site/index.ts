@@ -66,8 +66,8 @@ Deno.serve(async (req) => {
       CP_2: null,
       CP_3: null,
       Lead_Status: 'novo',
-      Cliente_ID: cliente_id ?? 2,
-      empresa_id: empresa_id ?? 2,
+      Cliente_ID: cliente_id ?? 3,
+      empresa_id: empresa_id ?? 3,
     }
 
     const { data, error } = await supabase

@@ -38,7 +38,7 @@ export function Hero({
       }} transition={{
         duration: 0.8
       }} className="flex justify-center mb-8">
-          <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-[#FFD700]" style={{
+          <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-[#FFD700]" style={{
           boxShadow: '0 0 60px rgba(255, 215, 0, 0.6), 0 0 100px rgba(255, 215, 0, 0.4)'
         }}>
             <img src={avBeautyHero} alt="AV Beauty" className="w-full h-full object-cover" />

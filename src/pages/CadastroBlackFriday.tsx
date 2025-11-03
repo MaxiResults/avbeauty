@@ -29,7 +29,7 @@ export default function CadastroBlackFriday() {
   };
 
   return (
-    <div className="bg-[#181818] min-h-screen">
+    <div className="bg-[#0a0a0a] min-h-screen">
       <Hero onCTAClick={scrollToForm} cadastroCount={cadastroCount} />
       <MysterySection />
       <WhyCadastrar />

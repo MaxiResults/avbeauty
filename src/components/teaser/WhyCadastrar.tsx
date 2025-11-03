@@ -4,23 +4,23 @@ export function WhyCadastrar() {
   const beneficios = [
     {
       icon: '✨',
-      title: 'Acesso antecipado a promoções exclusivas',
-      description: 'Seja a primeira a garantir os melhores horários e condições',
+      title: 'Acesso antecipado à promoção',
+      description: 'Seja o primeiro a garantir sua vaga',
     },
     {
       icon: '🎁',
-      title: 'Descontos especiais em micropigmentação e tratamentos',
-      description: 'Ofertas exclusivas em AV Brow, Coloração Labial, Brow Lamination e mais',
+      title: 'Condições especiais exclusivas',
+      description: 'Benefícios que só os cadastrados terão',
     },
     {
       icon: '⚡',
-      title: 'Brindes surpresa para as primeiras cadastradas',
-      description: 'Receba benefícios extras por email e WhatsApp',
+      title: 'Link direto e personalizado',
+      description: 'Receba por email e WhatsApp',
     },
     {
       icon: '⏰',
       title: 'Sem filas, sem espera',
-      description: 'Enquanto outras descobrem, você já agenda',
+      description: 'Enquanto outros descobrem, você já compra',
     },
     {
       icon: '🔐',
@@ -30,13 +30,13 @@ export function WhyCadastrar() {
   ];
 
   return (
-    <section className="py-24 px-4 bg-[#000000]">
+    <section className="py-24 px-4 bg-[#1a1a1a]">
       <div className="max-w-4xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-display font-bold text-[#fdfdfd] text-center mb-16"
+          className="text-4xl md:text-5xl font-bold text-white text-center mb-16"
         >
           POR QUE VOCÊ NÃO PODE FICAR DE FORA?
         </motion.h2>
@@ -53,10 +53,10 @@ export function WhyCadastrar() {
             >
               <div className="text-5xl flex-shrink-0">{beneficio.icon}</div>
               <div>
-                <h3 className="text-2xl font-subtitle font-semibold text-[#704e3b] mb-2">
+                <h3 className="text-2xl font-semibold text-[#FFD700] mb-2">
                   {beneficio.title}
                 </h3>
-                <p className="text-lg font-sans text-[#737373] leading-relaxed">
+                <p className="text-lg text-[#B8B8B8] leading-relaxed">
                   {beneficio.description}
                 </p>
               </div>

@@ -8,19 +8,19 @@ interface CTAFinalProps {
 export function CTAFinal({ onCTAClick }: CTAFinalProps) {
   return (
     <section className="py-24 px-4" style={{
-      background: 'linear-gradient(180deg, #000000 0%, #181818 100%)',
+      background: 'linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%)',
     }}>
       <div className="max-w-3xl mx-auto text-center space-y-8">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-5xl font-display font-bold text-[#704e3b] mb-6"
+          className="text-5xl font-bold text-[#FFD700] mb-6"
           style={{
-            textShadow: '0 0 20px rgba(112, 78, 59, 0.5)',
+            textShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
           }}
         >
-          ⚠️ NÃO PERCA AS OFERTAS AVBEAUTY! ⚠️
+          ⚠️ NÃO FIQUE DE FORA! ⚠️
         </motion.h2>
 
         <motion.p
@@ -28,10 +28,10 @@ export function CTAFinal({ onCTAClick }: CTAFinalProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-2xl font-sans text-[#fdfdfd]"
+          className="text-2xl text-white"
         >
-          A Black Friday da estética facial está chegando<br />
-          e você não quer ficar de fora.
+          A promoção do ano está chegando<br />
+          e você não quer perder isso.
         </motion.p>
 
         <motion.div
@@ -41,11 +41,11 @@ export function CTAFinal({ onCTAClick }: CTAFinalProps) {
           transition={{ delay: 0.4 }}
           className="space-y-4 max-w-md mx-auto"
         >
-          <p className="text-xl font-sans text-[#fdfdfd] mb-6">Cadastre-se AGORA e garanta:</p>
+          <p className="text-xl text-white mb-6">Cadastre-se AGORA e garanta:</p>
           <div className="text-left space-y-3">
             {[
-              'Acesso antecipado às ofertas',
-              'Descontos exclusivos',
+              'Acesso antecipado',
+              'Condições exclusivas',
               'Link personalizado',
               'Sem filas, sem espera',
             ].map((item, index) => (
@@ -55,7 +55,7 @@ export function CTAFinal({ onCTAClick }: CTAFinalProps) {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.6 + index * 0.1 }}
-                className="flex items-center gap-3 text-lg font-sans text-[#ececec]"
+                className="flex items-center gap-3 text-lg text-[#E0E0E0]"
               >
                 <span className="text-green-500 text-xl">✓</span>
                 {item}
@@ -72,10 +72,10 @@ export function CTAFinal({ onCTAClick }: CTAFinalProps) {
         >
           <Button
             onClick={onCTAClick}
-            className="h-16 px-12 text-xl font-display font-bold rounded-full text-[#fdfdfd] border-none"
+            className="h-16 px-12 text-xl font-bold rounded-full text-black border-none"
             style={{
-              background: 'linear-gradient(135deg, #704e3b 0%, #997564 50%, #624537 100%)',
-              boxShadow: '0 8px 32px rgba(112, 78, 59, 0.4)',
+              background: 'linear-gradient(135deg, #FFD700 0%, #FF8C00 100%)',
+              boxShadow: '0 8px 32px rgba(255, 215, 0, 0.4)',
             }}
           >
             FAZER MEU CADASTRO AGORA →
@@ -87,7 +87,7 @@ export function CTAFinal({ onCTAClick }: CTAFinalProps) {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 1.2 }}
-          className="text-[#997564] font-sans font-semibold mt-6"
+          className="text-[#FF8C00] font-semibold mt-6"
         >
           ⏰ Cadastros podem fechar a qualquer momento
         </motion.p>

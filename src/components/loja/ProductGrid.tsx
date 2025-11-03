@@ -9,14 +9,14 @@ interface ProductGridProps {
 export function ProductGrid({ produtos, isLoading }: ProductGridProps) {
   if (isLoading) {
     return (
-      <section id="ofertas" className="py-16 lg:py-24 bg-white">
+      <section id="ofertas" className="py-16 lg:py-24 bg-[#fdfdfd]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#292823] mb-4">
-              Ofertas Exclusivas
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#181818] mb-4 font-display">
+              Ofertas Exclusivas AV Beauty
             </h2>
-            <p className="text-lg text-gray-600">
-              Procedimentos selecionados com descontos imperdíveis
+            <p className="text-lg text-[#737373] font-sans">
+              Tratamentos faciais selecionados com descontos imperdíveis
             </p>
           </div>
 
@@ -40,21 +40,21 @@ export function ProductGrid({ produtos, isLoading }: ProductGridProps) {
   }
 
   return (
-    <section id="ofertas" className="py-16 lg:py-24 bg-white">
+    <section id="ofertas" className="py-16 lg:py-24 bg-[#fdfdfd]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#292823] mb-4">
-            Ofertas Exclusivas
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#181818] mb-4 font-display">
+            Ofertas Exclusivas AV Beauty
           </h2>
-          <p className="text-lg text-gray-600">
-            Procedimentos selecionados com descontos imperdíveis
+          <p className="text-lg text-[#737373] font-sans">
+            Tratamentos faciais selecionados com descontos imperdíveis
           </p>
         </div>
 
         {produtos.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-600">
-              Nenhum produto disponível no momento.
+            <p className="text-xl text-[#737373] font-sans">
+              Nenhum tratamento disponível no momento.
             </p>
           </div>
         ) : (

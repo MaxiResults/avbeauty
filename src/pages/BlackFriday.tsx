@@ -39,8 +39,8 @@ export default function BlackFriday() {
           .from('leads_cadastro_teaser')
           .select('*')
           .eq('link_exclusivo', accessToken)
-          .eq('cliente_id', 2)
-          .eq('empresa_id', 2)
+          .eq('cliente_id', 3)
+          .eq('empresa_id', 3)
           .maybeSingle();
 
         if (lead && !error) {
@@ -89,35 +89,35 @@ export default function BlackFriday() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#fdfdfd]">
       {!accessChecked ? (
-        <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+        <div className="min-h-screen flex items-center justify-center bg-[#181818]">
           <div className="text-center space-y-4">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#FFD700] border-t-transparent mx-auto" />
-            <p className="text-white text-xl">Validando seu acesso...</p>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#64473b] border-t-transparent mx-auto" />
+            <p className="text-[#fdfdfd] text-xl font-sans">Validando seu acesso...</p>
           </div>
         </div>
       ) : (
         <>
           {/* Header Fixo */}
-          <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-40">
+          <header className="fixed top-0 left-0 right-0 bg-[#fdfdfd]/95 backdrop-blur-sm shadow-sm z-40 border-b border-[#64473b]/20">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
               <Link to="/" className="flex items-center gap-2">
                 <img 
                   src="/src/assets/logo.png" 
-                  alt="Nicole Guedes Odonto" 
+                  alt="AV Beauty" 
                   className="h-10"
                 />
               </Link>
 
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2 hover:bg-accent/10 rounded-lg transition-colors"
+                className="relative p-2 hover:bg-[#64473b]/10 rounded-lg transition-colors"
                 aria-label={`Carrinho com ${cartCount} itens`}
               >
-                <ShoppingCart className="w-6 h-6 text-primary" />
+                <ShoppingCart className="w-6 h-6 text-[#64473b]" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-destructive text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-[#64473b] text-[#fdfdfd] text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}

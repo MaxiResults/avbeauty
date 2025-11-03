@@ -30,8 +30,8 @@ serve(async (req) => {
         `id, nome, slug, descricao_curta, categoria, preco_padrao, preco_promocional, imagem_principal, controla_estoque, ordem_exibicao`
       )
       .eq("status", "ativo")
-      .eq("cliente_id", 2)
-      .eq("empresa_id", 2)
+      .eq("cliente_id", 3)
+      .eq("empresa_id", 3)
       .order("ordem_exibicao", { ascending: true });
 
     if (error) {

@@ -44,9 +44,9 @@ export function Contador() {
 
   if (tempo.encerrado) {
     return (
-      <section className="bg-[#292823] py-16">
+      <section className="bg-[#181818] py-16">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white">
+          <h2 className="text-3xl font-bold text-[#fdfdfd] font-display">
             🔴 Lote 1 Encerrado
           </h2>
         </div>
@@ -57,10 +57,10 @@ export function Contador() {
   const formatNumber = (num: number) => String(num).padStart(2, '0');
 
   return (
-    <section className="bg-[#292823] py-16 lg:py-20">
+    <section className="bg-[#181818] py-16 lg:py-20">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-8">
-          <h2 className="text-2xl lg:text-3xl font-semibold text-[#f3f0e9]">
+          <h2 className="text-2xl lg:text-3xl font-semibold text-[#ececec] font-subtitle">
             ⏰ TEMPO RESTANTE DO LOTE 1:
           </h2>
 
@@ -73,19 +73,19 @@ export function Contador() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="bg-[#3a4934] rounded-xl shadow-2xl w-20 h-24 lg:w-32 lg:h-40 flex flex-col items-center justify-center transition-transform hover:scale-105"
+                className="bg-[#64473b] rounded-xl shadow-2xl w-20 h-24 lg:w-32 lg:h-40 flex flex-col items-center justify-center transition-transform hover:scale-105"
               >
-                <span className="text-3xl lg:text-6xl font-bold text-[#97624b] font-mono">
+                <span className="text-3xl lg:text-6xl font-bold text-[#ececec] font-mono">
                   {formatNumber(item.value)}
                 </span>
-                <span className="text-xs lg:text-sm font-medium text-[#f3f0e9] uppercase tracking-wider mt-1">
+                <span className="text-xs lg:text-sm font-medium text-[#fdfdfd] uppercase tracking-wider mt-1">
                   {item.label}
                 </span>
               </div>
             ))}
           </div>
 
-          <p className="text-base lg:text-lg text-[#f59e0b] font-medium">
+          <p className="text-base lg:text-lg text-[#704e3b] font-medium font-subtitle">
             Corre que o tempo tá acabando
           </p>
         </div>

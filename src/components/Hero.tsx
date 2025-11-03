@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Sparkles, Shield, Heart, Award } from "lucide-react";
-
 const Hero = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -8,35 +7,30 @@ const Hero = () => {
       const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
     }
   };
-
-  const features = [
-    {
-      icon: Sparkles,
-      title: "Técnicas Modernas",
-      description: "Procedimentos atualizados para resultados naturais e sofisticados",
-    },
-    {
-      icon: Shield,
-      title: "Biossegurança",
-      description: "Protocolos rigorosos de higiene e esterilização",
-    },
-    {
-      icon: Heart,
-      title: "Atendimento Humanizado",
-      description: "Cuidado personalizado com olhar atento e respeitoso",
-    },
-    {
-      icon: Award,
-      title: "Profissionais Experientes",
-      description: "Andréia Vieira e Vanessa: paixão genuína",
-    },
-  ];
-
-  return (
-    <section id="home" className="relative pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
+  const features = [{
+    icon: Sparkles,
+    title: "Técnicas Modernas",
+    description: "Procedimentos atualizados para resultados naturais e sofisticados"
+  }, {
+    icon: Shield,
+    title: "Biossegurança",
+    description: "Protocolos rigorosos de higiene e esterilização"
+  }, {
+    icon: Heart,
+    title: "Atendimento Humanizado",
+    description: "Cuidado personalizado com olhar atento e respeitoso"
+  }, {
+    icon: Award,
+    title: "Profissionais Experientes",
+    description: "Andréia Vieira e Vanessa: paixão genuína"
+  }];
+  return <section id="home" className="relative pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-muted/30 via-background to-primary/5 -z-10" />
       
@@ -50,42 +44,23 @@ const Hero = () => {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 animate-fade-in max-w-2xl mx-auto px-4">
-            Studio de estética facial onde cada atendimento é um momento único de cuidado, acolhimento e reconexão
-          </p>
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 animate-fade-in max-w-2xl mx-auto px-4">Espaço de embelezamento facial onde cada atendimento é um momento único de cuidado, acolhimento e reconexão</p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-12 sm:mb-16 animate-fade-in px-4">
-            <Button
-              size="lg"
-              onClick={() =>
-                window.open(
-                  "https://wa.me/5511989368534?text=Olá!%20Gostaria%20de%20agendar%20um%20horário",
-                  "_blank"
-                )
-              }
-              className="bg-primary hover:bg-primary/90 text-primary-foreground text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6"
-            >
+            <Button size="lg" onClick={() => window.open("https://wa.me/5511989368534?text=Olá!%20Gostaria%20de%20agendar%20um%20horário", "_blank")} className="bg-primary hover:bg-primary/90 text-primary-foreground text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
               Agende seu horário
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => scrollToSection("servicos")}
-              className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6"
-            >
+            <Button size="lg" variant="outline" onClick={() => scrollToSection("servicos")} className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
               Conheça nossos serviços
             </Button>
           </div>
 
           {/* Feature cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-12 sm:mt-16 md:mt-20">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-card p-5 sm:p-6 rounded-xl shadow-soft hover:shadow-hover transition-smooth animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
+            {features.map((feature, index) => <div key={index} className="bg-card p-5 sm:p-6 rounded-xl shadow-soft hover:shadow-hover transition-smooth animate-fade-in" style={{
+            animationDelay: `${index * 0.1}s`
+          }}>
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
                   <feature.icon className="w-6 h-6 text-primary" />
                 </div>
@@ -93,13 +68,10 @@ const Hero = () => {
                   {feature.title}
                 </h3>
                 <p className="text-sm text-muted-foreground">{feature.description}</p>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;

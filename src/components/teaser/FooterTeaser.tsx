@@ -1,4 +1,4 @@
-import { Instagram, Mail, Phone } from 'lucide-react';
+import { Instagram, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function FooterTeaser() {

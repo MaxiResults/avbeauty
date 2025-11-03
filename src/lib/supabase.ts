@@ -1,13 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1bmNjanVrdnJ4aW1qaXF6ZGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyODUsImV4cCI6MjA3NDg0OTI4NX0.Xt68Jol4GQ-GeL7g4z_wmm6ui81BIpTNJmNO7WhR_7E';
+// Use current project's Lovable Cloud credentials from environment
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Edge functions base URL para o banco externo
-export const SUPABASE_FUNCTIONS_URL = 'https://sunccjukvrximjiqzdkm.supabase.co/functions/v1';
-export const SUPABASE_ANON_KEY = supabaseAnonKey;
 
 export interface LeadData {
   site_url: string;
@@ -26,11 +23,8 @@ export async function submitLead(data: LeadData) {
   let telefone = onlyDigits(data.lead_telefone || '');
   if (!telefone.startsWith('55')) telefone = '55' + telefone;
 
-  // Criar cliente temporário para evitar importação circular
-  const tempSupabase = createClient(supabaseUrl, supabaseAnonKey);
-
-  // Delegate to backend function that writes to external DB with service role
-  const { data: result, error } = await tempSupabase.functions.invoke('submit-lead-site', {
+  // Invoke backend function in this same project to write to EXTERNAL DB
+  const { data: result, error } = await supabase.functions.invoke('submit-lead-site', {
     body: {
       site_url: data.site_url,
       lead_nome: data.lead_nome,
@@ -46,3 +40,4 @@ export async function submitLead(data: LeadData) {
   if (error) throw new Error(error.message || 'Falha ao criar lead');
   return result;
 }
+

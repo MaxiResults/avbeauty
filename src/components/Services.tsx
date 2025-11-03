@@ -1,5 +1,6 @@
 import { Sparkle, Gem, Palette, Syringe, Star, Waves } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import designSimplesImg from "@/assets/design-simples.png";
 
 const Services = () => {
   const services = [
@@ -74,8 +75,12 @@ const Services = () => {
               className="bg-card p-5 sm:p-6 rounded-xl shadow-soft hover:shadow-hover transition-smooth group cursor-pointer animate-fade-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-primary/10 rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-primary/20 transition-smooth">
-                <service.icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-primary/10 rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-primary/20 transition-smooth overflow-hidden">
+                {index === 0 ? (
+                  <img src={designSimplesImg} alt="Design Simples" className="w-full h-full object-cover" />
+                ) : (
+                  <service.icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+                )}
               </div>
               <h3 className="font-display font-semibold text-lg sm:text-xl text-foreground mb-2 sm:mb-3 group-hover:text-primary transition-smooth">
                 {service.title}

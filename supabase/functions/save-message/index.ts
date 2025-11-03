@@ -41,8 +41,8 @@ serve(async (req) => {
         tipo_mensagem, 
         mensagem, 
         origem,
-        Cliente_ID: 2,           // ✅ CORRIGIDO: "Cliente_ID" maiúsculo
-        Empresa_ID: 2,           // ✅ ADICIONADO: campo que estava faltando
+        Cliente_ID: 3,
+        Empresa_ID: 3,
         data_envio: saoPauloTimestamp 
       })
       .select()

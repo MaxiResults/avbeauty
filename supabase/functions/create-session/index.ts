@@ -38,8 +38,8 @@ serve(async (req) => {
         canal, 
         origem,
         status_sessao: 'ativa',
-        Cliente_ID: 2,
-        Empresa_ID: 2,
+        Cliente_ID: 3,
+        Empresa_ID: 3,
         created_at: saoPauloTimestamp 
       })
       .select()

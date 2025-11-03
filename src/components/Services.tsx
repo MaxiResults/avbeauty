@@ -11,7 +11,7 @@ const Services = () => {
     description: "Nutrição dos fios, preenchimento natural de falhas com duração até 15 dias"
   }, {
     icon: Gem,
-    title: "NV Brow (Fio a Fio)",
+    title: "AV Brow (Fio a Fio)",
     description: "Técnica que desenha fios naturais, praticidade no dia a dia com resultado duradouro"
   }, {
     icon: Star,

@@ -181,7 +181,7 @@ const Contact = () => {
                   <SelectContent>
                     <SelectItem value="Design Simples">Design Simples</SelectItem>
                     <SelectItem value="Design com Henna">Design com Henna</SelectItem>
-                    <SelectItem value="NV Brow (Fio a Fio)">NV Brow (Fio a Fio)</SelectItem>
+                    <SelectItem value="AV Brow (Fio a Fio)">AV Brow (Fio a Fio)</SelectItem>
                     <SelectItem value="Coloração Labial">Coloração Labial</SelectItem>
                     <SelectItem value="Shadow Brow">Shadow Brow (Sombreada)</SelectItem>
                     <SelectItem value="Hidragloss">Hidragloss</SelectItem>

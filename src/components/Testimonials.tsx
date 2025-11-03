@@ -28,7 +28,7 @@ const Testimonials = () => {
     },
     {
       name: "Beatriz Mendes",
-      text: "Fiz o NV Brow. O resultado ficou tão perfeito e natural que todos acham que são minhas sobrancelhas originais. Gratidão eterna!",
+      text: "Fiz o AV Brow. O resultado ficou tão perfeito e natural que todos acham que são minhas sobrancelhas originais. Gratidão eterna!",
       rating: 5,
     },
     {

@@ -115,8 +115,8 @@ const Contact = () => {
   }, {
     icon: Mail,
     title: "E-mail",
-    content: "contato@avbeauty.com.br",
-    link: "mailto:contato@avbeauty.com.br"
+    content: "contato.avbeauty@gmail.com",
+    link: "mailto:contato.avbeauty@gmail.com"
   }, {
     icon: Instagram,
     title: "Instagram",

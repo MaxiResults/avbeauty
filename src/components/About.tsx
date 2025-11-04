@@ -8,19 +8,15 @@ const About = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mb-4 md:mb-6">Sobre a AV Beauty</h2>
             
             <div className="space-y-3 md:space-y-4 text-sm md:text-base text-muted-foreground leading-relaxed">
-              <p>Na AV Beauty, embelezamento facial é apenas o começo. Administrado por Andréia Vieira e Vanessa, duas mulheres que transformaram força e sensibilidade em propósito, t é um espaço onde beleza se revela como expressão de bem-estar, saúde e reconexão com a própria essência.</p>
+              <p>A AV BEAUTY nasceu da união de talentos de duas mulheres movidas por ação, visão e propósito. Unimos experiência e sensibilidade para oferecer serviços de embelezamento facial que valorizam, harmonizam e elevam a autoestima, trazendo leveza e naturalidade à expressão.  </p>
               
-              <p>
-                Cada atendimento é pensado como um momento único. Aqui, o toque é cuidadoso, o olhar é atento 
-                e o tempo é respeitado. Porque acreditamos que o verdadeiro cuidado começa quando você se sente 
-                vista, ouvida e acolhida.
-              </p>
+              <p>Desde a sua criação, a marca carrega o DNA da excelência, da arte e da inovação. Essa essência reflete a trajetória de Andreia, profissional referência na área da beleza, que transforma cada atendimento em uma experiência de confiança e satisfação por meio de seu talento refinado e olhar minucioso.</p>
               
-              <p>Com anos de experiência e uma paixão genuína pelo que fazem, os profissionais da AV Beauty entregam resultados naturais, sofisticados e profundamente humanos. Tudo é feito com precisão, carinho e respeito pela sua individualidade.</p>
+              <p>Ao lado dela, Vanessa trouxe sua criatividade e visão sensível para construir um conceito único de experiência do cliente, presente em cada detalhe do espaço e dos serviços oferecidos.</p>
               
-              <p className="font-semibold text-foreground">AV Beauty não é sobre mudar quem você é. É sobre revelar, com delicadeza e precisão, a beleza que já habita em você.</p>
+              <p className="font-semibold text-foreground">Na AV BEAUTY, cada atendimento é guiado por empatia, e cada mulher é lembrada de que a verdadeira beleza começa de dentro para fora.</p>
               
-              <p className="text-primary font-display text-lg pt-4">
+              <p className="font-display text-lg pt-4 text-inherit">
                 Somos Andréia Vieira e Vanessa: profissionais apaixonadas por estética facial e pelo poder transformador do cuidado genuíno.
               </p>
             </div>

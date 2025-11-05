@@ -43,8 +43,8 @@ export default function ListaProdutos() {
       const { data, error } = await supabase
         .from('produtos')
         .select('categoria')
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3)
         .not('categoria', 'is', null);
 
       if (error) throw error;
@@ -62,8 +62,8 @@ export default function ListaProdutos() {
       let query = supabase
         .from('produtos')
         .select('*')
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2);
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
       if (statusFilter && statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -128,8 +128,8 @@ export default function ListaProdutos() {
         .from('produtos')
         .update({ status: 'indisponivel' })
         .eq('id', selectedProduto.id)
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2);
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
       if (error) throw error;
 

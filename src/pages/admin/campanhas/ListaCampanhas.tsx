@@ -36,8 +36,8 @@ export default function ListaCampanhas() {
       let query = supabase
         .from('campanhas')
         .select('*')
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3)
         .eq('ativo', true)
         .order('created_at', { ascending: false });
 
@@ -69,8 +69,8 @@ export default function ListaCampanhas() {
         .from('campanhas')
         .update({ ativo: false })
         .eq('id', selectedCampanha.ID)
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2);
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
       if (error) throw error;
 

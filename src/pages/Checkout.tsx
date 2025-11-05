@@ -61,13 +61,12 @@ export default function Checkout() {
         const { data: leadExist, error: leadQueryError } = await supabase
           .from('Leads_Cadastro')
           .select('id')
-          .eq('Email_Lead', formData.email)
+          .eq('email', formData.email)
           .eq('Cliente_ID', 3)
           .eq('Empresa_ID', 3)
-          .maybeSingle(); // Use maybeSingle ao invés de single
+          .maybeSingle();
 
         if (leadQueryError && leadQueryError.code !== 'PGRST116') {
-          // PGRST116 é "not found", outros erros são problemas
           console.error('Erro ao buscar lead:', leadQueryError);
           throw new Error('Erro ao verificar cadastro');
         }
@@ -78,12 +77,12 @@ export default function Checkout() {
           const { error: updateError } = await supabase
             .from('Leads_Cadastro')
             .update({
-              Nome_Lead: formData.nome,
-              Telefone_Lead: `55${formData.telefone.replace(/\D/g, '')}`,
-              CPF_Lead: formData.cpf,
-              Status_Lead: 'aguardando_pagamento',
+              nome: formData.nome,
+              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
+              cpf: formData.cpf, // ✅ AGORA NO CAMPO CORRETO
+              status: 'aguardando_pagamento',
               Empresa_ID: 3,
-              Updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString()
             })
             .eq('id', leadExist.id);
 
@@ -101,14 +100,16 @@ export default function Checkout() {
             .insert({
               Cliente_ID: 3,
               Empresa_ID: 3,
-              Nome_Lead: formData.nome,
-              Email_Lead: formData.email,
-              Telefone_Lead: `55${formData.telefone.replace(/\D/g, '')}`,
-              CPF_Lead: formData.cpf,
-              Status_Lead: 'aguardando_pagamento',
-              Origem_Lead: 'Black Friday',
-              Created_at: new Date().toISOString(),
-              Updated_at: new Date().toISOString()
+              nome: formData.nome,
+              email: formData.email,
+              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
+              cpf: formData.cpf, // ✅ AGORA NO CAMPO CORRETO
+              interesse: cart.map(item => item.nome).join(', '),
+              status: 'aguardando_pagamento',
+              canal_origem: 'Black Friday',
+              origem_url: window.location.href,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
             })
             .select('id')
             .single();
@@ -116,7 +117,6 @@ export default function Checkout() {
           if (insertError) {
             console.error('Erro ao criar lead:', insertError);
             
-            // Tratamento específico para erro de RLS
             if (insertError.code === '42501') {
               throw new Error('Permissão negada. Verifique as políticas de segurança.');
             }

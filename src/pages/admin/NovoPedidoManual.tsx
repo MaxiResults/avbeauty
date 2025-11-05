@@ -69,7 +69,7 @@ export default function NovoPedidoManual() {
       const { data, error } = await supabase
         .from('produtos')
         .select('id, nome, preco_padrao, preco_promocional, codigo_externo')
-        .eq('cliente_id', 2)
+        .eq('cliente_id', 3)
         .eq('status', 'ativo')
         .order('nome');
 
@@ -126,8 +126,8 @@ export default function NovoPedidoManual() {
         .from('Leads_Cadastro')
         .select('id')
         .eq('email', email)
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID',2)
+        .eq('Cliente_ID', 3)
+        .eq('Empresa_ID',3)
         .maybeSingle();
 
       if (leadError && leadError.code !== 'PGRST116') throw leadError;
@@ -152,8 +152,8 @@ export default function NovoPedidoManual() {
         const { data: novo, error: insertError } = await supabase
           .from('Leads_Cadastro')
           .insert({
-            Cliente_ID: 2,
-            Empresa_ID: 2, 
+            Cliente_ID: 3,
+            Empresa_ID: 3, 
             nome: nome,
             email: email,
             telefone: telefone,
@@ -178,8 +178,8 @@ export default function NovoPedidoManual() {
       const { data: pedidoData, error: pedidoError } = await supabase
         .from('pedidos')
         .insert({
-          cliente_id: 2,
-          empresa_id: 2,
+          cliente_id: 3,
+          empresa_id: 3,
           lead_id: leadId,
           lead_nome: nome,
           lead_email: email,
@@ -211,8 +211,8 @@ export default function NovoPedidoManual() {
         const produto = produtos.find(p => p.id === item.produto_id);
         
         return {
-          cliente_id: 2,
-          empresa_id: 2,
+          cliente_id: 3,
+          empresa_id: 3,
           pedido_id: pedidoData.id,
           produto_id: item.produto_id,
           produto_nome: item.produto_nome,

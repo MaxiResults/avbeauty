@@ -61,8 +61,8 @@ export default function EditarProduto() {
         .from('produtos')
         .select('*')
         .eq('id', parseInt(id!))
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3)
         .single();
 
       if (error) throw error;
@@ -213,8 +213,8 @@ export default function EditarProduto() {
         .from('produtos')
         .update(updateRecord)
         .eq('id', parseInt(id))
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2);
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
       if (error) throw error;
 

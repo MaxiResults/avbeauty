@@ -89,7 +89,7 @@ const customLogin = async (email: string, senha: string) => {
     const {
       data: user,
       error
-    } = await supabase.from('usuarios').select('id, nome, email, senha_hash, role, ativo, cliente_id, empresa_id').eq('email', email).eq('cliente_id', 2).eq('empresa_id', 2).eq('ativo', true).single();
+    } = await supabase.from('usuarios').select('id, nome, email, senha_hash, role, ativo, cliente_id, empresa_id').eq('email', email).eq('cliente_id', 3).eq('empresa_id', 3).eq('ativo', true).single();
     if (error || !user) {
       return {
         success: false,

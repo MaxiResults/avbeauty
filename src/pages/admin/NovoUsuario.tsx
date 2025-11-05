@@ -42,8 +42,8 @@ export default function NovoUsuario() {
       const { error } = await supabase
         .from('usuarios')
         .insert({
-          cliente_id: 2,
-          empresa_id: 2,
+          cliente_id: 3,
+          empresa_id: 3,
           nome: nome,
           email: email,
           senha_hash: senhaHash,

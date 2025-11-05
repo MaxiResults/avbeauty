@@ -21,8 +21,8 @@ export default function Usuarios() {
       const { data, error } = await supabase
         .from('usuarios')
         .select('id, nome, email, role, ativo, created_at')
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3)
         .order('created_at', { ascending: false });
 
       if (error) throw error;

@@ -59,8 +59,8 @@ export default function NovoProduto() {
       const { data, error } = await supabase
         .from('produtos')
         .select('ordem_exibicao')
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3)
         .order('ordem_exibicao', { ascending: false })
         .limit(1)
         .single();
@@ -153,8 +153,8 @@ export default function NovoProduto() {
 
       // Campos mínimos (devem existir em qualquer schema)
       const baseRecord: any = {
-        cliente_id: 2,
-        empresa_id: 2,
+        cliente_id: 3,
+        empresa_id: 3,
         nome: formData.Nome,
         slug: formData.Slug,
         preco_padrao: formData.Preco_Padrao,
@@ -184,7 +184,7 @@ export default function NovoProduto() {
       // Fallback defensivo caso o schema mude e gere erro de cache/coluna
       if (error && /schema cache|Could not find/.test(error.message)) {
         // remove campos possivelmente inexistentes e tenta novamente com o mínimo
-        const safeRecord: any = { cliente_id: 2, empresa_id: 2, nome: formData.Nome, slug: formData.Slug, preco_padrao: formData.Preco_Padrao };
+        const safeRecord: any = { cliente_id: 3, empresa_id: 3, nome: formData.Nome, slug: formData.Slug, preco_padrao: formData.Preco_Padrao };
         ({ error } = await supabase.from('produtos').insert([safeRecord]));
       }
 

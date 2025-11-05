@@ -1,151 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
-// =============================================
-// BLOQUEADOR DE AUTH NATIVO
-// =============================================
-// @ts-ignore
-if (!window._supabaseAuthBlocked) {
-  // @ts-ignore
-  window._supabaseAuthBlocked = true;
-  const originalFetch = window.fetch;
-  // @ts-ignore
-  window.fetch = function (...args) {
-    const url = args[0];
-    const urlString = typeof url === 'string' ? url : url instanceof Request ? url.url : '';
-    if (urlString && urlString.includes('/auth/v1/token')) {
-      console.log('🚫 AUTH NATIVO BLOQUEADO');
-      return Promise.reject(new Error('Use auth customizada'));
-    }
-    return originalFetch.apply(this, args);
-  };
-}
-
-// =============================================
-// CONFIGURAÇÃO DO SUPABASE (AUTH DESABILITADO)
-// =============================================
-const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1bmNjanVrdnJ4aW1qaXF6ZGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyODUsImV4cCI6MjA3NDg0OTI4NX0.Xt68Jol4GQ-GeL7g4z_wmm6ui81BIpTNJmNO7WhR_7E';
-const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false,
-    detectSessionInUrl: false,
-    storage: localStorage,
-    storageKey: 'ext-login-temp' // Unique key to avoid conflicts
-  }
-});
-
-// =============================================
-// FUNÇÕES DE AUTENTICAÇÃO CUSTOMIZADA
-// =============================================
-interface User {
-  id: string;
-  nome: string;
-  email: string;
-  role: string;
-}
-interface SessionData {
-  user: User;
-  expires: number;
-  timestamp: number;
-}
-const hashSenha = async (senha: string): Promise<string> => {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(senha);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
-};
-const getCustomSession = (): SessionData | null => {
-  try {
-    const session = localStorage.getItem('custom_auth_session');
-    if (!session) return null;
-    const parsed: SessionData = JSON.parse(session);
-    if (parsed.expires < Date.now()) {
-      localStorage.removeItem('custom_auth_session');
-      return null;
-    }
-    return parsed;
-  } catch (error) {
-    localStorage.removeItem('custom_auth_session');
-    return null;
-  }
-};
-const isCustomAuthenticated = (): boolean => {
-  return getCustomSession() !== null;
-};
-const customLogin = async (email: string, senha: string) => {
-  try {
-    console.log('🔐 LOGIN CUSTOMIZADO - Email:', email);
-    const senhaHash = await hashSenha(senha);
-    const {
-      data: user,
-      error
-    } = await supabase.from('usuarios').select('id, nome, email, senha_hash, role, ativo, cliente_id, empresa_id').eq('email', email).eq('cliente_id', 3).eq('empresa_id', 3).eq('ativo', true).single();
-    if (error || !user) {
-      return {
-        success: false,
-        error: 'Usuário não encontrado'
-      };
-    }
-    if (senhaHash !== user.senha_hash) {
-      return {
-        success: false,
-        error: 'Senha incorreta'
-      };
-    }
-    const sessionData: SessionData = {
-      user: {
-        id: user.id,
-        nome: user.nome,
-        email: user.email,
-        role: user.role
-      },
-      expires: Date.now() + 24 * 60 * 60 * 1000,
-      timestamp: Date.now()
-    };
-    localStorage.setItem('custom_auth_session', JSON.stringify(sessionData));
-    console.log('🎉 LOGIN CUSTOMIZADO SUCESSO!');
-    return {
-      success: true,
-      user: sessionData.user
-    };
-  } catch (error) {
-    console.error('💥 ERRO NO LOGIN:', error);
-    return {
-      success: false,
-      error: 'Erro ao fazer login'
-    };
-  }
-};
-
-// =============================================
-// COMPONENTE LOGIN
-// =============================================
 export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  // ⚠️ USE EFFECT CORRIGIDO - SEM AUTH NATIVO
-  useEffect(() => {
-    console.log('🔧 LOGIN - Verificando auth customizada...');
-
-    // ✅ APENAS auth customizada - NADA de supabase.auth!
-    if (isCustomAuthenticated()) {
-      console.log('🔧 LOGIN - Usuário autenticado, redirecionando...');
-      navigate('/admin/dashboard');
-    }
-  }, [navigate]);
+  const { login } = useAuth();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !senha) {
@@ -154,7 +21,7 @@ export default function Login() {
     }
     setIsLoading(true);
     try {
-      const result = await customLogin(email, senha);
+      const result = await login(email, senha);
       if (result.success) {
         toast.success('Login realizado com sucesso!');
         navigate('/admin/dashboard');

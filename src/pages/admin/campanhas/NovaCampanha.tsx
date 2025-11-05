@@ -114,8 +114,8 @@ export default function NovaCampanha() {
     setLoading(true);
     try {
       const { data, error } = await supabase.from('campanhas').insert([{
-        cliente_id: 2,
-        empresa_id: 2,
+        cliente_id: 3,
+        empresa_id: 3,
         nome_campanha: formData.Nome_campanha,
         slug: formData.Slug,
         campanha_status: isDraft ? 'Suspensa' : formData.Campanha_Status,

@@ -14,6 +14,7 @@ import TermosUso from "./pages/TermosUso";
 // Loja
 import BlackFriday from "./pages/BlackFriday";
 import Checkout from "./pages/Checkout";
+import CheckoutConfirmacao from "./pages/CheckoutConfirmacao";
 import PedidoConfirmacao from "./pages/PedidoConfirmacao";
 import CadastroBlackFriday from "./pages/CadastroBlackFriday";
 import Obrigado from "./pages/Obrigado";
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/cadastro-black-friday" element={<CadastroBlackFriday />} />
             <Route path="/obrigado" element={<Obrigado />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout/confirmacao" element={<CheckoutConfirmacao />} />
             <Route path="/pedido/:codigo" element={<PedidoConfirmacao />} />
             
             {/* Legal Routes */}

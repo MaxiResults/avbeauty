@@ -62,8 +62,8 @@ export default function EditarCampanha() {
         .from('campanhas')
         .select('*')
         .eq('id', parseInt(id!))
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3)
         .single();
 
       if (error) throw error;
@@ -169,8 +169,8 @@ export default function EditarCampanha() {
           ativo: ativo,
         })
         .eq('id', parseInt(id!))
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2);
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
       if (error) throw error;
 

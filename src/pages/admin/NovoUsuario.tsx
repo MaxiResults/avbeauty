@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase, gerarHashSenha } from '@/utils/customAuth'; // ✅ Usar banco externo
+import { gerarHashSenha } from '@/utils/customAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,26 +39,28 @@ export default function NovoUsuario() {
       // Gerar hash SHA-256 da senha
       const senhaHash = await gerarHashSenha(senha);
 
-      // Inserir usuário no banco EXTERNO do Supabase
-      const { error } = await supabase
-        .from('usuarios')
-        .insert({
-          cliente_id: 3,
-          empresa_id: 3,
-          nome: nome,
-          email: email,
+      // Chamar edge function para inserir no banco EXTERNO
+      const { data, error } = await supabase.functions.invoke('create-usuario-admin', {
+        body: {
+          nome,
+          email,
           senha_hash: senhaHash,
-          role: role,
-          ativo: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
+          role
+        }
+      });
 
       if (error) {
-        if (error.code === '23505') {
+        console.error('Erro ao criar usuário:', error);
+        toast.error('Erro ao criar usuário');
+        setLoading(false);
+        return;
+      }
+
+      if (data?.error) {
+        if (data.code === '23505') {
           toast.error('Este email já está cadastrado');
         } else {
-          throw error;
+          toast.error(data.error);
         }
         setLoading(false);
         return;

@@ -3,11 +3,12 @@ import { Sidebar } from '@/components/admin/Sidebar';
 import { Header } from '@/components/admin/Header';
 import { StatCard } from '@/components/admin/StatCard';
 import { DollarSign, ShoppingBag, Package, Megaphone } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { toast } from 'sonner';
 
 interface Stats {
   totalVendas: number;
@@ -48,87 +49,70 @@ export default function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // Total de vendas confirmadas
-      const { count: vendasCount } = await supabase
-        .from('Pedidos')
+      // Buscar estatísticas via edge function
+      const { data: statsData, error: statsError } = await supabase.functions.invoke('get-pedidos-admin', {
+        body: { type: 'stats' }
+      });
+
+      if (statsError) throw statsError;
+
+      // Produtos ativos (ainda no banco local Lovable Cloud)
+      const { count: produtosCount } = await (supabase as any)
+        .from('produtos')
         .select('*', { count: 'exact', head: true })
-        .eq('Status_Pagamento', 'pago')
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2);
+        .eq('status', 'ativo')
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
-      // Faturamento total
-      const { data: pedidos } = await supabase
-        .from('Pedidos')
-        .select('Valor_Total')
-        .eq('Status_Pagamento', 'pago')
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2);
-
-      const faturamentoTotal = pedidos?.reduce((sum, p) => sum + (p.Valor_Total || 0), 0) || 0;
-
-      // Produtos ativos
-      const { count: produtosCount } = await supabase
-        .from('Produtos')
+      // Campanhas ativas (ainda no banco local Lovable Cloud)
+      const { count: campanhasCount } = await (supabase as any)
+        .from('campanhas')
         .select('*', { count: 'exact', head: true })
-        .eq('Ativo', true)
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2);
-
-      // Campanhas ativas
-      const { count: campanhasCount } = await supabase
-        .from('Campanhas')
-        .select('*', { count: 'exact', head: true })
-        .eq('Campanha_Status', 'Ativo')
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2);
+        .eq('campanha_status', 'Ativo')
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
       setStats({
-        totalVendas: vendasCount || 0,
-        faturamento: faturamentoTotal,
+        totalVendas: statsData?.stats?.totalVendas || 0,
+        faturamento: statsData?.stats?.faturamento || 0,
         produtosAtivos: produtosCount || 0,
         campanhasAtivas: campanhasCount || 0,
       });
 
-      // Carregar vendas dos últimos 7 dias para o gráfico
-      const last7Days = Array.from({ length: 7 }, (_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() - (6 - i));
-        return d.toISOString().split('T')[0];
+      // Buscar dados do gráfico via edge function
+      const { data: chartResponse, error: chartError } = await supabase.functions.invoke('get-pedidos-admin', {
+        body: { type: 'chart' }
       });
 
-      const chartDataPromises = last7Days.map(async (date) => {
-        const nextDate = new Date(date);
-        nextDate.setDate(nextDate.getDate() + 1);
-        
-        const { count } = await supabase
-          .from('Pedidos')
-          .select('*', { count: 'exact', head: true })
-          .eq('Cliente_ID', 2)
-          .eq('Empresa_ID', 2)
-          .gte('Created_at', date)
-          .lt('Created_at', nextDate.toISOString().split('T')[0]);
+      if (chartError) throw chartError;
 
-        return {
-          data: new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
-          vendas: count || 0,
-        };
+      const formattedChartData = chartResponse?.chartData?.map((item: any) => ({
+        data: new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+        vendas: item.vendas
+      })) || [];
+
+      setChartData(formattedChartData);
+
+      // Buscar pedidos recentes via edge function
+      const { data: pedidosResponse, error: pedidosError } = await supabase.functions.invoke('get-pedidos-admin', {
+        body: { type: 'recent', limit: 10 }
       });
 
-      const chartResults = await Promise.all(chartDataPromises);
-      setChartData(chartResults);
+      if (pedidosError) throw pedidosError;
 
-      // Carregar últimos 10 pedidos
-      const { data: ultimosPedidos } = await supabase
-        .from('Pedidos')
-        .select('*')
-        .eq('Cliente_ID', 2)
-        .eq('Empresa_ID', 2)
-        .order('Created_at', { ascending: false })
-        .limit(10);
+      const formattedOrders = pedidosResponse?.pedidos?.map((p: any) => ({
+        ID: p.id || '',
+        Codigo: p.codigo || '',
+        Lead_Nome: p.lead_nome || '',
+        Valor_Total: p.valor_total || 0,
+        Status_Pagamento: p.status_pedido || '',
+        Created_at: p.created_at || ''
+      })) || [];
 
-      setRecentOrders(ultimosPedidos || []);
+      setRecentOrders(formattedOrders);
     } catch (error) {
       console.error('Erro ao carregar dados do dashboard:', error);
+      toast.error('Erro ao carregar pedidos: ' + (error as Error).message);
     } finally {
       setLoading(false);
     }

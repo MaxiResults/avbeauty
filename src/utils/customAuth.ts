@@ -64,8 +64,8 @@ export const customLogin = async (email: string, senha: string) => {
       .from('usuarios')
       .select('id, nome, email, senha_hash, role, ativo, cliente_id, empresa_id')
       .eq('email', email)
-      .eq('cliente_id', 2)
-      .eq('empresa_id', 2)
+      .eq('cliente_id', 3)
+      .eq('empresa_id', 3)
       .eq('ativo', true)
       .single();
 

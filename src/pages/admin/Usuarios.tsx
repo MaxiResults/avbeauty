@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/utils/customAuth'; // ✅ Usar banco externo
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -18,15 +18,17 @@ export default function Usuarios() {
 
   const carregarUsuarios = async () => {
     try {
-      const { data, error } = await supabase
-        .from('usuarios')
-        .select('id, nome, email, role, ativo, created_at')
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3)
-        .order('created_at', { ascending: false });
+      setLoading(true);
+      
+      const { data, error } = await supabase.functions.invoke('get-usuarios-admin');
 
       if (error) throw error;
-      setUsuarios(data || []);
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      setUsuarios(data?.usuarios || []);
     } catch (error) {
       console.error('Erro ao carregar usuários:', error);
       toast.error('Erro ao carregar usuários');
@@ -37,12 +39,16 @@ export default function Usuarios() {
 
   const toggleAtivo = async (id: string, ativoAtual: boolean) => {
     try {
-      const { error } = await supabase
-        .from('usuarios')
-        .update({ ativo: !ativoAtual, updated_at: new Date().toISOString() })
-        .eq('ID', id);
+      const { data, error } = await supabase.functions.invoke('update-usuario-admin', {
+        body: { id, ativo: !ativoAtual }
+      });
 
       if (error) throw error;
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
       toast.success(`Usuário ${!ativoAtual ? 'ativado' : 'desativado'} com sucesso`);
       carregarUsuarios();
     } catch (error) {

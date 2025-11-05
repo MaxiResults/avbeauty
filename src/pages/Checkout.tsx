@@ -34,6 +34,26 @@ export default function Checkout() {
 
       console.log('🔧 Iniciando processo de checkout...');
 
+      // Buscar dados completos dos produtos (incluindo codigo_externo)
+      const produtosIds = cart.map(item => item.produto_id);
+      const { data: produtosCompletos } = await supabase
+        .from('produtos')
+        .select('id, nome, codigo_externo')
+        .in('id', produtosIds)
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
+
+      // Mapear produtos com codigo_externo
+      const produtosComCodigo = cart.map(item => {
+        const produtoCompleto = produtosCompletos?.find(p => p.id === item.produto_id);
+        return {
+          ...item,
+          codigo_externo: produtoCompleto?.codigo_externo || null
+        };
+      });
+
+      console.log('🛒 Produtos com código externo:', produtosComCodigo);
+
       // 1. Verificar se lead existe (com tratamento de erro melhorado)
       let leadId;
       
@@ -41,7 +61,7 @@ export default function Checkout() {
         const { data: leadExist, error: leadQueryError } = await supabase
           .from('Leads_Cadastro')
           .select('id')
-          .eq('email', formData.email)
+          .eq('Email_Lead', formData.email)
           .eq('Cliente_ID', 3)
           .eq('Empresa_ID', 3)
           .maybeSingle(); // Use maybeSingle ao invés de single
@@ -58,12 +78,12 @@ export default function Checkout() {
           const { error: updateError } = await supabase
             .from('Leads_Cadastro')
             .update({
-              nome: formData.nome,
-              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
-              observacoes: `CPF: ${formData.cpf}`,
-              status: 'aguardando_pagamento',
-              empresa_id: 3,
-              updated_at: new Date().toISOString()
+              Nome_Lead: formData.nome,
+              Telefone_Lead: `55${formData.telefone.replace(/\D/g, '')}`,
+              CPF_Lead: formData.cpf,
+              Status_Lead: 'aguardando_pagamento',
+              Empresa_ID: 3,
+              Updated_at: new Date().toISOString()
             })
             .eq('id', leadExist.id);
 
@@ -81,16 +101,14 @@ export default function Checkout() {
             .insert({
               Cliente_ID: 3,
               Empresa_ID: 3,
-              nome: formData.nome,
-              email: formData.email,
-              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
-              interesse: cart.map(item => item.nome).join(', '),
-              observacoes: `CPF: ${formData.cpf}`,
-              status: 'aguardando_pagamento',
-              canal_origem: 'Black Friday',
-              origem_url: window.location.href,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              Nome_Lead: formData.nome,
+              Email_Lead: formData.email,
+              Telefone_Lead: `55${formData.telefone.replace(/\D/g, '')}`,
+              CPF_Lead: formData.cpf,
+              Status_Lead: 'aguardando_pagamento',
+              Origem_Lead: 'Black Friday',
+              Created_at: new Date().toISOString(),
+              Updated_at: new Date().toISOString()
             })
             .select('id')
             .single();
@@ -124,12 +142,24 @@ export default function Checkout() {
           email: formData.email,
           telefone: formData.telefone,
           cpf: formData.cpf,
-          produtos: cart.map(p => ({
+          endereco: {
+            cep: null,
+            logradouro: null,
+            numero: null,
+            complemento: null,
+            bairro: null,
+            cidade: null,
+            estado: null
+          },
+          produtos: produtosComCodigo.map(p => ({
             produto_id: p.produto_id,
             produto_nome: p.nome,
+            codigo_externo: p.codigo_externo,
             quantidade: p.quantidade,
-            preco_unitario: p.preco
+            preco_unitario: p.preco,
+            desconto_item: 0
           })),
+          desconto_geral: 0,
           valorTotal,
           orderNsu
         };

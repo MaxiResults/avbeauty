@@ -61,7 +61,7 @@ export default function Checkout() {
         const { data: leadExist, error: leadQueryError } = await supabase
           .from('Leads_Cadastro')
           .select('id')
-          .eq('email', formData.email)
+          .eq('email', formData.email) // ✅ CORRETO: email (não Email_Lead)
           .eq('Cliente_ID', 3)
           .eq('Empresa_ID', 3)
           .maybeSingle();
@@ -77,10 +77,10 @@ export default function Checkout() {
           const { error: updateError } = await supabase
             .from('Leads_Cadastro')
             .update({
-              nome: formData.nome,
-              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
-              cpf: formData.cpf, // ✅ AGORA NO CAMPO CORRETO
-              status: 'aguardando_pagamento',
+              nome: formData.nome, // ✅ CORRETO: nome (não Nome_Lead)
+              telefone: `55${formData.telefone.replace(/\D/g, '')}`, // ✅ CORRETO: telefone (não Telefone_Lead)
+              cpf: formData.cpf, // ✅ CORRETO: cpf (não CPF_Lead)
+              status: 'aguardando_pagamento', // ✅ CORRETO: status (não Status_Lead)
               Empresa_ID: 3,
               updated_at: new Date().toISOString()
             })
@@ -100,13 +100,13 @@ export default function Checkout() {
             .insert({
               Cliente_ID: 3,
               Empresa_ID: 3,
-              nome: formData.nome,
-              email: formData.email,
-              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
-              cpf: formData.cpf, // ✅ AGORA NO CAMPO CORRETO
+              nome: formData.nome, // ✅ CORRETO: nome (não Nome_Lead)
+              email: formData.email, // ✅ CORRETO: email (não Email_Lead)
+              telefone: `55${formData.telefone.replace(/\D/g, '')}`, // ✅ CORRETO: telefone (não Telefone_Lead)
+              cpf: formData.cpf, // ✅ CORRETO: cpf (não CPF_Lead)
               interesse: cart.map(item => item.nome).join(', '),
-              status: 'aguardando_pagamento',
-              canal_origem: 'Black Friday',
+              status: 'aguardando_pagamento', // ✅ CORRETO: status (não Status_Lead)
+              canal_origem: 'Black Friday', // ✅ CORRETO: canal_origem (não Origem_Lead)
               origem_url: window.location.href,
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString()

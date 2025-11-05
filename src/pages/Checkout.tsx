@@ -37,8 +37,8 @@ export default function Checkout() {
         .from('Leads_Cadastro')
         .select('id')
         .eq('email', formData.email)
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3)
+        .eq('Cliente_ID', 3)
+        .eq('Empresa_ID', 3)
         .single();
 
       let leadId;
@@ -60,8 +60,8 @@ export default function Checkout() {
         const { data: novoLead, error: leadError } = await supabase
           .from('Leads_Cadastro')
           .insert({
-            cliente_id: 3,
-            empresa_id: 3,
+            Cliente_ID: 3,
+            Empresa_ID: 3,
             nome: formData.nome,
             email: formData.email,
             telefone: `55${formData.telefone.replace(/\D/g, '')}`,

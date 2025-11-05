@@ -40,6 +40,7 @@ export default function NovoUsuario() {
       const senhaHash = await gerarHashSenha(senha);
 
       // Chamar edge function para inserir no banco EXTERNO
+      console.log('Enviando para edge function:', { nome, email, role });
       const { data, error } = await supabase.functions.invoke('create-usuario-admin', {
         body: {
           nome,
@@ -51,16 +52,17 @@ export default function NovoUsuario() {
 
       if (error) {
         console.error('Erro ao criar usuário:', error);
-        toast.error('Erro ao criar usuário');
+        toast.error(`Erro ao criar usuário: ${error.message}`);
         setLoading(false);
         return;
       }
 
       if (data?.error) {
+        console.error('Erro no retorno da função:', data);
         if (data.code === '23505') {
           toast.error('Este email já está cadastrado');
         } else {
-          toast.error(data.error);
+          toast.error(`Erro: ${data.error}`);
         }
         setLoading(false);
         return;

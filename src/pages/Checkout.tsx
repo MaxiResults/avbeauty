@@ -38,6 +38,7 @@ export default function Checkout() {
         .select('id')
         .eq('email', formData.email)
         .eq('cliente_id', 3)
+        .eq('empresa_id', 3)
         .single();
 
       let leadId;
@@ -49,7 +50,8 @@ export default function Checkout() {
             nome: formData.nome,
             telefone: `55${formData.telefone.replace(/\D/g, '')}`,
             observacoes: `CPF: ${formData.cpf}`,
-            status: 'aguardando_pagamento'
+            status: 'aguardando_pagamento',
+            empresa_id: 3
           })
           .eq('id', leadExist.id);
         
@@ -59,6 +61,7 @@ export default function Checkout() {
           .from('Leads_Cadastro')
           .insert({
             cliente_id: 3,
+            empresa_id: 3,
             nome: formData.nome,
             email: formData.email,
             telefone: `55${formData.telefone.replace(/\D/g, '')}`,

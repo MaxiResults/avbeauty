@@ -32,106 +32,150 @@ export default function Checkout() {
         throw new Error('Carrinho vazio');
       }
 
-      // 1. Salvar/atualizar lead
-      const { data: leadExist } = await supabase
-        .from('Leads_Cadastro')
-        .select('id')
-        .eq('email', formData.email)
-        .eq('Cliente_ID', 3)
-        .eq('Empresa_ID', 3)
-        .single();
+      console.log('🔧 Iniciando processo de checkout...');
 
+      // 1. Verificar se lead existe (com tratamento de erro melhorado)
       let leadId;
-
-      if (leadExist) {
-        await supabase
+      
+      try {
+        const { data: leadExist, error: leadQueryError } = await supabase
           .from('Leads_Cadastro')
-          .update({
-            nome: formData.nome,
-            telefone: `55${formData.telefone.replace(/\D/g, '')}`,
-            observacoes: `CPF: ${formData.cpf}`,
-            status: 'aguardando_pagamento',
-            empresa_id: 3
-          })
-          .eq('id', leadExist.id);
-        
-        leadId = leadExist.id;
-      } else {
-        const { data: novoLead, error: leadError } = await supabase
-          .from('Leads_Cadastro')
-          .insert({
-            Cliente_ID: 3,
-            Empresa_ID: 3,
-            nome: formData.nome,
-            email: formData.email,
-            telefone: `55${formData.telefone.replace(/\D/g, '')}`,
-            interesse: cart.map(item => item.nome).join(', '),
-            observacoes: `CPF: ${formData.cpf}`,
-            status: 'aguardando_pagamento',
-            canal_origem: 'Black Friday',
-            origem_url: window.location.href
-          })
           .select('id')
-          .single();
+          .eq('email', formData.email)
+          .eq('Cliente_ID', 3)
+          .eq('Empresa_ID', 3)
+          .maybeSingle(); // Use maybeSingle ao invés de single
 
-        if (leadError) throw leadError;
-        leadId = novoLead.id;
+        if (leadQueryError && leadQueryError.code !== 'PGRST116') {
+          // PGRST116 é "not found", outros erros são problemas
+          console.error('Erro ao buscar lead:', leadQueryError);
+          throw new Error('Erro ao verificar cadastro');
+        }
+
+        // 2. Se lead existe, atualizar
+        if (leadExist) {
+          console.log('📝 Lead existente encontrado, atualizando...');
+          const { error: updateError } = await supabase
+            .from('Leads_Cadastro')
+            .update({
+              nome: formData.nome,
+              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
+              observacoes: `CPF: ${formData.cpf}`,
+              status: 'aguardando_pagamento',
+              empresa_id: 3,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', leadExist.id);
+
+          if (updateError) {
+            console.error('Erro ao atualizar lead:', updateError);
+            throw new Error('Erro ao atualizar cadastro');
+          }
+          
+          leadId = leadExist.id;
+        } else {
+          // 3. Se lead não existe, criar novo
+          console.log('📝 Criando novo lead...');
+          const { data: novoLead, error: insertError } = await supabase
+            .from('Leads_Cadastro')
+            .insert({
+              Cliente_ID: 3,
+              Empresa_ID: 3,
+              nome: formData.nome,
+              email: formData.email,
+              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
+              interesse: cart.map(item => item.nome).join(', '),
+              observacoes: `CPF: ${formData.cpf}`,
+              status: 'aguardando_pagamento',
+              canal_origem: 'Black Friday',
+              origem_url: window.location.href,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .select('id')
+            .single();
+
+          if (insertError) {
+            console.error('Erro ao criar lead:', insertError);
+            
+            // Tratamento específico para erro de RLS
+            if (insertError.code === '42501') {
+              throw new Error('Permissão negada. Verifique as políticas de segurança.');
+            }
+            
+            throw new Error(`Erro ao criar cadastro: ${insertError.message}`);
+          }
+          
+          leadId = novoLead.id;
+        }
+
+        console.log('✅ Lead processado com ID:', leadId);
+
+        // 4. Gerar order_nsu único
+        const orderNsu = gerarOrderNsu();
+
+        // 5. Calcular total
+        const valorTotal = subtotal;
+
+        // 6. Salvar dados no sessionStorage
+        const dadosCheckout = {
+          leadId,
+          nome: formData.nome,
+          email: formData.email,
+          telefone: formData.telefone,
+          cpf: formData.cpf,
+          produtos: cart.map(p => ({
+            produto_id: p.produto_id,
+            produto_nome: p.nome,
+            quantidade: p.quantidade,
+            preco_unitario: p.preco
+          })),
+          valorTotal,
+          orderNsu
+        };
+
+        sessionStorage.setItem('checkout_dados', JSON.stringify(dadosCheckout));
+        console.log('💾 Dados salvos no sessionStorage');
+
+        // 7. Preparar itens para InfinitePay
+        const items = cart.map(produto => ({
+          name: produto.nome,
+          price: realParaCentavos(produto.preco),
+          quantity: produto.quantidade
+        }));
+
+        console.log('🛒 Itens para pagamento:', items);
+
+        // 8. URL de redirecionamento
+        const redirectUrl = `${window.location.origin}/checkout/confirmacao`;
+
+        // 9. Gerar link InfinitePay
+        const linkPagamento = gerarLinkInfinitePay({
+          items,
+          orderNsu,
+          redirectUrl,
+          customerName: formData.nome,
+          customerEmail: formData.email,
+          customerCellphone: `55${formData.telefone.replace(/\D/g, '')}`
+        });
+
+        console.log('🔗 Link de pagamento gerado');
+
+        // 10. Limpar carrinho e redirecionar
+        clearCart();
+        console.log('🔄 Redirecionando para pagamento...');
+        window.location.href = linkPagamento;
+
+      } catch (dbError: any) {
+        console.error('❌ Erro no banco de dados:', dbError);
+        throw dbError;
       }
 
-      // 2. Gerar order_nsu único
-      const orderNsu = gerarOrderNsu();
-
-      // 3. Calcular total
-      const valorTotal = subtotal;
-
-      // 4. Salvar dados no sessionStorage
-      const dadosCheckout = {
-        leadId,
-        nome: formData.nome,
-        email: formData.email,
-        telefone: formData.telefone,
-        cpf: formData.cpf,
-        produtos: cart.map(p => ({
-          produto_id: p.produto_id,
-          produto_nome: p.nome,
-          quantidade: p.quantidade,
-          preco_unitario: p.preco
-        })),
-        valorTotal,
-        orderNsu
-      };
-
-      sessionStorage.setItem('checkout_dados', JSON.stringify(dadosCheckout));
-
-      // 5. Preparar itens para InfinitePay
-      const items = cart.map(produto => ({
-        name: produto.nome,
-        price: realParaCentavos(produto.preco),
-        quantity: produto.quantidade
-      }));
-
-      // 6. URL de redirecionamento
-      const redirectUrl = `${import.meta.env.VITE_SITE_URL}/checkout/confirmacao`;
-
-      // 7. Gerar link InfinitePay
-      const linkPagamento = gerarLinkInfinitePay({
-        items,
-        orderNsu,
-        redirectUrl,
-        customerName: formData.nome,
-        customerEmail: formData.email,
-        customerCellphone: `55${formData.telefone.replace(/\D/g, '')}`
-      });
-
-      // 8. Limpar carrinho e redirecionar
-      clearCart();
-      window.location.href = linkPagamento;
-
     } catch (error: any) {
-      console.error('Erro ao criar pedido:', error);
+      console.error('❌ Erro completo ao criar pedido:', error);
       toast({
         title: 'Erro ao processar pedido',
-        description: error.message || 'Tente novamente.',
+        description: error.message || 'Tente novamente em alguns instantes.',
         variant: 'destructive',
       });
       setIsProcessing(false);
@@ -180,6 +224,9 @@ export default function Checkout() {
             <Loader2 className="w-12 h-12 animate-spin text-[#97624b] mx-auto mb-4" />
             <p className="text-lg font-semibold text-[#292823]">
               Processando seu pedido...
+            </p>
+            <p className="text-sm text-gray-600 mt-2">
+              Aguarde, não feche esta página.
             </p>
           </div>
         </div>

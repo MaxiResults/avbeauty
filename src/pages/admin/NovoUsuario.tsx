@@ -127,7 +127,8 @@ export default function NovoUsuario() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="viewer">Viewer (Visualização)</SelectItem>
-                  <SelectItem value="user_role">Admin (Acesso Total)</SelectItem>
+                  <SelectItem value="manager">Manager (Gerente)</SelectItem>
+                  <SelectItem value="admin">Admin (Acesso Total)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

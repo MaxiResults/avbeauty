@@ -80,7 +80,7 @@ export default function EditarPedido() {
       const { data, error } = await supabase
         .from('produtos')
         .select('id, nome, preco_padrao, preco_promocional, codigo_externo')
-        .eq('cliente_id', 2)
+        .eq('cliente_id', 3)
         .eq('status', 'ativo')
         .order('nome');
 
@@ -240,8 +240,8 @@ export default function EditarPedido() {
         const produto = produtos.find(p => p.id === item.produto_id);
         
         return {
-          cliente_id: 2,
-          empresa_id: 2,
+          cliente_id: 3,
+          empresa_id: 3,
           pedido_id: id,
           produto_id: item.produto_id,
           produto_nome: item.produto_nome,

@@ -6,6 +6,7 @@ import { OrderSummary } from '@/components/loja/OrderSummary';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { gerarLinkInfinitePay, gerarOrderNsu, realParaCentavos } from '@/utils/infinitepay';
 
 export default function Checkout() {
   const { cart, subtotal, clearCart } = useCart();
@@ -22,68 +23,107 @@ export default function Checkout() {
     setIsProcessing(true);
 
     try {
-      // Gerar código do pedido
-      const codigo = `BF2024-${Date.now().toString().slice(-6)}`;
+      // Validações
+      if (!formData.nome || !formData.email || !formData.telefone || !formData.cpf) {
+        throw new Error('Preencha todos os campos obrigatórios');
+      }
 
-      // Calcular valores
-      const desconto = formData.formaPagamento === 'pix' ? subtotal * 0.05 : 0;
-      const valorTotal = subtotal - desconto;
+      if (cart.length === 0) {
+        throw new Error('Carrinho vazio');
+      }
 
-      // TODO: Integração Mercado Pago será adicionada aqui
-      /*
-      INSTRUÇÕES PARA INTEGRAÇÃO MERCADO PAGO:
-      
-      1. Adicionar credenciais no arquivo de configuração
-      2. Criar preferência de pagamento com os dados do carrinho
-      3. Salvar Payment_ID e Link_Pagamento no pedido
-      4. Redirecionar cliente para o link de pagamento
-      
-      Por enquanto: criando pedido e redirecionando para confirmação
-      */
-
-      // Criar pedido no Supabase
-      const { data: pedido, error: pedidoError } = await supabase
+      // 1. Salvar/atualizar lead
+      const { data: leadExist } = await supabase
         .from('Leads_Cadastro')
-        .insert({
-          nome: formData.nome,
-          email: formData.email,
-          telefone: `55${formData.telefone.replace(/\D/g, '')}`,
-          interesse: cart.map(item => item.nome).join(', '),
-          observacoes: `Pedido: ${codigo}\nCPF: ${formData.cpf}\nForma de Pagamento: ${formData.formaPagamento}\nValor Total: R$ ${valorTotal.toFixed(2)}`,
-          status: 'novo',
-          cliente_id: 2,
-          canal_origem: 'Black Friday',
-          origem_url: window.location.href,
-        })
-        .select()
+        .select('id')
+        .eq('email', formData.email)
+        .eq('cliente_id', 3)
         .single();
 
-      if (pedidoError) throw pedidoError;
+      let leadId;
 
-      // Limpar carrinho
-      clearCart();
-
-      // Redirecionar para página de confirmação
-      navigate(`/pedido/${codigo}`, {
-        state: {
-          pedido: {
-            codigo,
+      if (leadExist) {
+        await supabase
+          .from('Leads_Cadastro')
+          .update({
+            nome: formData.nome,
+            telefone: `55${formData.telefone.replace(/\D/g, '')}`,
+            observacoes: `CPF: ${formData.cpf}`,
+            status: 'aguardando_pagamento'
+          })
+          .eq('id', leadExist.id);
+        
+        leadId = leadExist.id;
+      } else {
+        const { data: novoLead, error: leadError } = await supabase
+          .from('Leads_Cadastro')
+          .insert({
+            cliente_id: 3,
             nome: formData.nome,
             email: formData.email,
-            telefone: formData.telefone,
-            formaPagamento: formData.formaPagamento,
-            itens: cart,
-            subtotal,
-            desconto,
-            valorTotal,
-          },
-        },
+            telefone: `55${formData.telefone.replace(/\D/g, '')}`,
+            interesse: cart.map(item => item.nome).join(', '),
+            observacoes: `CPF: ${formData.cpf}`,
+            status: 'aguardando_pagamento',
+            canal_origem: 'Black Friday',
+            origem_url: window.location.href
+          })
+          .select('id')
+          .single();
+
+        if (leadError) throw leadError;
+        leadId = novoLead.id;
+      }
+
+      // 2. Gerar order_nsu único
+      const orderNsu = gerarOrderNsu();
+
+      // 3. Calcular total
+      const valorTotal = subtotal;
+
+      // 4. Salvar dados no sessionStorage
+      const dadosCheckout = {
+        leadId,
+        nome: formData.nome,
+        email: formData.email,
+        telefone: formData.telefone,
+        cpf: formData.cpf,
+        produtos: cart.map(p => ({
+          produto_id: p.produto_id,
+          produto_nome: p.nome,
+          quantidade: p.quantidade,
+          preco_unitario: p.preco
+        })),
+        valorTotal,
+        orderNsu
+      };
+
+      sessionStorage.setItem('checkout_dados', JSON.stringify(dadosCheckout));
+
+      // 5. Preparar itens para InfinitePay
+      const items = cart.map(produto => ({
+        name: produto.nome,
+        price: realParaCentavos(produto.preco),
+        quantity: produto.quantidade
+      }));
+
+      // 6. URL de redirecionamento
+      const redirectUrl = `${import.meta.env.VITE_SITE_URL}/checkout/confirmacao`;
+
+      // 7. Gerar link InfinitePay
+      const linkPagamento = gerarLinkInfinitePay({
+        items,
+        orderNsu,
+        redirectUrl,
+        customerName: formData.nome,
+        customerEmail: formData.email,
+        customerCellphone: `55${formData.telefone.replace(/\D/g, '')}`
       });
 
-      toast({
-        title: '✅ Pedido criado com sucesso!',
-        description: 'Você será redirecionado para a página de confirmação.',
-      });
+      // 8. Limpar carrinho e redirecionar
+      clearCart();
+      window.location.href = linkPagamento;
+
     } catch (error: any) {
       console.error('Erro ao criar pedido:', error);
       toast({
@@ -91,7 +131,6 @@ export default function Checkout() {
         description: error.message || 'Tente novamente.',
         variant: 'destructive',
       });
-    } finally {
       setIsProcessing(false);
     }
   };

@@ -53,8 +53,8 @@ export default function ListaPedidos() {
       const { data, error } = await supabase
         .from('pedidos')
         .select('status_pedido, valor_total')
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2);
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
       if (error) throw error;
 
@@ -81,8 +81,8 @@ export default function ListaPedidos() {
           campanhas(nome_campanha),
           itens:pedidos_itens(count)
         `)
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2)
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3)
         .order('created_at', { ascending: false });
 
       if (statusFilter && statusFilter !== 'all') {
@@ -121,8 +121,8 @@ export default function ListaPedidos() {
           produtos(imagem_principal)
         `)
         .eq('pedido_id', pedido.ID)
-        .eq('cliente_id', 2)
-        .eq('empresa_id', 2);
+        .eq('cliente_id', 3)
+        .eq('empresa_id', 3);
 
       if (error) throw error;
 

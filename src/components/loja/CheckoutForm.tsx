@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { maskCPF, maskPhone } from '@/utils/formatadores';
 import { validarCPF, validarEmail, validarTelefone } from '@/utils/validacoes';
+import EnderecoForm from '@/components/EnderecoForm';
 
 interface CheckoutFormProps {
   onSubmit: (data: any) => void;
@@ -22,6 +23,17 @@ export function CheckoutForm({ onSubmit, isProcessing }: CheckoutFormProps) {
     parcelas: 1,
     aceitoTermos: false,
     aceitoOfertas: false,
+  });
+
+  const [endereco, setEndereco] = useState({
+    cep: '',
+    logradouro: '',
+    numero: '',
+    complemento: '',
+    bairro: '',
+    cidade: '',
+    estado: '',
+    pais: 'Brasil'
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -64,7 +76,7 @@ export function CheckoutForm({ onSubmit, isProcessing }: CheckoutFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      onSubmit(formData);
+      onSubmit({ ...formData, endereco });
     }
   };
 
@@ -136,6 +148,9 @@ export function CheckoutForm({ onSubmit, isProcessing }: CheckoutFormProps) {
         </div>
       </div>
 
+      {/* Endereço */}
+      <EnderecoForm endereco={endereco} onChange={setEndereco} />
+
       {/* Forma de Pagamento */}
       <div>
         <h2 className="text-2xl font-bold text-[#292823] mb-4">
@@ -163,16 +178,6 @@ export function CheckoutForm({ onSubmit, isProcessing }: CheckoutFormProps) {
                 <div className="font-semibold">Cartão de Crédito</div>
                 <div className="text-sm text-gray-600 mt-1">
                   💳 Parcelamento em até 12x sem juros
-                </div>
-              </Label>
-            </div>
-
-            <div className="flex items-start space-x-3 p-4 border rounded-lg">
-              <RadioGroupItem value="boleto" id="boleto" />
-              <Label htmlFor="boleto" className="flex-1 cursor-pointer">
-                <div className="font-semibold">Boleto Bancário</div>
-                <div className="text-sm text-gray-600 mt-1">
-                  📄 Pagamento em até 3 dias úteis
                 </div>
               </Label>
             </div>

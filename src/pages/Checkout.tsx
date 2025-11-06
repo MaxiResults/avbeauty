@@ -77,11 +77,19 @@ export default function Checkout() {
           const { error: updateError } = await supabase
             .from('Leads_Cadastro')
             .update({
-              nome: formData.nome, // ✅ CORRETO: nome (não Nome_Lead)
-              telefone: `55${formData.telefone.replace(/\D/g, '')}`, // ✅ CORRETO: telefone (não Telefone_Lead)
-              cpf: formData.cpf, // ✅ CORRETO: cpf (não CPF_Lead)
-              status: 'aguardando_pagamento', // ✅ CORRETO: status (não Status_Lead)
+              nome: formData.nome,
+              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
+              cpf: formData.cpf,
+              status: 'aguardando_pagamento',
               Empresa_ID: 3,
+              Endereco_CEP: formData.endereco.cep || null,
+              Endereco_Logradouro: formData.endereco.logradouro || null,
+              Endereco_Numero: formData.endereco.numero || null,
+              Endereco_Complemento: formData.endereco.complemento || null,
+              Endereco_Bairro: formData.endereco.bairro || null,
+              Endereco_Cidade: formData.endereco.cidade || null,
+              Endereco_Estado: formData.endereco.estado || null,
+              Endereco_Pais: formData.endereco.pais || 'Brasil',
               updated_at: new Date().toISOString()
             })
             .eq('id', leadExist.id);
@@ -100,14 +108,22 @@ export default function Checkout() {
             .insert({
               Cliente_ID: 3,
               Empresa_ID: 3,
-              nome: formData.nome, // ✅ CORRETO: nome (não Nome_Lead)
-              email: formData.email, // ✅ CORRETO: email (não Email_Lead)
-              telefone: `55${formData.telefone.replace(/\D/g, '')}`, // ✅ CORRETO: telefone (não Telefone_Lead)
-              cpf: formData.cpf, // ✅ CORRETO: cpf (não CPF_Lead)
+              nome: formData.nome,
+              email: formData.email,
+              telefone: `55${formData.telefone.replace(/\D/g, '')}`,
+              cpf: formData.cpf,
               interesse: cart.map(item => item.nome).join(', '),
-              status: 'aguardando_pagamento', // ✅ CORRETO: status (não Status_Lead)
-              canal_origem: 'Black Friday', // ✅ CORRETO: canal_origem (não Origem_Lead)
+              status: 'aguardando_pagamento',
+              canal_origem: 'Black Friday',
               origem_url: window.location.href,
+              Endereco_CEP: formData.endereco.cep || null,
+              Endereco_Logradouro: formData.endereco.logradouro || null,
+              Endereco_Numero: formData.endereco.numero || null,
+              Endereco_Complemento: formData.endereco.complemento || null,
+              Endereco_Bairro: formData.endereco.bairro || null,
+              Endereco_Cidade: formData.endereco.cidade || null,
+              Endereco_Estado: formData.endereco.estado || null,
+              Endereco_Pais: formData.endereco.pais || 'Brasil',
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString()
             })
@@ -143,13 +159,13 @@ export default function Checkout() {
           telefone: formData.telefone,
           cpf: formData.cpf,
           endereco: {
-            cep: null,
-            logradouro: null,
-            numero: null,
-            complemento: null,
-            bairro: null,
-            cidade: null,
-            estado: null
+            cep: formData.endereco.cep || null,
+            logradouro: formData.endereco.logradouro || null,
+            numero: formData.endereco.numero || null,
+            complemento: formData.endereco.complemento || null,
+            bairro: formData.endereco.bairro || null,
+            cidade: formData.endereco.cidade || null,
+            estado: formData.endereco.estado || null
           },
           produtos: produtosComCodigo.map(p => ({
             produto_id: p.produto_id,
@@ -186,7 +202,10 @@ export default function Checkout() {
           redirectUrl,
           customerName: formData.nome,
           customerEmail: formData.email,
-          customerCellphone: `55${formData.telefone.replace(/\D/g, '')}`
+          customerCellphone: `55${formData.telefone.replace(/\D/g, '')}`,
+          addressCep: formData.endereco.cep?.replace(/\D/g, ''),
+          addressComplement: formData.endereco.complemento,
+          addressNumber: formData.endereco.numero
         });
 
         console.log('🔗 Link de pagamento gerado');

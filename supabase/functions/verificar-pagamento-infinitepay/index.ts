@@ -12,6 +12,9 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let body: any = {};
+  let transactionNsu: string = '';
+  
   try {
     console.log('=== VERIFICAR PAGAMENTO INFINITEPAY ===');
 
@@ -23,7 +26,6 @@ serve(async (req) => {
       );
     }
 
-    let body: any = {};
     const isJson = req.headers.get('content-type')?.includes('application/json');
     if (isJson) {
       try {
@@ -34,7 +36,8 @@ serve(async (req) => {
       }
     }
 
-    const { transactionNsu, externalOrderNsu, slug, dadosCheckout } = body || {};
+    const { transactionNsu: txnNsu, externalOrderNsu, slug, dadosCheckout } = body || {};
+    transactionNsu = txnNsu;
 
     if (!transactionNsu || !externalOrderNsu) {
       return new Response(
@@ -60,14 +63,20 @@ serve(async (req) => {
     const { error: logError } = await supabaseExt
       .from('logs_webhook_infinitepay')
       .insert({
-        transaction_nsu: transactionNsu,
+        cliente_id: 2,
+        transaction_id: transactionNsu,
         order_nsu: externalOrderNsu,
-        payload: { transactionNsu, externalOrderNsu, slug, dadosCheckout },
-        status: 'processando'
+        slug: slug || null,
+        capture_method: dadosCheckout?.capture_method || null,
+        receipt_url: dadosCheckout?.receipt_url || null,
+        payload_completo: { transactionNsu, externalOrderNsu, slug, dadosCheckout },
+        processado: false,
+        sucesso: null
       });
     
     if (logError) {
       console.error('Erro ao registrar log:', logError);
+      throw new Error(`Erro ao registrar log: ${logError.message}`);
     }
     
     // 2. Buscar lead pelo slug (se existir)
@@ -199,8 +208,13 @@ serve(async (req) => {
     // 6. Atualizar log do webhook
     await supabaseExt
       .from('logs_webhook_infinitepay')
-      .update({ status: 'sucesso', pedido_id: pedido.id })
-      .eq('transaction_nsu', transactionNsu);
+      .update({ 
+        processado: true, 
+        sucesso: true, 
+        pedido_criado_id: pedido.id,
+        processado_at: new Date().toISOString()
+      })
+      .eq('transaction_id', transactionNsu);
     
     console.log('Pedido criado com sucesso!');
     
@@ -217,6 +231,30 @@ serve(async (req) => {
   } catch (error) {
     console.error('Erro ao processar pagamento:', error);
     const msg = (error as any)?.message || 'Erro ao processar pagamento';
+    
+    // Tentar registrar erro no log
+    try {
+      const { transactionNsu } = body || {};
+      if (transactionNsu) {
+        const extSupabaseUrl = Deno.env.get('EXT_SUPABASE_URL');
+        const extSupabaseKey = Deno.env.get('EXT_SUPABASE_SERVICE_ROLE_KEY');
+        if (extSupabaseUrl && extSupabaseKey) {
+          const supabaseExt = createClient(extSupabaseUrl, extSupabaseKey);
+          await supabaseExt
+            .from('logs_webhook_infinitepay')
+            .update({
+              processado: true,
+              sucesso: false,
+              erro_mensagem: msg,
+              processado_at: new Date().toISOString()
+            })
+            .eq('transaction_id', transactionNsu);
+        }
+      }
+    } catch (logErr) {
+      console.error('Erro ao registrar falha no log:', logErr);
+    }
+    
     return new Response(
       JSON.stringify({
         success: false,

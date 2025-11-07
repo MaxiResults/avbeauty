@@ -19,6 +19,8 @@ export default function CheckoutConfirmacao() {
       const transactionId = searchParams.get('transaction_id');
       const orderNsu = searchParams.get('order_nsu');
       const slug = searchParams.get('slug');
+      const captureMethod = searchParams.get('capture_method');
+      const receiptUrl = searchParams.get('receipt_url');
 
       if (!transactionId || !orderNsu || !slug) {
         throw new Error('Parâmetros inválidos');
@@ -30,6 +32,18 @@ export default function CheckoutConfirmacao() {
       }
 
       const dadosCheckout = JSON.parse(dadosCheckoutStr);
+      
+      // Adicionar capture_method e receipt_url aos dados do checkout
+      dadosCheckout.capture_method = captureMethod;
+      dadosCheckout.receipt_url = receiptUrl;
+
+      console.log('🔍 Verificando pagamento:', { 
+        transactionId, 
+        orderNsu, 
+        slug, 
+        captureMethod, 
+        receiptUrl 
+      });
 
       const resultado = await verificarPagamentoInfinitePay(
         transactionId,

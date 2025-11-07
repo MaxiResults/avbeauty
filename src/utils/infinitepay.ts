@@ -1,3 +1,5 @@
+import { supabase } from '@/integrations/supabase/client';
+
 // Tipos
 interface InfinitePayItem {
   name: string;
@@ -62,28 +64,20 @@ export async function verificarPagamentoInfinitePay(
   dadosCheckout: any
 ): Promise<PaymentCheckResponse> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verificar-pagamento-infinitepay`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
-        },
-        body: JSON.stringify({
-          transactionNsu: transactionId,
-          externalOrderNsu: orderNsu,
-          slug,
-          dadosCheckout
-        })
-      }
-    );
-    
-    if (!response.ok) {
-      throw new Error('Erro ao verificar pagamento');
+    const { data, error } = await supabase.functions.invoke('verificar-pagamento-infinitepay', {
+      body: {
+        transactionNsu: transactionId,
+        externalOrderNsu: orderNsu,
+        slug,
+        dadosCheckout,
+      },
+    });
+
+    if (error) {
+      throw new Error(error.message || 'Erro ao verificar pagamento');
     }
-    
-    return await response.json();
+
+    return data as PaymentCheckResponse;
   } catch (error) {
     console.error('Erro ao verificar pagamento:', error);
     return { 

@@ -121,8 +121,8 @@ serve(async (req) => {
     const { data: pedido, error: pedidoError } = await supabaseExt
       .from('pedidos')
       .insert({
-        cliente_id: 2,
-        empresa_id: 2,
+        cliente_id: 3,
+        empresa_id: 3,
         lead_id: leadId,
         campanha_id: dadosCheckout?.campanhaId || null,
         codigo: externalOrderNsu,
@@ -140,14 +140,28 @@ serve(async (req) => {
     
     console.log('Pedido criado:', pedido.id);
     
-    // 5. Criar itens do pedido
+    // 5. Buscar nomes reais dos produtos
+    console.log('Buscando nomes dos produtos...');
+    const produtoIds = itensNormalizados.map((item: any) => item.produto_id);
+    const { data: produtos, error: produtosError } = await supabaseExt
+      .from('produtos')
+      .select('id, nome')
+      .in('id', produtoIds);
+    
+    if (produtosError) {
+      console.error('Erro ao buscar produtos:', produtosError);
+    }
+    
+    const produtosMap = new Map(produtos?.map(p => [p.id, p.nome]) || []);
+    
+    // 6. Criar itens do pedido
     console.log('Criando itens do pedido...');
     const itens = itensNormalizados.map((item: any) => ({
       pedido_id: pedido.id,
-      cliente_id: 2,
-      empresa_id: 2,
+      cliente_id: 3,
+      empresa_id: 3,
       produto_id: item.produto_id,
-      produto_nome: item.produto_nome || `Produto ${item.produto_id}`,
+      produto_nome: produtosMap.get(item.produto_id) || `Produto ${item.produto_id}`,
       quantidade: item.quantidade,
       preco_unitario: item.preco_unitario,
       preco_total: item.preco_total,
@@ -162,14 +176,14 @@ serve(async (req) => {
       throw new Error(`Erro ao criar itens: ${itensError.message}`);
     }
     
-    // 6. Criar transação de pagamento
+    // 7. Criar transação de pagamento
     console.log('Criando transação de pagamento...');
     const { error: transacaoError } = await supabaseExt
       .from('transacoes_pagamento')
       .insert({
         pedido_id: pedido.id,
-        cliente_id: 2,
-        empresa_id: 2,
+        cliente_id: 3,
+        empresa_id: 3,
         gateway: 'infinitepay',
         transaction_id: transactionNsu,
         order_nsu: externalOrderNsu,
@@ -183,10 +197,10 @@ serve(async (req) => {
       throw new Error(`Erro ao criar transação: ${transacaoError.message}`);
     }
     
-    // 7. Atualizar log do webhook
+    // 8. Atualizar log do webhook
     await supabaseExt
       .from('logs_webhook_infinitepay')
-      .update({ 
+      .update({
         processado: true, 
         sucesso: true, 
         pedido_criado_id: pedido.id,

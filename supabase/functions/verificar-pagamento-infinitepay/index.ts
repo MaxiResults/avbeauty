@@ -61,7 +61,7 @@ serve(async (req) => {
       .from('logs_webhook_infinitepay')
       .insert({
         transaction_nsu: transactionNsu,
-        external_order_nsu: externalOrderNsu,
+        order_nsu: externalOrderNsu,
         payload: { transactionNsu, externalOrderNsu, slug, dadosCheckout },
         status: 'processando'
       });
@@ -75,7 +75,7 @@ serve(async (req) => {
     if (slug) {
       console.log('Buscando lead pelo slug:', slug);
       const { data: lead, error: leadError } = await supabaseExt
-        .from('leads_cadastro_teaser')
+        .from('Leads_Cadastro')
         .select('id')
         .eq('link_exclusivo', slug)
         .maybeSingle();
@@ -140,7 +140,6 @@ serve(async (req) => {
         cliente_nome: dadosCheckout?.nome,
         cliente_email: dadosCheckout?.email,
         cliente_telefone: dadosCheckout?.telefone,
-        cliente_cpf: dadosCheckout?.cpf,
         endereco_cep: dadosCheckout?.endereco?.cep,
         endereco_logradouro: dadosCheckout?.endereco?.logradouro,
         endereco_numero: dadosCheckout?.endereco?.numero,

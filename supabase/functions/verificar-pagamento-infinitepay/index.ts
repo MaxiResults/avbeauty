@@ -147,6 +147,7 @@ serve(async (req) => {
       cliente_id: 2,
       empresa_id: 2,
       produto_id: item.produto_id,
+      produto_nome: item.produto_nome || `Produto ${item.produto_id}`,
       quantidade: item.quantidade,
       preco_unitario: item.preco_unitario,
       preco_total: item.preco_total,

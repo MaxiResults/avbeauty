@@ -12,6 +12,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from 'sonner';
+import logoAvBeauty from '@/assets/logo-avbeauty-novo.png';
 
 export default function BlackFriday() {
   const navigate = useNavigate();
@@ -104,7 +105,7 @@ export default function BlackFriday() {
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
               <Link to="/" className="flex items-center gap-2">
                 <img 
-                  src="/src/assets/logo.png" 
+                  src={logoAvBeauty} 
                   alt="AV Beauty" 
                   className="h-10"
                 />

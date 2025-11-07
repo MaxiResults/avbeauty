@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { maskCPF, maskPhone } from '@/utils/formatadores';
 import { validarCPF, validarEmail, validarTelefone } from '@/utils/validacoes';
 import EnderecoForm from '@/components/EnderecoForm';
+import { useCart } from '@/hooks/useCart';
 
 interface CheckoutFormProps {
   onSubmit: (data: any) => void;
@@ -14,6 +15,8 @@ interface CheckoutFormProps {
 }
 
 export function CheckoutForm({ onSubmit, isProcessing }: CheckoutFormProps) {
+  const { setFormaPagamento } = useCart();
+  
   const [formData, setFormData] = useState({
     nome: '',
     cpf: '',
@@ -159,7 +162,10 @@ export function CheckoutForm({ onSubmit, isProcessing }: CheckoutFormProps) {
 
         <RadioGroup
           value={formData.formaPagamento}
-          onValueChange={(value) => handleChange('formaPagamento', value)}
+          onValueChange={(value) => {
+            handleChange('formaPagamento', value);
+            setFormaPagamento(value as 'pix' | 'cartao' | 'boleto');
+          }}
         >
           <div className="space-y-3">
             <div className="flex items-start space-x-3 p-4 border-2 border-success rounded-lg bg-success/5">
@@ -177,7 +183,7 @@ export function CheckoutForm({ onSubmit, isProcessing }: CheckoutFormProps) {
               <Label htmlFor="cartao" className="flex-1 cursor-pointer">
                 <div className="font-semibold">Cartão de Crédito</div>
                 <div className="text-sm text-gray-600 mt-1">
-                  💳 Parcelamento em até 12x sem juros
+                  💳 Parcelamento em até 3x
                 </div>
               </Label>
             </div>

@@ -3,9 +3,7 @@ import { formatCurrency } from '@/utils/formatadores';
 import { Lock } from 'lucide-react';
 
 export function OrderSummary() {
-  const { cart, subtotal } = useCart();
-  const descontoPix = subtotal * 0.05;
-  const total = subtotal - descontoPix;
+  const { cart, subtotal, desconto, total } = useCart();
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
@@ -43,10 +41,12 @@ export function OrderSummary() {
           <span>Subtotal:</span>
           <span className="font-semibold">{formatCurrency(subtotal)}</span>
         </div>
-        <div className="flex justify-between text-success font-semibold">
-          <span>Desconto Pix (5%):</span>
-          <span>- {formatCurrency(descontoPix)}</span>
-        </div>
+        {desconto > 0 && (
+          <div className="flex justify-between text-success font-semibold">
+            <span>Desconto Pix (5%):</span>
+            <span>- {formatCurrency(desconto)}</span>
+          </div>
+        )}
         <div className="h-px bg-gray-300" />
         <div className="flex justify-between text-2xl font-bold text-[#292823]">
           <span>TOTAL:</span>

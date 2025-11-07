@@ -16,6 +16,7 @@ export interface CartItem {
 export function useCart() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [formaPagamento, setFormaPagamento] = useState<'pix' | 'cartao' | 'boleto'>('cartao');
   const { toast } = useToast();
 
   // Carregar carrinho do localStorage
@@ -149,10 +150,18 @@ export function useCart() {
 
   const cartCount = cart.reduce((sum, item) => sum + item.quantidade, 0);
 
+  // Calcular desconto PIX (5%)
+  const desconto = formaPagamento === 'pix' ? subtotal * 0.05 : 0;
+  const total = subtotal - desconto;
+
   return {
     cart,
     cartCount,
     subtotal,
+    desconto,
+    total,
+    formaPagamento,
+    setFormaPagamento,
     isCartOpen,
     setIsCartOpen,
     addToCart,

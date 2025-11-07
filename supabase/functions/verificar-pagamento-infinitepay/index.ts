@@ -144,6 +144,8 @@ serve(async (req) => {
     console.log('Criando itens do pedido...');
     const itens = itensNormalizados.map((item: any) => ({
       pedido_id: pedido.id,
+      cliente_id: 2,
+      empresa_id: 2,
       produto_id: item.produto_id,
       quantidade: item.quantidade,
       preco_unitario: item.preco_unitario,
@@ -165,12 +167,14 @@ serve(async (req) => {
       .from('transacoes_pagamento')
       .insert({
         pedido_id: pedido.id,
+        cliente_id: 2,
+        empresa_id: 2,
         gateway: 'infinitepay',
         transaction_id: transactionNsu,
-        external_order_nsu: externalOrderNsu,
-        valor: valorTotal,
+        order_nsu: externalOrderNsu,
+        valor_total: valorTotal,
         status: 'pendente',
-        metodo_pagamento: 'pix',
+        metodo_pagamento: formaPagamento,
       });
     
     if (transacaoError) {

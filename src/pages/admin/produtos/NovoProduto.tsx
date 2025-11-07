@@ -215,7 +215,7 @@ export default function NovoProduto() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header title="Novo Produto" />
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 lg:ml-64 min-h-screen">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8 lg:ml-64">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center gap-4 mb-6">
               <Button variant="ghost" size="sm" onClick={() => navigate('/admin/produtos')}>
@@ -622,7 +622,7 @@ export default function NovoProduto() {
             </Tabs>
 
             {/* Botões de Ação */}
-            <div className="sticky bottom-0 bg-background border-t p-4 flex gap-2 justify-end mt-6">
+            <div className="sticky bottom-0 bg-background border-t p-4 flex gap-2 justify-end mt-6 z-10 shadow-lg">
               <Button variant="outline" onClick={() => navigate('/admin/produtos')}>
                 Cancelar
               </Button>

@@ -153,7 +153,7 @@ export default function NovaCampanha() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header title="Nova Campanha" />
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 lg:ml-64 min-h-screen">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8 lg:ml-64">
           <div className="max-w-5xl mx-auto">
             {/* Breadcrumb e Botão Voltar */}
             <div className="flex items-center gap-4 mb-6">
@@ -483,7 +483,7 @@ export default function NovaCampanha() {
             </Tabs>
 
             {/* Footer com Ações */}
-            <div className="flex gap-4 justify-end mt-8 pb-8 border-t pt-6 sticky bottom-0 bg-background">
+            <div className="flex gap-4 justify-end mt-8 pb-8 border-t pt-6 sticky bottom-0 bg-background z-10 shadow-lg">
               <Button variant="outline" onClick={() => navigate('/admin/campanhas')} disabled={loading}>
                 Cancelar
               </Button>

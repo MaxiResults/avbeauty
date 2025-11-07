@@ -117,7 +117,7 @@ serve(async (req) => {
 
     const valorTotal = itensNormalizados.reduce((acc, it) => acc + it.preco_total, 0);
     
-    // 4. Criar pedido (apenas campos essenciais que existem no banco externo)
+    // 4. Criar pedido com todos os dados do checkout
     const { data: pedido, error: pedidoError } = await supabaseExt
       .from('pedidos')
       .insert({
@@ -126,9 +126,25 @@ serve(async (req) => {
         lead_id: leadId,
         campanha_id: dadosCheckout?.campanhaId || null,
         codigo: externalOrderNsu,
+        lead_nome: dadosCheckout?.nome || null,
+        lead_email: dadosCheckout?.email || null,
+        lead_telefone: dadosCheckout?.telefone || null,
+        lead_cpf: dadosCheckout?.cpf || null,
+        endereco_cep: dadosCheckout?.endereco?.cep || null,
+        endereco_logradouro: dadosCheckout?.endereco?.logradouro || null,
+        endereco_numero: dadosCheckout?.endereco?.numero || null,
+        endereco_complemento: dadosCheckout?.endereco?.complemento || null,
+        endereco_bairro: dadosCheckout?.endereco?.bairro || null,
+        endereco_cidade: dadosCheckout?.endereco?.cidade || null,
+        endereco_estado: dadosCheckout?.endereco?.estado || null,
+        endereco_pais: dadosCheckout?.endereco?.pais || 'Brasil',
         valor: valorTotal,
-        status_pedido: 'aguardando_pagamento',
+        valor_total: valorTotal,
+        status_pedido: 'pago',
+        status_pagamento: 'pago',
         forma_pagamento: formaPagamento,
+        payment_id: transactionNsu,
+        payment_gateway: 'infinitepay',
       })
       .select()
       .single();

@@ -116,10 +116,7 @@ export default function ListaPedidos() {
     try {
       const { data, error } = await supabase
         .from('pedidos_itens')
-        .select(`
-          *,
-          produtos(imagem_principal)
-        `)
+        .select('*')
         .eq('pedido_id', pedido.ID)
         .eq('cliente_id', 3)
         .eq('empresa_id', 3);
@@ -134,7 +131,7 @@ export default function ListaPedidos() {
         Quantidade: item.quantidade,
         Preco_Unitario: item.preco_unitario,
         Preco_Total: item.preco_total,
-        Imagem_Produto: item.produtos?.imagem_principal,
+        Imagem_Produto: null, // Removido join com produtos
       }));
 
       setPedidoItens(itens);

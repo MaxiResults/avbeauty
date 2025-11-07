@@ -17,6 +17,7 @@ serve(async (req) => {
   
   try {
     console.log('=== VERIFICAR PAGAMENTO INFINITEPAY ===');
+    console.log('Request method:', req.method, 'Content-Type:', req.headers.get('content-type'));
 
     // Ensure POST and safely parse JSON body
     if (req.method !== 'POST') {
@@ -26,14 +27,11 @@ serve(async (req) => {
       );
     }
 
-    const isJson = req.headers.get('content-type')?.includes('application/json');
-    if (isJson) {
-      try {
-        body = await req.json();
-      } catch (e) {
-        console.error('Falha ao ler JSON do corpo:', e);
-        body = {};
-      }
+    try {
+      body = await req.json();
+    } catch (e) {
+      console.warn('Corpo não-JSON ou vazio; prosseguindo com body = {}', e);
+      body = {};
     }
 
     const { transactionNsu: txnNsu, externalOrderNsu, slug, dadosCheckout } = body || {};

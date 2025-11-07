@@ -22,7 +22,7 @@ export default function CheckoutConfirmacao() {
       const captureMethod = searchParams.get('capture_method');
       const receiptUrl = searchParams.get('receipt_url');
 
-      if (!transactionId || !orderNsu || !slug) {
+      if (!transactionId || !orderNsu) {
         throw new Error('Parâmetros inválidos');
       }
 

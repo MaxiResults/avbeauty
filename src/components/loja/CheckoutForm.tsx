@@ -171,7 +171,7 @@ export function CheckoutForm({ onSubmit, isProcessing }: CheckoutFormProps) {
             <div className="flex items-start space-x-3 p-4 border-2 border-success rounded-lg bg-success/5">
               <RadioGroupItem value="pix" id="pix" />
               <Label htmlFor="pix" className="flex-1 cursor-pointer">
-                <div className="font-semibold">Pix - 5% de desconto extra</div>
+                <div className="font-semibold">Pix</div>
                 <div className="text-sm text-gray-600 mt-1">
                   💰 Pagamento instantâneo
                 </div>

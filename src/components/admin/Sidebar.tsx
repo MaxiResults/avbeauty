@@ -1,9 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Megaphone, ShoppingBag, ShoppingCart, Users, LogOut } from 'lucide-react';
+import { LayoutDashboard, Megaphone, ShoppingBag, ShoppingCart, Users, LogOut, Menu } from 'lucide-react';
 import { useCustomAuth } from '@/hooks/useCustomAuth';
 import { customLogout } from '@/utils/customAuth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const menuItems = [
   { title: 'Dashboard', url: '/admin/dashboard', icon: LayoutDashboard },
@@ -15,6 +17,7 @@ const menuItems = [
 
 export const Sidebar = () => {
   const { user } = useCustomAuth();
+  const isMobile = useIsMobile();
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
@@ -26,15 +29,14 @@ export const Sidebar = () => {
       .substring(0, 2);
   };
 
-  return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-secondary text-secondary-foreground flex flex-col z-50">
+  const SidebarContent = () => (
+    <div className="h-full bg-secondary text-secondary-foreground flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-secondary-foreground/10">
         <div className="flex items-center justify-center w-16 h-16 mx-auto bg-terracota rounded-lg">
-          <span className="text-2xl font-bold text-terracota-foreground">AV Beauty</span>
+          <span className="text-xl font-bold text-terracota-foreground">AV Beauty</span>
         </div>
       </div>
-
       {/* Menu */}
       <nav className="flex-1 py-6">
         <ul className="space-y-1 px-3">
@@ -81,6 +83,31 @@ export const Sidebar = () => {
           Sair
         </Button>
       </div>
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="fixed top-4 left-4 z-50 lg:hidden bg-secondary"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-0 w-64">
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  return (
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-secondary text-secondary-foreground flex flex-col z-50">
+      <SidebarContent />
     </aside>
   );
 };

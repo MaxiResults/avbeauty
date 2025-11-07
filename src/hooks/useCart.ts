@@ -150,9 +150,9 @@ export function useCart() {
 
   const cartCount = cart.reduce((sum, item) => sum + item.quantidade, 0);
 
-  // Calcular desconto PIX (5%)
-  const desconto = formaPagamento === 'pix' ? subtotal * 0.05 : 0;
-  const total = subtotal - desconto;
+  // Sem desconto
+  const desconto = 0;
+  const total = subtotal;
 
   return {
     cart,

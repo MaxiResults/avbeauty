@@ -37,17 +37,6 @@ export function OrderSummary() {
 
       {/* Totais */}
       <div className="space-y-3 pt-4 border-t">
-        <div className="flex justify-between text-gray-600">
-          <span>Subtotal:</span>
-          <span className="font-semibold">{formatCurrency(subtotal)}</span>
-        </div>
-        {desconto > 0 && (
-          <div className="flex justify-between text-success font-semibold">
-            <span>Desconto Pix (5%):</span>
-            <span>- {formatCurrency(desconto)}</span>
-          </div>
-        )}
-        <div className="h-px bg-gray-300" />
         <div className="flex justify-between text-2xl font-bold text-[#292823]">
           <span>TOTAL:</span>
           <span>{formatCurrency(total)}</span>

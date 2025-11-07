@@ -79,25 +79,11 @@ serve(async (req) => {
       throw new Error(`Erro ao registrar log: ${logError.message}`);
     }
     
-    // 2. Buscar lead pelo slug (se existir)
-    let leadId = null;
-    if (slug) {
-      console.log('Buscando lead pelo slug:', slug);
-      const { data: lead, error: leadError } = await supabaseExt
-        .from('Leads_Cadastro')
-        .select('id')
-        .eq('link_exclusivo', slug)
-        .maybeSingle();
-      
-      if (leadError) {
-        console.error('Erro ao buscar lead:', leadError);
-      } else if (lead) {
-        leadId = lead.id;
-        console.log('Lead encontrado:', leadId);
-      }
-    }
+    // 2. Lead vem do dadosCheckout
+    const leadId = dadosCheckout?.leadId || null;
+    console.log('Lead ID do checkout:', leadId);
     
-    // 3. Normalizar itens e calcular total
+    // 3. Normalizar itens e calcular total (SEM DESCONTO)
     console.log('Normalizando itens do pedido...');
     const formaPagamento = (dadosCheckout?.formaPagamento || 'pix') as string;
 
@@ -123,18 +109,17 @@ serve(async (req) => {
         : typeof it.preco_unitario === 'number'
           ? it.preco_unitario
           : 0;
-      return { produto_id: pid, quantidade: q, preco_unitario: unit };
+      return { 
+        produto_id: pid, 
+        quantidade: q, 
+        preco_unitario: unit,
+        preco_total: unit * q 
+      };
     });
 
-    const aplicarDescontoPix = formaPagamento === 'pix';
-    const itensComPrecoFinal = itensNormalizados.map((it) => {
-      const base = it.preco_unitario;
-      const unitFinal = aplicarDescontoPix ? Math.round(base * 0.95 * 100) / 100 : base;
-      return { ...it, preco_unitario: unitFinal, preco_total: unitFinal * it.quantidade };
-    });
-
-    const valorTotal = itensComPrecoFinal.reduce((acc, it) => acc + it.preco_total, 0);
+    const valorTotal = itensNormalizados.reduce((acc, it) => acc + it.preco_total, 0);
     
+    // 4. Criar pedido (apenas campos essenciais que existem no banco externo)
     const { data: pedido, error: pedidoError } = await supabaseExt
       .from('pedidos')
       .insert({
@@ -146,16 +131,6 @@ serve(async (req) => {
         valor: valorTotal,
         status_pedido: 'aguardando_pagamento',
         forma_pagamento: formaPagamento,
-        cliente_nome: dadosCheckout?.nome,
-        cliente_email: dadosCheckout?.email,
-        cliente_telefone: dadosCheckout?.telefone,
-        endereco_cep: dadosCheckout?.endereco?.cep,
-        endereco_logradouro: dadosCheckout?.endereco?.logradouro,
-        endereco_numero: dadosCheckout?.endereco?.numero,
-        endereco_complemento: dadosCheckout?.endereco?.complemento,
-        endereco_bairro: dadosCheckout?.endereco?.bairro,
-        endereco_cidade: dadosCheckout?.endereco?.cidade,
-        endereco_estado: dadosCheckout?.endereco?.estado,
       })
       .select()
       .single();
@@ -167,9 +142,9 @@ serve(async (req) => {
     
     console.log('Pedido criado:', pedido.id);
     
-    // 4. Criar itens do pedido
+    // 5. Criar itens do pedido
     console.log('Criando itens do pedido...');
-    const itens = itensComPrecoFinal.map((item: any) => ({
+    const itens = itensNormalizados.map((item: any) => ({
       pedido_id: pedido.id,
       produto_id: item.produto_id,
       quantidade: item.quantidade,
@@ -186,7 +161,7 @@ serve(async (req) => {
       throw new Error(`Erro ao criar itens: ${itensError.message}`);
     }
     
-    // 5. Criar transação de pagamento
+    // 6. Criar transação de pagamento
     console.log('Criando transação de pagamento...');
     const { error: transacaoError } = await supabaseExt
       .from('transacoes_pagamento')
@@ -205,7 +180,7 @@ serve(async (req) => {
       throw new Error(`Erro ao criar transação: ${transacaoError.message}`);
     }
     
-    // 6. Atualizar log do webhook
+    // 7. Atualizar log do webhook
     await supabaseExt
       .from('logs_webhook_infinitepay')
       .update({ 

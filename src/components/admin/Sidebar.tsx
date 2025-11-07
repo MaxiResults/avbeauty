@@ -31,7 +31,7 @@ export const Sidebar = () => {
       {/* Logo */}
       <div className="p-6 border-b border-secondary-foreground/10">
         <div className="flex items-center justify-center w-16 h-16 mx-auto bg-terracota rounded-lg">
-          <span className="text-2xl font-bold text-terracota-foreground">NG</span>
+          <span className="text-2xl font-bold text-terracota-foreground">AV Beauty</span>
         </div>
       </div>
 

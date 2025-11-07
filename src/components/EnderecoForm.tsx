@@ -27,9 +27,11 @@ export default function EnderecoForm({ endereco, onChange, obrigatorio = false }
   const [erro, setErro] = useState('');
 
   const handleBuscar = async () => {
-    if (!endereco.cep) return;
+    const limpo = (endereco.cep || '').replace(/\D/g, '');
+    if (!limpo) { setErro(''); return; }
+    if (limpo.length !== 8) { setErro(''); return; }
     setLoading(true);
-    const result = await buscarCEP(endereco.cep);
+    const result = await buscarCEP(limpo);
     if (result.success) {
       onChange({ ...endereco, ...result });
       setErro('');
@@ -38,7 +40,6 @@ export default function EnderecoForm({ endereco, onChange, obrigatorio = false }
     }
     setLoading(false);
   };
-
   const handleCEP = (val: string) => {
     const fmt = formatarCEP(val);
     onChange({ ...endereco, cep: fmt });
@@ -56,6 +57,10 @@ export default function EnderecoForm({ endereco, onChange, obrigatorio = false }
           type="text"
           value={endereco.cep || ''}
           onChange={(e) => handleCEP(e.target.value)}
+          onBlur={() => {
+            const limpo = (endereco.cep || '').replace(/\D/g, '');
+            if (limpo.length === 8) handleBuscar();
+          }}
           placeholder="00000-000"
           maxLength={9}
           className="flex-1"

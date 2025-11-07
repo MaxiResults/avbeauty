@@ -14,9 +14,35 @@ serve(async (req) => {
 
   try {
     console.log('=== VERIFICAR PAGAMENTO INFINITEPAY ===');
-    
-    const { transactionNsu, externalOrderNsu, slug, dadosCheckout } = await req.json();
-    
+
+    // Ensure POST and safely parse JSON body
+    if (req.method !== 'POST') {
+      return new Response(
+        JSON.stringify({ success: false, message: 'Método não permitido' }),
+        { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    let body: any = {};
+    const isJson = req.headers.get('content-type')?.includes('application/json');
+    if (isJson) {
+      try {
+        body = await req.json();
+      } catch (e) {
+        console.error('Falha ao ler JSON do corpo:', e);
+        body = {};
+      }
+    }
+
+    const { transactionNsu, externalOrderNsu, slug, dadosCheckout } = body || {};
+
+    if (!transactionNsu || !externalOrderNsu) {
+      return new Response(
+        JSON.stringify({ success: false, message: 'Parâmetros obrigatórios ausentes' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     console.log('Dados recebidos:', { transactionNsu, externalOrderNsu, slug });
     
     // Conectar ao banco externo
@@ -62,12 +88,43 @@ serve(async (req) => {
       }
     }
     
-    // 3. Criar pedido
-    console.log('Criando pedido...');
-    const valorTotal = dadosCheckout.carrinho.reduce(
-      (total: number, item: any) => total + (item.preco_final * item.quantidade),
-      0
-    );
+    // 3. Normalizar itens e calcular total
+    console.log('Normalizando itens do pedido...');
+    const formaPagamento = (dadosCheckout?.formaPagamento || 'pix') as string;
+
+    type ItemEntrada = { produto_id?: number; id?: number; quantidade: number; preco_unitario?: number; preco_final?: number; };
+    const origemProdutos: ItemEntrada[] = Array.isArray(dadosCheckout?.produtos)
+      ? dadosCheckout.produtos
+      : Array.isArray(dadosCheckout?.carrinho)
+        ? dadosCheckout.carrinho
+        : [];
+
+    if (!origemProdutos || origemProdutos.length === 0) {
+      return new Response(
+        JSON.stringify({ success: false, message: 'Itens do pedido ausentes' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const itensNormalizados = origemProdutos.map((it: any) => {
+      const pid = it.produto_id ?? it.id;
+      const q = Number(it.quantidade) || 1;
+      const unit = typeof it.preco_final === 'number'
+        ? it.preco_final
+        : typeof it.preco_unitario === 'number'
+          ? it.preco_unitario
+          : 0;
+      return { produto_id: pid, quantidade: q, preco_unitario: unit };
+    });
+
+    const aplicarDescontoPix = formaPagamento === 'pix';
+    const itensComPrecoFinal = itensNormalizados.map((it) => {
+      const base = it.preco_unitario;
+      const unitFinal = aplicarDescontoPix ? Math.round(base * 0.95 * 100) / 100 : base;
+      return { ...it, preco_unitario: unitFinal, preco_total: unitFinal * it.quantidade };
+    });
+
+    const valorTotal = itensComPrecoFinal.reduce((acc, it) => acc + it.preco_total, 0);
     
     const { data: pedido, error: pedidoError } = await supabaseExt
       .from('pedidos')
@@ -75,22 +132,22 @@ serve(async (req) => {
         cliente_id: 2,
         empresa_id: 2,
         lead_id: leadId,
-        campanha_id: dadosCheckout.campanhaId || null,
+        campanha_id: dadosCheckout?.campanhaId || null,
         codigo: externalOrderNsu,
         valor: valorTotal,
         status_pedido: 'aguardando_pagamento',
-        forma_pagamento: 'pix',
-        cliente_nome: dadosCheckout.nome,
-        cliente_email: dadosCheckout.email,
-        cliente_telefone: dadosCheckout.telefone,
-        cliente_cpf: dadosCheckout.cpf,
-        endereco_cep: dadosCheckout.endereco?.cep,
-        endereco_logradouro: dadosCheckout.endereco?.logradouro,
-        endereco_numero: dadosCheckout.endereco?.numero,
-        endereco_complemento: dadosCheckout.endereco?.complemento,
-        endereco_bairro: dadosCheckout.endereco?.bairro,
-        endereco_cidade: dadosCheckout.endereco?.cidade,
-        endereco_estado: dadosCheckout.endereco?.estado,
+        forma_pagamento: formaPagamento,
+        cliente_nome: dadosCheckout?.nome,
+        cliente_email: dadosCheckout?.email,
+        cliente_telefone: dadosCheckout?.telefone,
+        cliente_cpf: dadosCheckout?.cpf,
+        endereco_cep: dadosCheckout?.endereco?.cep,
+        endereco_logradouro: dadosCheckout?.endereco?.logradouro,
+        endereco_numero: dadosCheckout?.endereco?.numero,
+        endereco_complemento: dadosCheckout?.endereco?.complemento,
+        endereco_bairro: dadosCheckout?.endereco?.bairro,
+        endereco_cidade: dadosCheckout?.endereco?.cidade,
+        endereco_estado: dadosCheckout?.endereco?.estado,
       })
       .select()
       .single();
@@ -104,12 +161,12 @@ serve(async (req) => {
     
     // 4. Criar itens do pedido
     console.log('Criando itens do pedido...');
-    const itens = dadosCheckout.carrinho.map((item: any) => ({
+    const itens = itensComPrecoFinal.map((item: any) => ({
       pedido_id: pedido.id,
-      produto_id: item.id,
+      produto_id: item.produto_id,
       quantidade: item.quantidade,
-      preco_unitario: item.preco_final,
-      preco_total: item.preco_final * item.quantidade,
+      preco_unitario: item.preco_unitario,
+      preco_total: item.preco_total,
     }));
     
     const { error: itensError } = await supabaseExt
@@ -160,11 +217,11 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error('Erro ao processar pagamento:', error);
-    
+    const msg = (error as any)?.message || 'Erro ao processar pagamento';
     return new Response(
       JSON.stringify({
         success: false,
-        message: error.message || 'Erro ao processar pagamento',
+        message: msg,
       }),
       {
         status: 500,

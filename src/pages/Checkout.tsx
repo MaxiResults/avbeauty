@@ -148,8 +148,10 @@ export default function Checkout() {
         // 4. Gerar order_nsu único
         const orderNsu = gerarOrderNsu();
 
-        // 5. Calcular total
-        const valorTotal = subtotal;
+        // 5. Calcular total com possível desconto PIX
+        const isPix = formData.formaPagamento === 'pix';
+        const descontoPix = 0.05;
+        const valorTotal = isPix ? Math.round(subtotal * (1 - descontoPix) * 100) / 100 : subtotal;
 
         // 6. Salvar dados no sessionStorage
         const dadosCheckout = {
@@ -158,6 +160,7 @@ export default function Checkout() {
           email: formData.email,
           telefone: formData.telefone,
           cpf: formData.cpf,
+          formaPagamento: formData.formaPagamento,
           endereco: {
             cep: formData.endereco.cep || null,
             logradouro: formData.endereco.logradouro || null,
@@ -167,15 +170,20 @@ export default function Checkout() {
             cidade: formData.endereco.cidade || null,
             estado: formData.endereco.estado || null
           },
-          produtos: produtosComCodigo.map(p => ({
-            produto_id: p.produto_id,
-            produto_nome: p.nome,
-            codigo_externo: p.codigo_externo,
-            quantidade: p.quantidade,
-            preco_unitario: p.preco,
-            desconto_item: 0
-          })),
-          desconto_geral: 0,
+          produtos: produtosComCodigo.map(p => {
+            const precoBase = p.preco;
+            const precoFinal = isPix ? Math.round(precoBase * (1 - descontoPix) * 100) / 100 : precoBase;
+            return {
+              produto_id: p.produto_id,
+              produto_nome: p.nome,
+              codigo_externo: p.codigo_externo,
+              quantidade: p.quantidade,
+              preco_unitario: precoBase,
+              preco_final: precoFinal,
+              desconto_item: isPix ? Math.round(precoBase * descontoPix * 100) / 100 : 0
+            };
+          }),
+          desconto_geral: isPix ? descontoPix : 0,
           valorTotal,
           orderNsu
         };
@@ -183,12 +191,16 @@ export default function Checkout() {
         sessionStorage.setItem('checkout_dados', JSON.stringify(dadosCheckout));
         console.log('💾 Dados salvos no sessionStorage');
 
-        // 7. Preparar itens para InfinitePay
-        const items = cart.map(produto => ({
-          name: produto.nome,
-          price: realParaCentavos(produto.preco),
-          quantity: produto.quantidade
-        }));
+        // 7. Preparar itens para InfinitePay (usar valor com desconto se PIX)
+        const items = cart.map(produto => {
+          const precoBase = produto.preco;
+          const precoFinal = isPix ? Math.round(precoBase * (1 - descontoPix) * 100) / 100 : precoBase;
+          return {
+            name: produto.nome,
+            price: realParaCentavos(precoFinal),
+            quantity: produto.quantidade
+          };
+        });
 
         console.log('🛒 Itens para pagamento:', items);
 

@@ -150,10 +150,10 @@ export default function NovaCampanha() {
     <div className="flex h-screen bg-background">
       <Sidebar />
 
-      <div className="flex-1 ml-64 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header title="Nova Campanha" />
 
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8 lg:ml-64 min-h-screen">
           <div className="max-w-5xl mx-auto">
             {/* Breadcrumb e Botão Voltar */}
             <div className="flex items-center gap-4 mb-6">

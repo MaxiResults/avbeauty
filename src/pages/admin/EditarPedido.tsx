@@ -328,10 +328,10 @@ export default function EditarPedido() {
     <div className="flex h-screen bg-background">
       <Sidebar />
       
-      <div className="flex-1 ml-64 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header title={`Editar Pedido #${pedido.codigo}`} />
         
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8 lg:ml-64 min-h-screen">
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <Button variant="ghost" onClick={() => navigate('/admin/pedidos')}>

@@ -69,10 +69,10 @@ export default function Usuarios() {
     <div className="flex h-screen bg-background">
       <Sidebar />
       
-      <div className="flex-1 ml-64 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header title="Usuários" />
         
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8 lg:ml-64 min-h-screen">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-foreground">Usuários</h1>
             <Button onClick={() => navigate('/admin/usuarios/novo')}>

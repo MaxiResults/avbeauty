@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Megaphone, ShoppingBag, ShoppingCart, Users, LogOut, Menu } from 'lucide-react';
 import { useCustomAuth } from '@/hooks/useCustomAuth';
@@ -18,6 +19,7 @@ const menuItems = [
 export const Sidebar = () => {
   const { user } = useCustomAuth();
   const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
@@ -29,7 +31,7 @@ export const Sidebar = () => {
       .substring(0, 2);
   };
 
-  const SidebarContent = () => (
+  const SidebarContent = ({ closeSheet }: { closeSheet?: () => void }) => (
     <div className="h-full bg-secondary text-secondary-foreground flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-secondary-foreground/10">
@@ -44,6 +46,7 @@ export const Sidebar = () => {
             <li key={item.url}>
               <NavLink
                 to={item.url}
+                onClick={() => closeSheet?.()}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-lg transition-smooth ${
                     isActive
@@ -88,7 +91,7 @@ export const Sidebar = () => {
 
   if (isMobile) {
     return (
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button
             variant="outline"
@@ -99,14 +102,14 @@ export const Sidebar = () => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="p-0 w-64">
-          <SidebarContent />
+          <SidebarContent closeSheet={() => setOpen(false)} />
         </SheetContent>
       </Sheet>
     );
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-secondary text-secondary-foreground flex flex-col z-50">
+    <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-secondary text-secondary-foreground flex-col z-50">
       <SidebarContent />
     </aside>
   );

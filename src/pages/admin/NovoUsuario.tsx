@@ -79,7 +79,7 @@ export default function NovoUsuario() {
   };
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
+    <div className="p-4 lg:p-8 lg:ml-64 min-h-screen max-w-2xl mx-auto">
       <div className="mb-6">
         <Button
           variant="ghost"

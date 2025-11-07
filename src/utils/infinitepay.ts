@@ -63,12 +63,12 @@ export async function verificarPagamentoInfinitePay(
 ): Promise<PaymentCheckResponse> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_EXT_SUPABASE_URL}/functions/v1/verificar-pagamento-infinitepay`,
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verificar-pagamento-infinitepay`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_EXT_SUPABASE_ANON_KEY}`
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
         },
         body: JSON.stringify({
           transactionNsu: transactionId,

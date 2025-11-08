@@ -38,7 +38,7 @@ export function Hero() {
             </p>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#181818] leading-tight font-display">
-              Black Friday AV Beauty está chegando!
+              A Black Beauty da AV Beauty está no ar!!
             </h1>
 
             <p className="text-xl md:text-2xl text-[#737373] font-sans">

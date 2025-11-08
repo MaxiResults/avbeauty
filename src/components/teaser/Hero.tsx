@@ -146,11 +146,12 @@ export function Hero({
       }} transition={{
         delay: 1.2
       }}>
-          <Button onClick={onCTAClick} className="h-16 px-12 text-xl font-bold rounded-full text-black border-none" style={{
+          <Button onClick={onCTAClick} className="h-14 sm:h-16 px-6 sm:px-12 text-base sm:text-xl font-bold rounded-full text-black border-none" style={{
           background: 'linear-gradient(135deg, #FFD700 0%, #FF8C00 100%)',
           boxShadow: '0 8px 32px rgba(255, 215, 0, 0.4)'
         }}>
-            QUERO MEU ACESSO EXCLUSIVO →
+            <span className="block sm:hidden">QUERO MEU ACESSO →</span>
+            <span className="hidden sm:block">QUERO MEU ACESSO EXCLUSIVO →</span>
           </Button>
         </motion.div>
 

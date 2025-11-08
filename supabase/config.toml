@@ -2,3 +2,6 @@ project_id = "yykeclfxgkotmmtmywir"
 
 [functions.verificar-pagamento-infinitepay]
 verify_jwt = false
+
+[functions.submit-lead-site]
+verify_jwt = false

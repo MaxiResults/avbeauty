@@ -72,13 +72,14 @@ export function CTAFinal({ onCTAClick }: CTAFinalProps) {
         >
           <Button
             onClick={onCTAClick}
-            className="h-16 px-12 text-xl font-bold rounded-full text-black border-none"
+            className="h-14 sm:h-16 px-6 sm:px-12 text-base sm:text-xl font-bold rounded-full text-black border-none"
             style={{
               background: 'linear-gradient(135deg, #FFD700 0%, #FF8C00 100%)',
               boxShadow: '0 8px 32px rgba(255, 215, 0, 0.4)',
             }}
           >
-            FAZER MEU CADASTRO AGORA →
+            <span className="block sm:hidden">FAZER CADASTRO AGORA →</span>
+            <span className="hidden sm:block">FAZER MEU CADASTRO AGORA →</span>
           </Button>
         </motion.div>
 

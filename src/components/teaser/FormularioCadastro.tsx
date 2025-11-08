@@ -220,13 +220,18 @@ export function FormularioCadastro({ cadastroCount }: FormularioCadastroProps) {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-16 text-xl font-bold uppercase tracking-wide rounded-full text-black border-none"
+              className="w-full h-16 text-base sm:text-lg md:text-xl font-bold uppercase tracking-wide rounded-full text-black border-none px-4"
               style={{
                 background: 'linear-gradient(135deg, #FFD700 0%, #FF8C00 100%)',
                 boxShadow: '0 8px 24px rgba(255, 215, 0, 0.4)',
               }}
             >
-              {loading ? 'CADASTRANDO...' : 'GARANTIR MEU ACESSO EXCLUSIVO'}
+              {loading ? 'CADASTRANDO...' : (
+                <span className="block sm:hidden">QUERO MEU ACESSO</span>
+              )}
+              {loading ? '' : (
+                <span className="hidden sm:block">GARANTIR MEU ACESSO EXCLUSIVO</span>
+              )}
             </Button>
 
             {/* Badge de Segurança */}

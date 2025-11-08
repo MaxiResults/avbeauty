@@ -34,7 +34,7 @@ export function Hero() {
             </div>
             
             <p className="text-[#704e3b] uppercase font-semibold text-sm tracking-wider font-subtitle">
-              BLACK FRIDAY 2024
+              Black Beauty 2025
             </p>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#181818] leading-tight font-display">

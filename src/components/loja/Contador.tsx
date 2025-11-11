@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 // CONFIGURAÇÃO: Defina a data de término do Lote 1
-const DATA_FIM_LOTE_1 = new Date('2025-11-12T23:59:59');
+const DATA_FIM_LOTE_1 = new Date('2025-11-14T23:59:59');
 
 export function Contador() {
   const [tempo, setTempo] = useState({

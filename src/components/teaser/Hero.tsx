@@ -68,7 +68,7 @@ export function Hero({
       }} transition={{
         delay: 0.2
       }} className="text-[#FFD700] text-2xl font-bold uppercase tracking-[4px]">
-          Algo Grande Vem Aí
+          OFERTAS DO 1º LOTE VÁLIDAS ATÉ 14/11
         </motion.p>
 
         {/* Título Principal */}
@@ -86,7 +86,7 @@ export function Hero({
         WebkitTextFillColor: 'transparent',
         textShadow: '0 0 40px rgba(255, 215, 0, 0.3)'
       }} className="text-5xl font-black leading-tight md:text-6xl text-yellow-500">
-          A MAIOR PROMOÇÃO<br />DO ANO ESTÁ CHEGANDO...
+          A MAIOR BLACK BEAUTY DE OFERTAS TÁ ATIVA, TÁ NO AR! TÁ VALENDO
         </motion.h1>
 
         {/* Subtítulo */}

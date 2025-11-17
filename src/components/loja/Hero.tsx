@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import andreiaVanessa from '@/assets/andreia-hero-webp.webp';
+import andreiaVanessa from '@/assets/andreia-hero-new.jpg';
 export function Hero() {
   const scrollToOfertas = () => {
     const element = document.getElementById('ofertas');

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-// CONFIGURAÇÃO: Defina a data de término do Lote 1
-const DATA_FIM_LOTE_1 = new Date('2025-11-14T23:59:59');
+// CONFIGURAÇÃO: Defina a data de término do Lote 2
+const DATA_FIM_LOTE_2 = new Date('2025-11-21T18:00:00');
 
 export function Contador() {
   const [tempo, setTempo] = useState({
@@ -15,7 +15,7 @@ export function Contador() {
   useEffect(() => {
     const calcularTempo = () => {
       const agora = new Date();
-      const diferenca = DATA_FIM_LOTE_1.getTime() - agora.getTime();
+      const diferenca = DATA_FIM_LOTE_2.getTime() - agora.getTime();
 
       if (diferenca <= 0) {
         setTempo({
@@ -44,10 +44,10 @@ export function Contador() {
 
   if (tempo.encerrado) {
     return (
-      <section className="bg-[#181818] py-16">
+      <section className="bg-[#8b4513] py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-[#fdfdfd] font-display">
-            🔴 Lote 1 Encerrado
+            🟢 2º lote em andamento!
           </h2>
         </div>
       </section>
@@ -61,7 +61,7 @@ export function Contador() {
       <div className="container mx-auto px-4">
         <div className="text-center space-y-8">
           <h2 className="text-2xl lg:text-3xl font-semibold text-[#ececec] font-subtitle">
-            ⏰ TEMPO RESTANTE DO LOTE 1:
+            ⏰ TEMPO RESTANTE DO 2º LOTE:
           </h2>
 
           <div className="flex justify-center items-center gap-4 lg:gap-8">
@@ -73,7 +73,7 @@ export function Contador() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="bg-[#64473b] rounded-xl shadow-2xl w-20 h-24 lg:w-32 lg:h-40 flex flex-col items-center justify-center transition-transform hover:scale-105"
+                className="bg-[#8b4513] rounded-xl shadow-2xl w-20 h-24 lg:w-32 lg:h-40 flex flex-col items-center justify-center transition-transform hover:scale-105"
               >
                 <span className="text-3xl lg:text-6xl font-bold text-[#ececec] font-mono">
                   {formatNumber(item.value)}
@@ -85,8 +85,8 @@ export function Contador() {
             ))}
           </div>
 
-          <p className="text-base lg:text-lg text-[#704e3b] font-medium font-subtitle">
-            Corre que o tempo tá acabando
+          <p className="text-base lg:text-lg text-[#d2691e] font-medium font-subtitle">
+            Aproveite enquanto há tempo! 2º lote termina logo!
           </p>
         </div>
       </div>

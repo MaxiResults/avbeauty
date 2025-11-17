@@ -14,7 +14,331 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      campanhas: {
+        Row: {
+          ativo: boolean
+          campanha_status: string
+          campanha_tipo: string | null
+          canal_principal: string | null
+          cliente_id: number
+          created_at: string
+          criado_por: string | null
+          data_fim: string
+          data_inicio: string
+          descricao: string | null
+          empresa_id: number
+          id: number
+          investimento_total: number | null
+          nome_campanha: string
+          plataforma_ads: string | null
+          publico_alvo: string | null
+          slug: string
+          updated_at: string
+          url_principal: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          campanha_status?: string
+          campanha_tipo?: string | null
+          canal_principal?: string | null
+          cliente_id?: number
+          created_at?: string
+          criado_por?: string | null
+          data_fim: string
+          data_inicio: string
+          descricao?: string | null
+          empresa_id?: number
+          id?: number
+          investimento_total?: number | null
+          nome_campanha: string
+          plataforma_ads?: string | null
+          publico_alvo?: string | null
+          slug: string
+          updated_at?: string
+          url_principal: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          campanha_status?: string
+          campanha_tipo?: string | null
+          canal_principal?: string | null
+          cliente_id?: number
+          created_at?: string
+          criado_por?: string | null
+          data_fim?: string
+          data_inicio?: string
+          descricao?: string | null
+          empresa_id?: number
+          id?: number
+          investimento_total?: number | null
+          nome_campanha?: string
+          plataforma_ads?: string | null
+          publico_alvo?: string | null
+          slug?: string
+          updated_at?: string
+          url_principal?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: []
+      }
+      Conversas_Historico: {
+        Row: {
+          cliente_id: number
+          data_envio: string
+          id: string
+          mensagem: string
+          origem: string | null
+          remetente: string
+          sessao_id: string
+          tipo_mensagem: string | null
+        }
+        Insert: {
+          cliente_id?: number
+          data_envio?: string
+          id?: string
+          mensagem: string
+          origem?: string | null
+          remetente: string
+          sessao_id: string
+          tipo_mensagem?: string | null
+        }
+        Update: {
+          cliente_id?: number
+          data_envio?: string
+          id?: string
+          mensagem?: string
+          origem?: string | null
+          remetente?: string
+          sessao_id?: string
+          tipo_mensagem?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Conversas_Historico_sessao_id_fkey"
+            columns: ["sessao_id"]
+            isOneToOne: false
+            referencedRelation: "Conversas_sessao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Conversas_sessao: {
+        Row: {
+          canal: string | null
+          cliente_id: number
+          created_at: string
+          id: string
+          lead_id: string
+          origem: string | null
+          thread_id: string | null
+        }
+        Insert: {
+          canal?: string | null
+          cliente_id?: number
+          created_at?: string
+          id?: string
+          lead_id: string
+          origem?: string | null
+          thread_id?: string | null
+        }
+        Update: {
+          canal?: string | null
+          cliente_id?: number
+          created_at?: string
+          id?: string
+          lead_id?: string
+          origem?: string | null
+          thread_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Conversas_sessao_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "Leads_Cadastro"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Leads_Cadastro: {
+        Row: {
+          canal_origem: string | null
+          cliente_id: number
+          created_at: string
+          email: string
+          id: string
+          interesse: string | null
+          nome: string
+          observacoes: string | null
+          origem_url: string | null
+          status: string | null
+          telefone: string
+        }
+        Insert: {
+          canal_origem?: string | null
+          cliente_id?: number
+          created_at?: string
+          email: string
+          id?: string
+          interesse?: string | null
+          nome: string
+          observacoes?: string | null
+          origem_url?: string | null
+          status?: string | null
+          telefone: string
+        }
+        Update: {
+          canal_origem?: string | null
+          cliente_id?: number
+          created_at?: string
+          email?: string
+          id?: string
+          interesse?: string | null
+          nome?: string
+          observacoes?: string | null
+          origem_url?: string | null
+          status?: string | null
+          telefone?: string
+        }
+        Relationships: []
+      }
+      leads_cadastro_teaser: {
+        Row: {
+          campanha_id: number | null
+          cliente_id: number
+          created_at: string | null
+          data_primeiro_acesso: string | null
+          email: string
+          empresa_id: number
+          id: string
+          ip_cadastro: string | null
+          link_exclusivo: string
+          nome: string
+          numero_acessos: number | null
+          status: string | null
+          telefone: string
+          updated_at: string | null
+        }
+        Insert: {
+          campanha_id?: number | null
+          cliente_id?: number
+          created_at?: string | null
+          data_primeiro_acesso?: string | null
+          email: string
+          empresa_id?: number
+          id?: string
+          ip_cadastro?: string | null
+          link_exclusivo: string
+          nome: string
+          numero_acessos?: number | null
+          status?: string | null
+          telefone: string
+          updated_at?: string | null
+        }
+        Update: {
+          campanha_id?: number | null
+          cliente_id?: number
+          created_at?: string | null
+          data_primeiro_acesso?: string | null
+          email?: string
+          empresa_id?: number
+          id?: string
+          ip_cadastro?: string | null
+          link_exclusivo?: string
+          nome?: string
+          numero_acessos?: number | null
+          status?: string | null
+          telefone?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      produtos: {
+        Row: {
+          categoria: string | null
+          cliente_id: number
+          controla_estoque: boolean | null
+          created_at: string
+          desconto_percentual: number | null
+          descricao_completa: string | null
+          descricao_curta: string | null
+          empresa_id: number
+          id: number
+          imagem_galeria: string[] | null
+          imagem_principal: string | null
+          meta_description: string | null
+          meta_title: string | null
+          nome: string
+          ordem_exibicao: number | null
+          preco_padrao: number
+          preco_promocional: number | null
+          slug: string
+          status: string
+          updated_at: string
+          vagas_disponiveis: number | null
+          vagas_vendidas: number | null
+        }
+        Insert: {
+          categoria?: string | null
+          cliente_id?: number
+          controla_estoque?: boolean | null
+          created_at?: string
+          desconto_percentual?: number | null
+          descricao_completa?: string | null
+          descricao_curta?: string | null
+          empresa_id?: number
+          id?: number
+          imagem_galeria?: string[] | null
+          imagem_principal?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          nome: string
+          ordem_exibicao?: number | null
+          preco_padrao?: number
+          preco_promocional?: number | null
+          slug: string
+          status?: string
+          updated_at?: string
+          vagas_disponiveis?: number | null
+          vagas_vendidas?: number | null
+        }
+        Update: {
+          categoria?: string | null
+          cliente_id?: number
+          controla_estoque?: boolean | null
+          created_at?: string
+          desconto_percentual?: number | null
+          descricao_completa?: string | null
+          descricao_curta?: string | null
+          empresa_id?: number
+          id?: number
+          imagem_galeria?: string[] | null
+          imagem_principal?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          nome?: string
+          ordem_exibicao?: number | null
+          preco_padrao?: number
+          preco_promocional?: number | null
+          slug?: string
+          status?: string
+          updated_at?: string
+          vagas_disponiveis?: number | null
+          vagas_vendidas?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

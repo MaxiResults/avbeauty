@@ -29,8 +29,8 @@ export function Hero() {
 
           {/* Conteúdo */}
           <div className="w-full lg:w-3/5 text-center lg:text-left space-y-6">
-            <div className="inline-flex items-center gap-2 bg-[#64473b] text-[#fdfdfd] px-6 py-3 rounded-full font-semibold text-sm animate-pulse shadow-lg font-subtitle">
-              🔥 Lote 1 Ativo Agora
+            <div className="inline-flex items-center gap-2 bg-[#8b4513] text-[#fdfdfd] px-6 py-3 rounded-full font-semibold text-sm animate-pulse shadow-lg font-subtitle">
+              🔥 2º Lote Ativo Agora
             </div>
             
             <p className="text-[#704e3b] uppercase font-semibold text-sm tracking-wider font-subtitle">

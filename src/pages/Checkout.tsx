@@ -15,7 +15,7 @@ export default function Checkout() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   if (cart.length === 0) {
-    navigate('/loja');
+    navigate('/black-friday');
     return null;
   }
 
@@ -242,7 +242,7 @@ export default function Checkout() {
               <span className="text-success">🔒</span>
             </h1>
             <button
-              onClick={() => navigate('/loja')}
+              onClick={() => navigate('/black-friday')}
               className="text-[#97624b] hover:underline"
             >
               ← Voltar às ofertas

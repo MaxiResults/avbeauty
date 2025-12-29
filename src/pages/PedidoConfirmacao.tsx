@@ -14,7 +14,7 @@ export default function PedidoConfirmacao() {
 
   useEffect(() => {
     if (!pedido) {
-      navigate('/loja');
+      navigate('/black-friday');
     }
   }, [pedido, navigate]);
 
@@ -176,7 +176,7 @@ export default function PedidoConfirmacao() {
           <div className="h-px bg-gray-300" />
 
           <Button
-            onClick={() => navigate('/loja')}
+            onClick={() => navigate('/black-friday')}
             variant="outline"
             className="w-full"
           >

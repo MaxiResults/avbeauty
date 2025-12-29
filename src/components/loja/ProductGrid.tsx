@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { ProductCard } from './ProductCard';
-import { CategoryFilter } from './CategoryFilter';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface ProductGridProps {
@@ -9,22 +7,16 @@ interface ProductGridProps {
 }
 
 export function ProductGrid({ produtos, isLoading }: ProductGridProps) {
-  const [categoriaAtiva, setCategoriaAtiva] = useState('todos');
-
-  const produtosFiltrados = categoriaAtiva === 'todos' 
-    ? produtos 
-    : produtos.filter((p) => p.categoria === categoriaAtiva);
-
   if (isLoading) {
     return (
       <section id="ofertas" className="py-16 lg:py-24 bg-[#fdfdfd]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-[#181818] mb-4 font-display">
-              Nossos Serviços e Produtos
+              Ofertas Exclusivas AV Beauty
             </h2>
             <p className="text-lg text-[#737373] font-sans">
-              Procedimentos estéticos e produtos selecionados para você
+              Tratamentos faciais selecionados com descontos imperdíveis
             </p>
           </div>
 
@@ -52,30 +44,22 @@ export function ProductGrid({ produtos, isLoading }: ProductGridProps) {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-[#181818] mb-4 font-display">
-            Nossos Serviços e Produtos
+            Ofertas Exclusivas AV Beauty
           </h2>
           <p className="text-lg text-[#737373] font-sans">
-            Procedimentos estéticos e produtos selecionados para você
+            Tratamentos faciais selecionados com descontos imperdíveis
           </p>
         </div>
 
-        {/* Filtro de Categorias */}
-        <div className="mb-10">
-          <CategoryFilter 
-            categoriaAtiva={categoriaAtiva} 
-            onCategoriaChange={setCategoriaAtiva} 
-          />
-        </div>
-
-        {produtosFiltrados.length === 0 ? (
+        {produtos.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-xl text-[#737373] font-sans">
-              Nenhum item disponível nesta categoria.
+              Nenhum tratamento disponível no momento.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {produtosFiltrados.map((produto) => (
+            {produtos.map((produto) => (
               <ProductCard key={produto.id} produto={produto} />
             ))}
           </div>

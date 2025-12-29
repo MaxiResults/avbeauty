@@ -12,7 +12,7 @@ import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import TermosUso from "./pages/TermosUso";
 
 // Loja
-import Loja from "./pages/Loja";
+import BlackFriday from "./pages/BlackFriday";
 import Checkout from "./pages/Checkout";
 import CheckoutConfirmacao from "./pages/CheckoutConfirmacao";
 import PedidoConfirmacao from "./pages/PedidoConfirmacao";
@@ -51,9 +51,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             
             {/* Loja Routes */}
-            <Route path="/loja" element={<Loja />} />
-            <Route path="/promocao" element={<Loja />} />
-            <Route path="/black-friday" element={<Loja />} />
+            <Route path="/black-friday" element={<BlackFriday />} />
+            <Route path="/promocao" element={<BlackFriday />} />
             <Route path="/cadastro-black-friday" element={<CadastroBlackFriday />} />
             <Route path="/obrigado" element={<Obrigado />} />
             <Route path="/checkout" element={<Checkout />} />

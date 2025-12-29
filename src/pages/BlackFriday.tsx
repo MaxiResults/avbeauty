@@ -14,7 +14,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { toast } from 'sonner';
 import logoAvBeauty from '@/assets/logo-avbeauty-novo.png';
 
-export default function Loja() {
+export default function BlackFriday() {
   const navigate = useNavigate();
   const { cartCount, isCartOpen, setIsCartOpen } = useCart();
   const [produtos, setProdutos] = useState<any[]>([]);

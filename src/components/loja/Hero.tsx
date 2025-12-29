@@ -25,15 +25,15 @@ export function Hero() {
 
           {/* Conteúdo */}
           <div className="w-full lg:w-3/5 text-center lg:text-left space-y-6">
-            <div className="inline-flex items-center gap-2 bg-[#8b4513] text-[#fdfdfd] px-6 py-3 rounded-full font-semibold text-sm animate-pulse shadow-lg font-subtitle">
-              🔥 2º Lote Ativo Agora
+            <div className="inline-flex items-center gap-2 bg-[#64473b] text-[#fdfdfd] px-6 py-3 rounded-full font-semibold text-sm shadow-lg font-subtitle">
+              ✨ AV Beauty Studio
             </div>
             
             <p className="text-[#704e3b] uppercase font-semibold text-sm tracking-wider font-subtitle">
-              Black Beauty 2025
+              Estúdio de Beleza
             </p>
 
-            <h1 className="text-4xl md:text-5xl font-bold text-[#181818] leading-tight font-display lg:text-5xl">Sua nova chance de aproveitar o descontos da Black Beauty</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-[#181818] leading-tight font-display lg:text-5xl">Realce sua beleza natural com nossos procedimentos exclusivos</h1>
 
             <p className="text-xl md:text-2xl text-[#737373] font-sans">
               AV Brow • Coloração Labial • Brow Lamination • Hidragloss
@@ -41,13 +41,13 @@ export function Hero() {
 
             <div className="bg-gradient-to-r from-[#624537] via-[#997564] to-[#624537] text-[#fdfdfd] inline-block px-6 py-3 rounded-lg">
               <p className="text-2xl md:text-3xl font-bold font-subtitle">
-                Descontos exclusivos em sobrancelhas, lábios e tratamentos faciais!
+                Especialistas em sobrancelhas, lábios e tratamentos faciais
               </p>
             </div>
 
             <div className="pt-4">
               <Button onClick={scrollToOfertas} size="lg" className="bg-[#64473b] hover:bg-[#704e3b] text-[#fdfdfd] text-lg px-12 py-6 h-auto rounded-full shadow-lg hover:shadow-xl transition-all duration-300 font-subtitle">
-                Ver Ofertas Exclusivas ↓
+                Ver Nossos Serviços ↓
               </Button>
             </div>
           </div>

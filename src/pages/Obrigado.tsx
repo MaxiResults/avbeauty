@@ -28,7 +28,7 @@ export default function Obrigado() {
   }, [searchParams, navigate]);
 
   const copyLink = () => {
-    const linkCompleto = `${window.location.origin}/black-friday?access=${linkExclusivo}`;
+    const linkCompleto = `${window.location.origin}/loja?access=${linkExclusivo}`;
     
     navigator.clipboard.writeText(linkCompleto)
       .then(() => {
@@ -104,7 +104,7 @@ export default function Obrigado() {
               }}
             >
               <p className="text-sm text-[#B8B8B8] break-all mb-4">
-                {window.location.origin}/black-friday?access={linkExclusivo}
+                {window.location.origin}/loja?access={linkExclusivo}
               </p>
               
               <Button

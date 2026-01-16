@@ -13,6 +13,7 @@ import { supabase } from '@/lib/supabase';
 import { Produto, ProdutoDB, dbToProduto } from '@/types/produto';
 import { toast } from 'sonner';
 import { Plus, Search, Package } from 'lucide-react';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 export default function ListaProdutos() {
   const navigate = useNavigate();
@@ -43,8 +44,8 @@ export default function ListaProdutos() {
       const { data, error } = await supabase
         .from('produtos')
         .select('categoria')
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3)
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID)
         .not('categoria', 'is', null);
 
       if (error) throw error;
@@ -62,8 +63,8 @@ export default function ListaProdutos() {
       let query = supabase
         .from('produtos')
         .select('*')
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       if (statusFilter && statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -128,8 +129,8 @@ export default function ListaProdutos() {
         .from('produtos')
         .update({ status: 'indisponivel' })
         .eq('id', selectedProduto.id)
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       if (error) throw error;
 

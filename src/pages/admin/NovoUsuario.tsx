@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gerarHashSenha } from '@/utils/customAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,7 +47,9 @@ export default function NovoUsuario() {
           nome,
           email,
           senha_hash: senhaHash,
-          role
+          role,
+          cliente_id: APP_CLIENTE_ID,
+          empresa_id: APP_EMPRESA_ID
         }
       });
 

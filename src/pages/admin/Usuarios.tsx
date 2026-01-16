@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -20,7 +21,9 @@ export default function Usuarios() {
     try {
       setLoading(true);
       
-      const { data, error } = await supabase.functions.invoke('get-usuarios-admin');
+      const { data, error } = await supabase.functions.invoke('get-usuarios-admin', {
+        body: { cliente_id: APP_CLIENTE_ID, empresa_id: APP_EMPRESA_ID }
+      });
 
       if (error) throw error;
 
@@ -40,7 +43,7 @@ export default function Usuarios() {
   const toggleAtivo = async (id: string, ativoAtual: boolean) => {
     try {
       const { data, error } = await supabase.functions.invoke('update-usuario-admin', {
-        body: { id, ativo: !ativoAtual }
+        body: { id, ativo: !ativoAtual, cliente_id: APP_CLIENTE_ID, empresa_id: APP_EMPRESA_ID }
       });
 
       if (error) throw error;

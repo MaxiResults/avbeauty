@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
-import { supabase as cloud } from '@/integrations/supabase/client';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 import { Hero } from '@/components/loja/Hero';
 import { Contador } from '@/components/loja/Contador';
 import { ComoFunciona } from '@/components/loja/ComoFunciona';
@@ -13,7 +13,6 @@ import { useCart } from '@/hooks/useCart';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from 'sonner';
 import logoAvBeauty from '@/assets/logo-avbeauty-novo.png';
-import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 export default function BlackFriday() {
   const navigate = useNavigate();
@@ -78,8 +77,13 @@ export default function BlackFriday() {
 
   const loadProdutos = async () => {
     try {
-      // Buscar via Edge Function (banco EXTERNO, ignora RLS)
-      const { data, error } = await cloud.functions.invoke('get-produtos-public');
+      // Buscar via Edge Function (banco EXTERNO)
+      const { data, error } = await supabase.functions.invoke('get-produtos-public', {
+        body: { 
+          cliente_id: APP_CLIENTE_ID,
+          empresa_id: APP_EMPRESA_ID
+        }
+      });
       if (error) throw error;
       const lista = (data as any)?.produtos ?? [];
       setProdutos(lista);

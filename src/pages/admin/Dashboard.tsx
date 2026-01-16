@@ -3,13 +3,13 @@ import { Sidebar } from '@/components/admin/Sidebar';
 import { Header } from '@/components/admin/Header';
 import { StatCard } from '@/components/admin/StatCard';
 import { DollarSign, ShoppingBag, Package, Megaphone } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { toast } from 'sonner';
-import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 interface Stats {
   totalVendas: number;
@@ -50,9 +50,9 @@ export default function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // Buscar estatísticas via edge function
+      // Buscar estatísticas via edge function (banco EXTERNO)
       const { data: statsData, error: statsError } = await supabase.functions.invoke('get-pedidos-admin', {
-        body: { type: 'stats' }
+        body: { type: 'stats', cliente_id: APP_CLIENTE_ID, empresa_id: APP_EMPRESA_ID }
       });
 
       if (statsError) throw statsError;
@@ -80,9 +80,9 @@ export default function Dashboard() {
         campanhasAtivas: campanhasCount || 0,
       });
 
-      // Buscar dados do gráfico via edge function
+      // Buscar dados do gráfico via edge function (banco EXTERNO)
       const { data: chartResponse, error: chartError } = await supabase.functions.invoke('get-pedidos-admin', {
-        body: { type: 'chart' }
+        body: { type: 'chart', cliente_id: APP_CLIENTE_ID, empresa_id: APP_EMPRESA_ID }
       });
 
       if (chartError) throw chartError;
@@ -94,9 +94,9 @@ export default function Dashboard() {
 
       setChartData(formattedChartData);
 
-      // Buscar pedidos recentes via edge function
+      // Buscar pedidos recentes via edge function (banco EXTERNO)
       const { data: pedidosResponse, error: pedidosError } = await supabase.functions.invoke('get-pedidos-admin', {
-        body: { type: 'recent', limit: 10 }
+        body: { type: 'recent', limit: 10, cliente_id: APP_CLIENTE_ID, empresa_id: APP_EMPRESA_ID }
       });
 
       if (pedidosError) throw pedidosError;

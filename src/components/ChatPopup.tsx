@@ -4,11 +4,11 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { ScrollArea } from "./ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 import { useToast } from "@/hooks/use-toast";
 import { toZonedTime } from 'date-fns-tz';
 import logoAVBeauty from "@/assets/logo-avbeauty-chat.png";
-import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -108,7 +108,11 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
   const createSession = async (newLeadId: string | number) => {
     try {
       const { data, error } = await supabase.functions.invoke('create-session', {
-        body: { leadId: newLeadId }
+        body: { 
+          leadId: newLeadId,
+          cliente_id: APP_CLIENTE_ID,
+          empresa_id: APP_EMPRESA_ID
+        }
       });
 
       if (error) throw error as any;
@@ -128,7 +132,8 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
         remetente,
         mensagem,
         tipo_mensagem: 'texto',
-        origem: 'site'
+        origem: 'site',
+        cliente_id: APP_CLIENTE_ID
       }
     });
   };

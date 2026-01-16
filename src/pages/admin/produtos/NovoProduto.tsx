@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { ArrowLeft, FileText, DollarSign, Image as ImageIcon, Search } from 'lucide-react';
 import { ProdutoFormData } from '@/types/produto';
 import { toZonedTime } from 'date-fns-tz';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 const TIMEZONE = 'America/Sao_Paulo';
 
@@ -59,8 +60,8 @@ export default function NovoProduto() {
       const { data, error } = await supabase
         .from('produtos')
         .select('ordem_exibicao')
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3)
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID)
         .order('ordem_exibicao', { ascending: false })
         .limit(1)
         .single();
@@ -153,8 +154,8 @@ export default function NovoProduto() {
 
       // Campos mínimos (devem existir em qualquer schema)
       const baseRecord: any = {
-        cliente_id: 3,
-        empresa_id: 3,
+        cliente_id: APP_CLIENTE_ID,
+        empresa_id: APP_EMPRESA_ID,
         nome: formData.Nome,
         slug: formData.Slug,
         preco_padrao: formData.Preco_Padrao,
@@ -184,7 +185,7 @@ export default function NovoProduto() {
       // Fallback defensivo caso o schema mude e gere erro de cache/coluna
       if (error && /schema cache|Could not find/.test(error.message)) {
         // remove campos possivelmente inexistentes e tenta novamente com o mínimo
-        const safeRecord: any = { cliente_id: 3, empresa_id: 3, nome: formData.Nome, slug: formData.Slug, preco_padrao: formData.Preco_Padrao };
+        const safeRecord: any = { cliente_id: APP_CLIENTE_ID, empresa_id: APP_EMPRESA_ID, nome: formData.Nome, slug: formData.Slug, preco_padrao: formData.Preco_Padrao };
         ({ error } = await supabase.from('produtos').insert([safeRecord]));
       }
 

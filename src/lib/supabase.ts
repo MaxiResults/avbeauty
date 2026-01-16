@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { supabase as cloud } from '@/integrations/supabase/client';
 import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 // Use external Supabase database credentials
@@ -25,8 +24,8 @@ export async function submitLead(data: LeadData) {
   let telefone = onlyDigits(data.lead_telefone || '');
   if (!telefone.startsWith('55')) telefone = '55' + telefone;
 
-  // Invoke backend function in the LOCAL backend (Lovable Cloud) to write to EXTERNAL DB
-  const { data: result, error } = await cloud.functions.invoke('submit-lead-site', {
+  // Invoke backend function in the EXTERNAL database
+  const { data: result, error } = await supabase.functions.invoke('submit-lead-site', {
     body: {
       site_url: data.site_url,
       lead_nome: data.lead_nome,

@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { gerarLinkInfinitePay, gerarOrderNsu, realParaCentavos } from '@/utils/infinitepay';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 export default function Checkout() {
   const { cart, subtotal, clearCart } = useCart();
@@ -40,8 +41,8 @@ export default function Checkout() {
         .from('produtos')
         .select('id, nome, codigo_externo')
         .in('id', produtosIds)
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       // Mapear produtos com codigo_externo
       const produtosComCodigo = cart.map(item => {
@@ -62,8 +63,8 @@ export default function Checkout() {
           .from('Leads_Cadastro')
           .select('id')
           .eq('email', formData.email) // ✅ CORRETO: email (não Email_Lead)
-          .eq('Cliente_ID', 3)
-          .eq('Empresa_ID', 3)
+          .eq('Cliente_ID', APP_CLIENTE_ID)
+          .eq('Empresa_ID', APP_EMPRESA_ID)
           .maybeSingle();
 
         if (leadQueryError && leadQueryError.code !== 'PGRST116') {
@@ -81,7 +82,7 @@ export default function Checkout() {
               telefone: `55${formData.telefone.replace(/\D/g, '')}`,
               cpf: formData.cpf,
               status: 'aguardando_pagamento',
-              Empresa_ID: 3,
+              Empresa_ID: APP_EMPRESA_ID,
               Endereco_CEP: formData.endereco.cep || null,
               Endereco_Logradouro: formData.endereco.logradouro || null,
               Endereco_Numero: formData.endereco.numero || null,
@@ -106,8 +107,8 @@ export default function Checkout() {
           const { data: novoLead, error: insertError } = await supabase
             .from('Leads_Cadastro')
             .insert({
-              Cliente_ID: 3,
-              Empresa_ID: 3,
+              Cliente_ID: APP_CLIENTE_ID,
+              Empresa_ID: APP_EMPRESA_ID,
               nome: formData.nome,
               email: formData.email,
               telefone: `55${formData.telefone.replace(/\D/g, '')}`,

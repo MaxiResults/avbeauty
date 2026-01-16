@@ -13,6 +13,7 @@ import { useCart } from '@/hooks/useCart';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from 'sonner';
 import logoAvBeauty from '@/assets/logo-avbeauty-novo.png';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 export default function BlackFriday() {
   const navigate = useNavigate();
@@ -40,8 +41,8 @@ export default function BlackFriday() {
           .from('leads_cadastro_teaser')
           .select('*')
           .eq('link_exclusivo', accessToken)
-          .eq('cliente_id', 3)
-          .eq('empresa_id', 3)
+          .eq('cliente_id', APP_CLIENTE_ID)
+          .eq('empresa_id', APP_EMPRESA_ID)
           .maybeSingle();
 
         if (lead && !error) {

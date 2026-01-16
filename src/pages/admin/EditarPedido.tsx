@@ -13,6 +13,7 @@ import ItemPedido from '@/components/pedidos/ItemPedido';
 import { toast } from 'sonner';
 import { ArrowLeft, Save } from 'lucide-react';
 import { maskPhone, onlyNumbers } from '@/utils/formatadores';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 interface Produto {
   id: number;
@@ -80,7 +81,7 @@ export default function EditarPedido() {
       const { data, error } = await supabase
         .from('produtos')
         .select('id, nome, preco_padrao, preco_promocional, codigo_externo')
-        .eq('cliente_id', 3)
+        .eq('cliente_id', APP_CLIENTE_ID)
         .eq('status', 'ativo')
         .order('nome');
 
@@ -240,8 +241,8 @@ export default function EditarPedido() {
         const produto = produtos.find(p => p.id === item.produto_id);
         
         return {
-          cliente_id: 3,
-          empresa_id: 3,
+          cliente_id: APP_CLIENTE_ID,
+          empresa_id: APP_EMPRESA_ID,
           pedido_id: id,
           produto_id: item.produto_id,
           produto_nome: item.produto_nome,

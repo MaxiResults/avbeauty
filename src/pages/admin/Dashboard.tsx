@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { toast } from 'sonner';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 interface Stats {
   totalVendas: number;
@@ -61,16 +62,16 @@ export default function Dashboard() {
         .from('produtos')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'ativo')
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       // Campanhas ativas (ainda no banco local Lovable Cloud)
       const { count: campanhasCount } = await (supabase as any)
         .from('campanhas')
         .select('*', { count: 'exact', head: true })
         .eq('campanha_status', 'Ativo')
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       setStats({
         totalVendas: statsData?.stats?.totalVendas || 0,

@@ -22,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 export default function ListaPedidos() {
   const navigate = useNavigate();
@@ -53,8 +54,8 @@ export default function ListaPedidos() {
       const { data, error } = await supabase
         .from('pedidos')
         .select('status_pedido, valor_total')
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       if (error) throw error;
 
@@ -81,8 +82,8 @@ export default function ListaPedidos() {
           campanhas(nome_campanha),
           itens:pedidos_itens(count)
         `)
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3)
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID)
         .order('created_at', { ascending: false });
 
       if (statusFilter && statusFilter !== 'all') {
@@ -118,8 +119,8 @@ export default function ListaPedidos() {
         .from('pedidos_itens')
         .select('*')
         .eq('pedido_id', pedido.ID)
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       if (error) throw error;
 

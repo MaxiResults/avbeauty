@@ -14,6 +14,7 @@ import ItemPedido from '@/components/pedidos/ItemPedido';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2, Plus } from 'lucide-react';
 import { maskPhone, onlyNumbers } from '@/utils/formatadores';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 interface Produto {
   id: number;
@@ -69,7 +70,7 @@ export default function NovoPedidoManual() {
       const { data, error } = await supabase
         .from('produtos')
         .select('id, nome, preco_padrao, preco_promocional, codigo_externo')
-        .eq('cliente_id', 3)
+        .eq('cliente_id', APP_CLIENTE_ID)
         .eq('status', 'ativo')
         .order('nome');
 
@@ -126,8 +127,8 @@ export default function NovoPedidoManual() {
         .from('Leads_Cadastro')
         .select('id')
         .eq('email', email)
-        .eq('Cliente_ID', 3)
-        .eq('Empresa_ID',3)
+        .eq('Cliente_ID', APP_CLIENTE_ID)
+        .eq('Empresa_ID', APP_EMPRESA_ID)
         .maybeSingle();
 
       if (leadError && leadError.code !== 'PGRST116') throw leadError;
@@ -152,8 +153,8 @@ export default function NovoPedidoManual() {
         const { data: novo, error: insertError } = await supabase
           .from('Leads_Cadastro')
           .insert({
-            Cliente_ID: 3,
-            Empresa_ID: 3, 
+            Cliente_ID: APP_CLIENTE_ID,
+            Empresa_ID: APP_EMPRESA_ID, 
             nome: nome,
             email: email,
             telefone: telefone,
@@ -178,8 +179,8 @@ export default function NovoPedidoManual() {
       const { data: pedidoData, error: pedidoError } = await supabase
         .from('pedidos')
         .insert({
-          cliente_id: 3,
-          empresa_id: 3,
+          cliente_id: APP_CLIENTE_ID,
+          empresa_id: APP_EMPRESA_ID,
           lead_id: leadId,
           lead_nome: nome,
           lead_email: email,
@@ -211,8 +212,8 @@ export default function NovoPedidoManual() {
         const produto = produtos.find(p => p.id === item.produto_id);
         
         return {
-          cliente_id: 3,
-          empresa_id: 3,
+          cliente_id: APP_CLIENTE_ID,
+          empresa_id: APP_EMPRESA_ID,
           pedido_id: pedidoData.id,
           produto_id: item.produto_id,
           produto_nome: item.produto_nome,

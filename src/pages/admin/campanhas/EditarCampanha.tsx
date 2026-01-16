@@ -18,6 +18,7 @@ import { ArrowLeft, FileText, BarChart3, Globe, Copy } from 'lucide-react';
 import { Campanha, CampanhaDB, dbToCampanha, CampanhaFormData } from '@/types/campanha';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toZonedTime } from 'date-fns-tz';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 export default function EditarCampanha() {
   const navigate = useNavigate();
@@ -62,8 +63,8 @@ export default function EditarCampanha() {
         .from('campanhas')
         .select('*')
         .eq('id', parseInt(id!))
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3)
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID)
         .single();
 
       if (error) throw error;
@@ -169,8 +170,8 @@ export default function EditarCampanha() {
           ativo: ativo,
         })
         .eq('id', parseInt(id!))
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       if (error) throw error;
 

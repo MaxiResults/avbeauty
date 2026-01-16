@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { ArrowLeft, FileText, BarChart3, Globe, Copy } from 'lucide-react';
 import { CampanhaFormData } from '@/types/campanha';
 import { toZonedTime } from 'date-fns-tz';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 export default function NovaCampanha() {
   const navigate = useNavigate();
@@ -114,8 +115,8 @@ export default function NovaCampanha() {
     setLoading(true);
     try {
       const { data, error } = await supabase.from('campanhas').insert([{
-        cliente_id: 3,
-        empresa_id: 3,
+        cliente_id: APP_CLIENTE_ID,
+        empresa_id: APP_EMPRESA_ID,
         nome_campanha: formData.Nome_campanha,
         slug: formData.Slug,
         campanha_status: isDraft ? 'Suspensa' : formData.Campanha_Status,

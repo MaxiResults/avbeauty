@@ -15,6 +15,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 // CONFIGURAÇÃO DIRETA (que funcionou no teste)
 const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
@@ -64,8 +65,8 @@ export const customLogin = async (email: string, senha: string) => {
       .from('usuarios')
       .select('id, nome, email, senha_hash, role, ativo, cliente_id, empresa_id')
       .eq('email', email)
-      .eq('cliente_id', 3)
-      .eq('empresa_id', 3)
+      .eq('cliente_id', APP_CLIENTE_ID)
+      .eq('empresa_id', APP_EMPRESA_ID)
       .eq('ativo', true)
       .single();
 
@@ -84,8 +85,8 @@ export const customLogin = async (email: string, senha: string) => {
       console.log('❌ USUÁRIO NÃO ENCONTRADO');
       console.log('- Verifique se existe usuário com:');
       console.log('  • email:', email);
-      console.log('  • cliente_id: 2');
-      console.log('  • empresa_id: 2');
+      console.log('  • cliente_id:', APP_CLIENTE_ID);
+      console.log('  • empresa_id:', APP_EMPRESA_ID);
       console.log('  • ativo: true');
       return { success: false, error: 'Usuário não encontrado ou inativo' };
     }

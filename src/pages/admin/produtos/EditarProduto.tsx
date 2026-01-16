@@ -18,6 +18,7 @@ import { uploadProdutoImage, deleteProdutoImage } from '@/lib/uploadHelpers';
 import { Produto, ProdutoDB, dbToProduto, ProdutoFormData } from '@/types/produto';
 import { toast } from 'sonner';
 import { ArrowLeft, FileText, DollarSign, Image as ImageIcon, Search } from 'lucide-react';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 export default function EditarProduto() {
   const navigate = useNavigate();
@@ -61,8 +62,8 @@ export default function EditarProduto() {
         .from('produtos')
         .select('*')
         .eq('id', parseInt(id!))
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3)
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID)
         .single();
 
       if (error) throw error;
@@ -213,8 +214,8 @@ export default function EditarProduto() {
         .from('produtos')
         .update(updateRecord)
         .eq('id', parseInt(id))
-        .eq('cliente_id', 3)
-        .eq('empresa_id', 3);
+        .eq('cliente_id', APP_CLIENTE_ID)
+        .eq('empresa_id', APP_EMPRESA_ID);
 
       if (error) throw error;
 

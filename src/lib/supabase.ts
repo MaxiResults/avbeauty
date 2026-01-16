@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { supabase as cloud } from '@/integrations/supabase/client';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 // Use external Supabase database credentials
 const supabaseUrl = 'https://sunccjukvrximjiqzdkm.supabase.co';
@@ -33,8 +34,8 @@ export async function submitLead(data: LeadData) {
       lead_email: data.lead_email,
       lead_interest: data.lead_interest,
       lead_obs: data.lead_obs ?? null,
-      cliente_id: data.cliente_id ?? 3,
-      empresa_id: data.empresa_id ?? 3,
+      cliente_id: data.cliente_id ?? APP_CLIENTE_ID,
+      empresa_id: data.empresa_id ?? APP_EMPRESA_ID,
     },
   });
 

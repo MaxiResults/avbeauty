@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { submitLead } from '@/lib/supabase';
+import { APP_CLIENTE_ID, APP_EMPRESA_ID } from '@/config/app.config';
 
 interface FormularioCadastroProps {
   cadastroCount: number;
@@ -87,8 +88,8 @@ export function FormularioCadastro({ cadastroCount }: FormularioCadastroProps) {
           lead_email: formData.email,
           lead_interest: 'black_friday_teaser',
           lead_obs: `link_exclusivo:${linkExclusivo}${ipCadastro ? `|ip:${ipCadastro}` : ''}`,
-          cliente_id: 3,
-          empresa_id: 3,
+          cliente_id: APP_CLIENTE_ID,
+          empresa_id: APP_EMPRESA_ID,
         });
       } catch (leadErr) {
         console.error('Erro ao salvar lead:', leadErr);

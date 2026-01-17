@@ -243,10 +243,10 @@ export default function Checkout() {
               <span className="text-success">🔒</span>
             </h1>
             <button
-              onClick={() => navigate('/black-friday')}
+              onClick={() => navigate(-1)}
               className="text-[#97624b] hover:underline"
             >
-              ← Voltar às ofertas
+              ← Voltar
             </button>
           </div>
         </div>

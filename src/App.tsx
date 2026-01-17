@@ -13,6 +13,7 @@ import TermosUso from "./pages/TermosUso";
 
 // Loja
 import BlackFriday from "./pages/BlackFriday";
+import Loja from "./pages/Loja";
 import Checkout from "./pages/Checkout";
 import CheckoutConfirmacao from "./pages/CheckoutConfirmacao";
 import PedidoConfirmacao from "./pages/PedidoConfirmacao";
@@ -52,6 +53,7 @@ const App = () => (
             
             {/* Loja Routes */}
             <Route path="/black-friday" element={<BlackFriday />} />
+            <Route path="/loja" element={<Loja />} />
             <Route path="/promocao" element={<BlackFriday />} />
             <Route path="/cadastro-black-friday" element={<CadastroBlackFriday />} />
             <Route path="/obrigado" element={<Obrigado />} />

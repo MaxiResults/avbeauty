@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import Index from "./pages/Index";
@@ -12,7 +12,6 @@ import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import TermosUso from "./pages/TermosUso";
 
 // Loja
-import BlackFriday from "./pages/BlackFriday";
 import Loja from "./pages/Loja";
 import Checkout from "./pages/Checkout";
 import CheckoutConfirmacao from "./pages/CheckoutConfirmacao";
@@ -52,9 +51,9 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             
             {/* Loja Routes */}
-            <Route path="/black-friday" element={<BlackFriday />} />
+            <Route path="/black-friday" element={<Navigate to="/loja" replace />} />
             <Route path="/loja" element={<Loja />} />
-            <Route path="/promocao" element={<BlackFriday />} />
+            <Route path="/promocao" element={<Navigate to="/loja" replace />} />
             <Route path="/cadastro-black-friday" element={<CadastroBlackFriday />} />
             <Route path="/obrigado" element={<Obrigado />} />
             <Route path="/checkout" element={<Checkout />} />

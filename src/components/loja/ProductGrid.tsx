@@ -13,10 +13,10 @@ export function ProductGrid({ produtos, isLoading }: ProductGridProps) {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-[#181818] mb-4 font-display">
-              Ofertas Exclusivas AV Beauty
+              Nossos Tratamentos Estéticos
             </h2>
             <p className="text-lg text-[#737373] font-sans">
-              Tratamentos faciais selecionados com descontos imperdíveis
+              Procedimentos de alta qualidade para realçar sua beleza
             </p>
           </div>
 
@@ -44,10 +44,10 @@ export function ProductGrid({ produtos, isLoading }: ProductGridProps) {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-[#181818] mb-4 font-display">
-            Ofertas Exclusivas AV Beauty
+            Nossos Tratamentos Estéticos
           </h2>
           <p className="text-lg text-[#737373] font-sans">
-            Tratamentos faciais selecionados com descontos imperdíveis
+            Procedimentos de alta qualidade para realçar sua beleza
           </p>
         </div>
 

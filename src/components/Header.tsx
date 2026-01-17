@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Instagram, Facebook, User } from "lucide-react";
+import { Menu, X, Instagram, Facebook, User, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo-avbeauty.jpeg";
@@ -33,12 +33,13 @@ const Header = () => {
   };
 
   const menuItems = [
-    { label: "Home", id: "home" },
-    { label: "Sobre", id: "sobre" },
-    { label: "Serviços", id: "servicos" },
-    { label: "Depoimentos", id: "depoimentos" },
-    { label: "Galeria", id: "galeria" },
-    { label: "Contato", id: "contato" },
+    { label: "Home", id: "home", isRoute: false },
+    { label: "Sobre", id: "sobre", isRoute: false },
+    { label: "Serviços", id: "servicos", isRoute: false },
+    { label: "Depoimentos", id: "depoimentos", isRoute: false },
+    { label: "Galeria", id: "galeria", isRoute: false },
+    { label: "Contato", id: "contato", isRoute: false },
+    { label: "Loja", id: "loja", isRoute: true },
   ];
 
   return (
@@ -62,9 +63,16 @@ const Header = () => {
             {menuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-foreground hover:text-primary transition-smooth font-medium"
+                onClick={() => {
+                  if (item.isRoute) {
+                    navigate('/loja');
+                  } else {
+                    scrollToSection(item.id);
+                  }
+                }}
+                className="text-foreground hover:text-primary transition-smooth font-medium flex items-center gap-2"
               >
+                {item.id === 'loja' && <ShoppingBag className="w-4 h-4" />}
                 {item.label}
               </button>
             ))}
@@ -133,9 +141,17 @@ const Header = () => {
               {menuItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="text-foreground hover:text-primary transition-smooth font-medium text-left py-2"
+                  onClick={() => {
+                    if (item.isRoute) {
+                      navigate('/loja');
+                      setIsMobileMenuOpen(false);
+                    } else {
+                      scrollToSection(item.id);
+                    }
+                  }}
+                  className="text-foreground hover:text-primary transition-smooth font-medium text-left py-2 flex items-center gap-2"
                 >
+                  {item.id === 'loja' && <ShoppingBag className="w-4 h-4" />}
                   {item.label}
                 </button>
               ))}

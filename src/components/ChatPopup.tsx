@@ -133,7 +133,8 @@ const ChatPopup = ({ onClose }: ChatPopupProps) => {
         mensagem,
         tipo_mensagem: 'texto',
         origem: 'site',
-        cliente_id: APP_CLIENTE_ID
+        cliente_id: APP_CLIENTE_ID,
+        empresa_id: APP_EMPRESA_ID
       }
     });
   };

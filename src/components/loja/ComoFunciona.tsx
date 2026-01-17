@@ -9,8 +9,8 @@ export function ComoFunciona() {
     },
     {
       icon: CreditCard,
-      title: 'Garanta seu desconto especial',
-      description: 'Finalize o pagamento e garanta o preço promocional com descontos imperdíveis.',
+      title: 'Finalize sua Compra',
+      description: 'Pagamento seguro com opções de parcelamento facilitado.',
     },
     {
       icon: Calendar,

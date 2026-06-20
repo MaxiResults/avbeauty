@@ -90,6 +90,17 @@ const Footer = () => {
                 Termos de Uso
               </Link>
             </div>
+            <p className="text-xs text-[#737373] mt-4 font-sans">
+              Desenvolvido por{" "}
+              <a
+                href="https://www.maxiresults.com.br"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#ececec] transition-smooth underline"
+              >
+                Maxi Results
+              </a>
+            </p>
           </div>
         </div>
       </div>
